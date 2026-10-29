@@ -388,7 +388,7 @@ JSON and plain field names are compatibility surfaces within
 | `1` | Ordinary failure with no change: `not_found`, `route_not_available` (HTTP 404), `not_implemented`, a 4xx business error, or `page_limit`. |
 | `2` | Usage: unknown command or flag, missing argument, `--json` with `--plain`, invalid `--url`, `--plugin-id`, `--cursor`, `--timeout`, missing site URL, invalid or secret-bearing config. |
 | `3` | Site unreachable, timeout, interrupted, or HTTP 5xx. |
-| `4` | Credential missing (`credential_required`), rejected (401), or not permitted (403, including `INSUFFICIENT_SCOPE`), an admin command whose site URL or plugin id came from project config (`untrusted_site_url`, `untrusted_plugin_id`), or a confirmation gate. |
+| `4` | Credential missing (`credential_required`), rejected (401), or not permitted (403, including `INSUFFICIENT_SCOPE`), an admin command whose site URL or plugin id came from project config (`untrusted_site_url`, `untrusted_plugin_id`), a confirmation gate, or Ctrl-C before a change request starts. |
 | `5` | The response is not the EmDash `{ success, data }` envelope or the payload breaks the documented shape. |
 
 Service error codes such as `INVALID_TOKEN` or `INSUFFICIENT_SCOPE` are passed
@@ -398,6 +398,13 @@ Timeouts, cancellation and connection failures use exit `3` even if the server
 already sent its response headers. The CLI does not automatically retry them.
 For a write, a missing complete response does not prove nothing changed: read
 the product or order before deciding whether to submit again.
+
+Ctrl-C before a change request starts exits `4`: no change was sent. This
+includes interruption during a read-only preflight or preview, even though
+those reads can use POST. Once a catalog or order change starts dispatching,
+Ctrl-C exits `3` and says the outcome is unknown, even if no response headers
+have arrived. It does not undo a write that reached the store. Read the product
+or order before submitting again.
 
 ## Configuration and authentication
 
