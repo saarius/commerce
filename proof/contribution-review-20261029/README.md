@@ -2,7 +2,7 @@
 
 **Submission update: 2026-10-29. Four active PRs; unused-helper repair deferred. No combined release.**
 
-- [#205 — low-stock feed availability](https://github.com/dinkuskit/commerce/pull/205)
+- [#205 — low-stock feed availability](https://github.com/dinkuskit/commerce/pull/205): **blocked on real-host behavior proof**, not a correctness finding. See the late review update in SUBMISSIONS.
 - [#207 — payment binding readiness](https://github.com/dinkuskit/commerce/pull/207)
 - [#209 — invalid requested CLI profiles](https://github.com/dinkuskit/commerce/pull/209)
 - [#210 — CLI response-body transport](https://github.com/dinkuskit/commerce/pull/210)

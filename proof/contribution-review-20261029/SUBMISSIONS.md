@@ -41,7 +41,7 @@ Pending work is not newly certified, rejected or assumed fixed upstream.
 | 2 | CLI SIGINT outcome | Pending revalidation and transport-parent review | Original published stack depends on #1. Prepare a focused submission against the accepted parent/current main, accounting for #208's CLI changes. No dispatch/durable-commit equivalence or automatic retry. |
 | 3 | Catalog preview race finding | Audit retained; not submitted | Evidence/docs correction, **not runtime repair**. Rerun intentionally failing counterexamples separately against current source before submission. Stronger atomicity needs owner evaluation; #204 was already in the original baseline, not a new fix. |
 | 4 | Payment binding readiness | [Open PR #207](https://github.com/dinkuskit/commerce/pull/207) | Independent; +11 backend bytes, 28 headroom. Malformed trusted-service response handling, not demonstrated shopper forgery/charge. |
-| 5 | Low-stock feed availability | [Open PR #205](https://github.com/dinkuskit/commerce/pull/205) | Independent host serializer; no managed-stock addition to Registry or channel-ingestion certification. |
+| 5 | Low-stock feed availability | [Open PR #205](https://github.com/dinkuskit/commerce/pull/205), **blocked on real-host proof** | Independent host serializer; no introduced correctness defect identified in review. Synthetic fixtures/green CI do not clear the external-contributor behavior-proof gate. No managed-stock addition to Registry or ingestion certification. |
 | 6 | Development DOMPurify lock hardening | Pending fresh dependency/browser evidence | Development lock only; not independently locked installed hosts or clearance of Astro findings. Historical audit counts are not current security/exploit results. |
 | 7 | Settings country guidance/form readiness | Pending revalidation and stack handling | Original branch includes #6. Guidance fix does not establish a new country policy. Preserve original evidence when preparing a main-based submission. |
 | 8 | NaN host feed pagination | [Closed/deferred #206](https://github.com/dinkuskit/commerce/pull/206), unmerged | Correct/tested but no active caller. No automatic reopening; no HTTP DoS or opaque-cursor redesign claim. See maintainer disposition above. |
@@ -114,6 +114,33 @@ The index checks itself separately. Its unchanged verifier covers **only the
 frozen ten-entry manifest/eleven refs**, not PR state, current CI, measured
 bytes, extra browser contributions or runtime test truth. Live PR identities
 are checked separately. Digest/ref identity is not a signed runner attestation.
+
+## Late review update: 17:34UTC
+
+ClawSweeper's [completed #205 review](https://github.com/dinkuskit/commerce/pull/205#issuecomment-6503744764)
+identified **no introduced correctness defect**, but blocks merge on real
+behavior proof. Requested evidence: a redacted actual host run showing public
+catalog low-stock data producing in-stock Google and Meta feed rows; external
+channel ingestion is unnecessary. Automated synthetic catalog/provider fixtures
+and green CI are not that evidence. This gate remains **open**, not adjudicated
+away or claimed satisfied by existing results.
+
+[Acknowledged](https://github.com/dinkuskit/commerce/pull/205#issuecomment-6503905964)
+and prioritized follow-up on our own synthetic host. First inspect supported
+runtime/provider paths and official Registry beta availability (otherwise
+stable); distinguish published plugin behavior from the proposed host builder.
+Do not forge public low-stock data or relabel fixture output as real setup.
+If the supported release/runtime cannot legitimately produce that state,
+report the limitation and clarify proof scope rather than manufacture evidence.
+No maintainer store or external channel account is needed. Update the PR with
+proof before asking for another review; no duplicate review request made now.
+
+#207's review started at17:30–17:31UTC; progress receipts are not clearance.
+#209/#210 still have only dispatch status in the closeout snapshot. Review
+comments, not just GitHub's formal `reviews` array, must be monitored.
+The earlier17:24 no-findings snapshot above is historical, not current #205
+readiness. No real-host feed run or installed-release qualification is claimed
+by this status update.
 
 ## Installed-release and maintainer workflow boundary
 
