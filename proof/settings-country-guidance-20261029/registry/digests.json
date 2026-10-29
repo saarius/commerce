@@ -1,0 +1,31 @@
+{
+  "schema": "commerce-settings-evidence/v1",
+  "package": "@dinkuskit/commerce",
+  "files": [
+    {
+      "file": "package.json",
+      "sha256": "9436fc603585c14a994400ac18bc088656f414b38cbbbe4cb368e8c9c8fefcda"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "9a905b85ef5192bb453ddd73512d94901bcd0175045b93cfff27796966e0c976"
+    },
+    {
+      "file": "dist/index.js",
+      "sha256": "b665630cea25823c3c32d3ea42fcf80d2030c4d8ffbe5caee3391da5de9b38c3"
+    }
+  ],
+  "screenshots": [
+    "registry-unconfigured.png",
+    "registry-saved.png",
+    "registry-invalid-input.png"
+  ],
+  "omitted": [
+    "traces",
+    "HAR",
+    "cookies",
+    "storage state",
+    "databases",
+    "raw errors and logs"
+  ]
+}

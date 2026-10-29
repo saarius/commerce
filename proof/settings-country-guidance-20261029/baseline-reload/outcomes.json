@@ -1,0 +1,12 @@
+{
+  "status": "failed",
+  "outcomes": [
+    {
+      "project": "registry",
+      "status": "failed",
+      "expectedStatus": "passed",
+      "durationMs": 34996,
+      "retry": 0
+    }
+  ]
+}

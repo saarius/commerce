@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "outcomes": [
+    {
+      "project": "native",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 58827,
+      "retry": 0
+    }
+  ]
+}
