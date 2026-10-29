@@ -1,0 +1,113 @@
+{
+  "schema": "dinkuskit.commerce.contribution-review/v1",
+  "fork": "https://github.com/saarius/commerce.git",
+  "snapshotDate": "2026-10-29",
+  "baseline": {
+    "branch": "review/upstream-04dcf5e",
+    "head": "04dcf5e1ef296cc9ca8d719a11fec731d6961660"
+  },
+  "registryFileLimitBytes": 131072,
+  "contributionCount": 10,
+  "contributions": [
+    {
+      "id": "cli-response-body-errors",
+      "kind": "repair",
+      "branch": "saarius/fix-cli-response-body-errors",
+      "base": "04dcf5e1ef296cc9ca8d719a11fec731d6961660",
+      "head": "08483dade447e31b223969fd30eded51f48e81da",
+      "proofPath": "proof/cli-response-body-errors-20261029/PROOF.md",
+      "proofSha256": "beb49f86df95c2f7adcd9bf8fd7bcd923b24a08f73e6086e370c710bb5343bef",
+      "reportedBackendBytes": 131033
+    },
+    {
+      "id": "cli-sigint-outcome",
+      "kind": "repair",
+      "branch": "saarius/fix-cli-sigint-outcome",
+      "base": "08483dade447e31b223969fd30eded51f48e81da",
+      "head": "31666da5fe9d288bbcf27cd21d31c78353fedaa6",
+      "proofPath": "proof/cli-sigint-outcome-20261029/PROOF.md",
+      "proofSha256": "0fafbd4549f74a63ee771ed6ec2cda3089aba86bbe93d5a75d4b8604390318fe",
+      "reportedBackendBytes": 131033
+    },
+    {
+      "id": "catalog-preview-race",
+      "kind": "audit-only",
+      "branch": "saarius/catalog-preview-race",
+      "base": "04dcf5e1ef296cc9ca8d719a11fec731d6961660",
+      "head": "04e9448a4014071b36cecb597b9d579d22cee97b",
+      "proofPath": "proof/catalog-preview-race-20261029/FINDING.md",
+      "proofSha256": "45281c2579e3db3d1ff8f10e23162025e35a64a564aafd2a16955d3813ba237b",
+      "reportedBackendBytes": 131033
+    },
+    {
+      "id": "payment-binding-readiness",
+      "kind": "repair",
+      "branch": "saarius/fix-payment-binding-readiness",
+      "base": "04dcf5e1ef296cc9ca8d719a11fec731d6961660",
+      "head": "1d20f263221fff0d578d7704119921df76ae8d1d",
+      "proofPath": "proof/payment-binding-readiness-20261029/PROOF.md",
+      "proofSha256": "7e4af4317c231dcb5bc4bb10fb118b15fb79c6185b13e877c91c1e1d4c277341",
+      "reportedBackendBytes": 131044
+    },
+    {
+      "id": "feed-low-stock-availability",
+      "kind": "repair",
+      "branch": "saarius/fix-feed-low-stock-availability",
+      "base": "04dcf5e1ef296cc9ca8d719a11fec731d6961660",
+      "head": "efec42c4e2a73b29d5d434529c575c1efed2ff35",
+      "proofPath": "proof/feed-low-stock-availability-20261029/PROOF.md",
+      "proofSha256": "2a645ef2ca1c5e71a8a12f7c3a5a90c84ae46094dc24d360ff74d6c6f5f521e3",
+      "reportedBackendBytes": 131033
+    },
+    {
+      "id": "dependency-exposure",
+      "kind": "development-dependency-hardening",
+      "branch": "saarius/update-development-dompurify",
+      "base": "04dcf5e1ef296cc9ca8d719a11fec731d6961660",
+      "head": "6ceb330902264d146a954b6ab7fb376ac7cebb55",
+      "proofPath": "proof/dependency-exposure-20261029/REPORT.md",
+      "proofSha256": "b04d8564d7b73562cf5de328cb10d1ce1f93684191375c8f6603a1489bf593f5",
+      "reportedBackendBytes": 131033
+    },
+    {
+      "id": "settings-country-guidance",
+      "kind": "repair",
+      "branch": "saarius/fix-settings-country-guidance",
+      "base": "6ceb330902264d146a954b6ab7fb376ac7cebb55",
+      "head": "9b0284dffa76461be17fbb29c218bf2ce920fa9c",
+      "proofPath": "proof/settings-country-guidance-20261029/PROOF.md",
+      "proofSha256": "75babac23f3fc93ae6221ff27cee481de97d22e3fdee2a62a1ebdb0c6e4e533b",
+      "reportedBackendBytes": 130996
+    },
+    {
+      "id": "feed-pagination-nan",
+      "kind": "repair",
+      "branch": "saarius/fix-feed-pagination-nan",
+      "base": "04dcf5e1ef296cc9ca8d719a11fec731d6961660",
+      "head": "fce969aa1ca301e7e0bc612b4258e6513011faa0",
+      "proofPath": "proof/feed-pagination-nan-20261029/PROOF.md",
+      "proofSha256": "0f430cdced155c46139ecf524262843d40b9f3caca486f67105e48f6e86b58f8",
+      "reportedBackendBytes": 131033
+    },
+    {
+      "id": "shopper-legacy-contact",
+      "kind": "repair",
+      "branch": "saarius/fix-shopper-profile-legacy-contact",
+      "base": "9b0284dffa76461be17fbb29c218bf2ce920fa9c",
+      "head": "9801909abf7a671bc00ffd6a774cf37453dc86de",
+      "proofPath": "proof/shopper-legacy-contact-20261029/PROOF.md",
+      "proofSha256": "32c1c7f64e7b1ef129b8661cc661e586dd571b67a1d1f82e28fe3e0d5fdc7947",
+      "reportedBackendBytes": 131039
+    },
+    {
+      "id": "cli-profile-selection",
+      "kind": "repair",
+      "branch": "saarius/fix-cli-profile-selection",
+      "base": "04dcf5e1ef296cc9ca8d719a11fec731d6961660",
+      "head": "440c73f1e6023cdd6c909add231f255a13210cdf",
+      "proofPath": "proof/cli-profile-selection-20261029/PROOF.md",
+      "proofSha256": "a7716861c8ffaf13658d23ba9870304791a1b84ad2b95bdeb108cf9156548e61",
+      "reportedBackendBytes": 131033
+    }
+  ]
+}
