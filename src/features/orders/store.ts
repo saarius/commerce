@@ -237,9 +237,9 @@ export function projectShopperOrder(record: OrderRecord): ShopperOrderSummary {
   const p = order.pricing;
   // Historical copies can predate strict contact admission. Validate each field
   // independently before it can become a saved customer default; never edit the copy.
-  const contact = order.contactSnapshot?.contact;
   let phone: string | undefined, delivery: CheckoutDeliveryAddress | undefined;
-  try { phone = normalizeCheckoutContactInput({ email: contact?.email, phone: contact?.phone }).phone; } catch {}
+  // The phone check must not depend on historical email formatting.
+  try { phone = normalizeCheckoutContactInput({ email: "check@example.com", phone: order.contactSnapshot?.contact?.phone }).phone; } catch {}
   try { delivery = normalizeCheckoutDelivery(deliveryOf(record)); } catch {}
   return structuredClone({
     orderId: order.orderId,

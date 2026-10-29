@@ -14,8 +14,10 @@ independently using the existing shared normalizers. Missing or invalid fields
 project as `null`; structurally valid fields are normalized. A bad phone does
 not suppress a valid address, nor does a bad address suppress a valid phone.
 The owner's corrected delivery address takes precedence over the checkout copy.
-Normalization changes the shopper projection, never the kept order or its
-frozen paid snapshot.
+Phone syntax validation uses the same placeholder-email technique as account
+profile edits; historical email formatting must not suppress a usable phone.
+Verified-email linking remains unchanged. Normalization changes the shopper
+projection, never the kept order or its frozen paid snapshot.
 
 This does not apply new-checkout eligibility to history. In particular, shared
 address normalization still permits an absent or unrestricted historical US

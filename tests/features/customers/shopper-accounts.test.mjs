@@ -838,6 +838,7 @@ const legacyContactCases = [
   { name: "incomplete delivery", contact: { delivery: { country: "US" } }, expected: { delivery: null } },
   { name: "nonobject delivery", contact: { delivery: "not an address" }, expected: { delivery: null } },
   { name: "noncanonical contact", contact: { phone: " +15550101 ", delivery: { ...legacyDelivery, country: "us", city: " Testville " } } },
+  { name: "historical email formatting does not suppress a valid phone", contact: { email: "\tlegacy-contact@example.test\n" } },
   { name: "corrected delivery overrides malformed checkout copy", contact: { delivery: { country: "US" } }, correction: legacyDelivery },
   { name: "older usable contact fills unset defaults", contact: { phone: "", delivery: { country: "US" } }, expected: { phone: null, delivery: null }, older: true },
 ];
