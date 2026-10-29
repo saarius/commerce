@@ -157,6 +157,13 @@ Shoppers can sign in to the storefront with their email address and a 6-digit co
 
 A signed-in shopper sees every order placed with the same email address, newest first, including its status, carrier and tracking number when the order has shipped. The account keeps one saved delivery address and phone number, filled in from the shopper's latest order until the shopper changes or clears them.
 
+Older kept orders can contain contact fields that checkout would no longer
+accept. The shopper view validates phone and delivery independently, normalizes
+usable fields, and omits missing or invalid fields from default seeding. An
+invalid phone does not discard a usable address, or vice versa. Paid-order
+snapshots remain unchanged. Already invalid saved customer profiles are not
+silently repaired.
+
 Shopper accounts are stored by Commerce. They are not EmDash users and give no access to the EmDash admin. The storefront sends the session in the `x-commerce-customer-session` header; the session works only on the site that issued it.
 
 ## Installed checkout and orders

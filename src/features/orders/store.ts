@@ -1,7 +1,7 @@
 import type { StorageCollection } from "emdash";
 import { scanAll } from "../../shared/scan.js";
 import { canonical, isRecord } from "../../shared/record.js";
-import { isCheckoutContactSnapshot, normalizeCheckoutDelivery, type CheckoutDeliveryAddress } from "../checkout-contact/index.js";
+import { isCheckoutContactSnapshot, normalizeCheckoutContactInput, normalizeCheckoutDelivery, type CheckoutDeliveryAddress } from "../checkout-contact/index.js";
 import { normalizeMoney } from "../catalog/kernel/index.js";
 import { PAID_ORDER_SCHEMA, type PaidOrder, type PaidOrderReceiver } from "../../handoffs/paid-order.js";
 
@@ -235,6 +235,12 @@ export interface ShopperOrderSummary {
 export function projectShopperOrder(record: OrderRecord): ShopperOrderSummary {
   const order = record.paidOrder;
   const p = order.pricing;
+  // Historical copies can predate strict contact admission. Validate each field
+  // independently before it can become a saved customer default; never edit the copy.
+  const contact = order.contactSnapshot?.contact;
+  let phone: string | undefined, delivery: CheckoutDeliveryAddress | undefined;
+  try { phone = normalizeCheckoutContactInput({ email: contact?.email, phone: contact?.phone }).phone; } catch {}
+  try { delivery = normalizeCheckoutDelivery(deliveryOf(record)); } catch {}
   return structuredClone({
     orderId: order.orderId,
     receiptId: order.receiptId,
@@ -253,11 +259,8 @@ export function projectShopperOrder(record: OrderRecord): ShopperOrderSummary {
           finalTotal: p.finalTotal,
         }
       : null,
-    delivery: deliveryOf(record) ?? null,
-    phone:
-      typeof (order.contactSnapshot as { contact?: { phone?: unknown } } | undefined)?.contact?.phone === "string"
-        ? order.contactSnapshot!.contact.phone!
-        : null,
+    delivery: delivery ?? null,
+    phone: phone ?? null,
     completed: record.completed ?? null,
   });
 }
