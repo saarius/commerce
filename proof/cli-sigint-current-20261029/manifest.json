@@ -1,0 +1,45 @@
+{
+  "schema": "commerce.cli-sigint-current-proof/v1",
+  "sourceCommit": "702f6697265c0fe4a9da847e2d0e716a626f0ccd",
+  "transportParent": "41eedb5130c95a170c7aec480c34b13519c62018",
+  "mainAncestor": "d61d2d23825befe023333adcdc41683fcf50a6e0",
+  "originalContribution": "31666da5fe9d288bbcf27cd21d31c78353fedaa6",
+  "dependency": "Requires transport210 body-inclusive cancellation handling; no upstream SIGINT PR yet.",
+  "sourceFileSha256": {
+    "cli/client.mjs": "b4e075fc1d9339207973296df52c1193984e70ba84adb14ab29b3d61f4bc5681",
+    "cli/spec.mjs": "e5d9406c5192d23041a49f1fed71570a131cbc5c708a85b555e0042ef76d259e",
+    "tests/cli/sigint-outcome.test.mjs": "bac5985975b02b210781f58382af9fe64f9c55f8744fa09f2717065122b29886",
+    "docs/CLI-SPEC.md": "01c4e347aa4e2310081c549e363ebc07643234ab16dc168fe1a99d31433cbbd9",
+    "docs/website/reference/commerce.md": "baca07ad2f50db2e489df7e0faca1afdf619ebc1aabb686036b4c9b7a143b6fd",
+    ".changeset/cli-sigint-outcome.md": "434c0456082a1b9ba451fc0a50dd1d533056d8d11a7d2cc491646c3741129fa3"
+  },
+  "baseline": {
+    "tests": 14,
+    "pass": 3,
+    "fail": 11,
+    "skip": 0,
+    "exit": 1
+  },
+  "sourceGates": {
+    "unitWorkflow": 825,
+    "integration": 110,
+    "fail": 0,
+    "skip": 0,
+    "focused": 14,
+    "stabilityRuns": 3,
+    "stabilityTestsEach": 14,
+    "completedAt": "2026-10-29T20:22:32Z",
+    "build": true,
+    "typecheck": true,
+    "repositoryAudit": true,
+    "ledgerValidation": true,
+    "diffClean": true
+  },
+  "backend": {
+    "bytes": 131044,
+    "headroom": 28,
+    "sha256": "dd8e6018be154d4f65002d46340dee47fe521f85f029cee2f1571deaf46c38f9",
+    "extractedDistEqual": true
+  },
+  "scope": "Actual POSIX CLI subprocess/native HTTP with synthetic data; server receipt not durable commit; no SDK install/provider/browser/release proof. This is a source-bound record, not signed attestation."
+}
