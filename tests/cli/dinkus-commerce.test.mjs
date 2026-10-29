@@ -106,6 +106,19 @@ test("help works at every depth, ignores other arguments, and writes only stdout
   assert.match((await run(["catalog", "list", "--help"])).stdout, /--cursor <cursor>/);
 });
 
+test("product confirmation help describes a freshness precheck, not an atomic write guard", async () => {
+  const commands = Object.entries(spec.tree.commands.products.commands).filter(([, command]) => command.flags?.confirm);
+  assert.ok(commands.length > 0);
+  for (const [command] of commands) {
+    const result = await run(["products", command, "--help"]);
+    assert.equal(result.code, 0, result.stderr);
+    assert.match(result.stdout, /Recheck the product against that --dry-run before attempting the change/);
+    assert.doesNotMatch(result.stdout, /saves the change only while the product still matches/);
+    assert.equal(result.calls.length, 0);
+  }
+  assert.match((await run(["products", "set-price", "--help"])).stdout, /not an atomic write guard/);
+});
+
 test("--version prints only the package version at any depth", async () => {
   for (const argv of [["--version"], ["catalog", "list", "--version"], ["products", "set-sku", "--version"]]) {
     const result = await run(argv);

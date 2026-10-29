@@ -72,7 +72,12 @@ indexes are active; that index refuses a SKU another product has. The
 `dinkus-commerce` CLI wraps every op but `labels` (`docs/CLI-SPEC.md`). A write
 may carry `expected`, a preview's code (12 hex digits of SHA-256 over the
 `get` answer: product, pictures and feed channels); the route rereads the product and refuses the write with
-`COMMAND_CONFLICT` when it no longer matches. Its room came from a
+`COMMAND_CONFLICT` when it no longer matches at that check. This is not an atomic
+write precondition: an edit after validation can still be overwritten, and
+`editProduct` can retry a failed CAS against a newer revision. Media also writes
+a separate collection without CAS. The [preview concurrency audit](../../proof/catalog-preview-race-20261029/FINDING.md)
+records deterministic counterexamples and the repair questions; no atomicity
+repair is claimed by that audit. Its room came from a
 build step that cuts nothing: after the literal-sharing step, repeated global
 names (`Object`, `Error`, `JSON` and others) and `void 0` are read once into
 short bindings, skipping any name the code declares or tests with `typeof`.

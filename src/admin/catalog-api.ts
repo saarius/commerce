@@ -34,7 +34,7 @@ export async function catalogApi(route: SandboxedRouteContext, ctx: PluginContex
     if (input.entryId !== undefined) await linkProductPage(store, String(input.entryId), made);
     return { catalogItemId: made };
   }
-  // Saved only while the product still reads as the preview showed it, checked here rather than by the caller.
+  // Freshness precheck, not an atomic write precondition: mutations can read a newer revision or retry.
   if (expected !== undefined && (await sha256Hex(JSON.stringify(await read((input.productId ?? id) as string)))).slice(0, 12) !== expected)
     throw new CatalogError("COMMAND_CONFLICT", "The product changed since that preview. Nothing changed; preview again.");
   if (op === "link") return { linked: await linkProductPage(store, String(input.entryId), id).then(() => true) };

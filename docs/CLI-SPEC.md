@@ -242,8 +242,8 @@ and a message naming the missing API. They never contact the site.
 
 ### Confirming a product change
 
-A product change is bound to what its preview read, and Commerce checks it
-(his call, 27 Oct):
+A product change carries a code for what its preview read, and Commerce
+rechecks it before attempting the change (27 Oct decision):
 
 1. `--dry-run` reads the product with `get`, prints the current and new
    values, and prints a confirmation value: the first 12 hex digits of the
@@ -254,15 +254,24 @@ A product change is bound to what its preview read, and Commerce checks it
 3. The CLI reads the product again and stops with `outdated` if it no longer
    matches, then sends the change with the value as `expected` (and, for a
    choice, the product as `productId`). The catalog route reads the product
-   once more and saves only if it still hashes to `expected`; otherwise it
-   refuses with "The product changed since that preview", which the CLI
-   reports as `outdated`. Nothing changes either way.
+   once more and refuses with "The product changed since that preview" if
+   it no longer hashes to `expected`, which the CLI reports as `outdated`.
+   A mismatch is refused before the mutation is attempted.
 
-Commerce's check runs inside the same request as the save, so the window a
-concurrent edit could slip through shrinks from a network round trip to the
-moment between that read and the write, and each write is still conditional.
-`orders complete` and `orders reopen` are bound on the server by the order
-version. There is no generic `--force`.
+**Concurrency limit:** the server-side preview check is a freshness precheck,
+not an atomic write precondition. A competing edit after that check can be
+overwritten: a mutation can read a newer revision and save against it, and
+some product edits retry after losing a compare-and-set. Media saves use
+unconditional writes to a separate collection. Checking inside the save request
+narrows the window, but does not close it. Do not rely on `--confirm` to prevent
+lost updates between concurrent product editors; coordinate those edits and
+read back the product after saving. Read-back can reveal a problem but cannot
+undo an overwritten edit. See the
+[reproducible audit and repair questions](../proof/catalog-preview-race-20261029/FINDING.md).
+
+`orders complete` and `orders reopen` use a separate server-side order-version
+precondition; this catalog audit does not establish a defect in those actions.
+There is no generic `--force`.
 
 ## Global flags
 
@@ -301,7 +310,7 @@ version. There is no generic `--force`.
 | `--channel <channel>` (repeatable), `--none` | `products set-feeds` | Product feed channels, such as `google-merchant`. |
 | `--name <label>`, `--value <label>[=<sku>]` (repeatable) | `products add-choice` | 2 to 50 values; the first is the product itself (no SKU). |
 | `--dry-run` | product changes | Show the change and the confirmation value; send nothing. |
-| `--confirm <value>` | product changes | Commerce saves only while the product still matches that dry run. |
+| `--confirm <value>` | product changes | Recheck the product against that dry run before attempting the change; see the concurrency limit above. |
 
 ## Output contract
 

@@ -204,7 +204,7 @@ async function productsList(ctx) {
 // The catalog route (Commerce 0.7.0+) answers with what the product page panels
 // show and runs their checks on every change. A --dry-run reads the product and
 // prints a hash of what it read; the change carries that hash as `expected`, and
-// Commerce saves it only while the product still hashes the same.
+// Commerce rechecks it before attempting the write, not atomically with it.
 const productState = (current) => createHash("sha256").update(JSON.stringify(current)).digest("hex").slice(0, 12);
 const stateWord = (product) => (product.archivedAt ? "Archived" : product.offSale ? "Draft" : "On sale");
 const DOLLARS = /^\d{1,7}(\.\d{1,2})?$/;
@@ -641,11 +641,11 @@ function orderChange(action) {
 
 const cursor = { type: "string", value: "<cursor>", description: "Opaque page cursor returned by a previous page." };
 const dryRun = { type: "boolean", description: "Show the change and the value to confirm; send nothing." };
-const confirm = { type: "string", value: "<value>", description: "Apply only if the product still matches that --dry-run." };
+const confirm = { type: "string", value: "<value>", description: "Recheck the product against that --dry-run before attempting the change." };
 const amount = (what) => ({ type: "string", value: "<decimal>", description: `${what} in USD, such as 19.99.` });
 const clear = { type: "boolean", description: "Clear it instead." };
 const choice = { type: "string", value: "<item-id>", description: "The choice (version) to change, from products show. Required for a product sold in choices." };
-const CONFIRM_NOTE = "--dry-run reads the product and prints a confirmation value; with --confirm, Commerce saves the change only while the product still matches it.";
+const CONFIRM_NOTE = "--dry-run reads the product and prints a confirmation value; with --confirm, Commerce rechecks it before attempting the change. This is not an atomic write guard; coordinate concurrent product edits.";
 
 export const spec = {
 	name: "dinkus-commerce",
