@@ -8,16 +8,18 @@ page-link PR [#208](https://github.com/dinkuskit/commerce/pull/208): it changes
 catalog/page ownership and CLI spec/help, not the kernel's profile selection
 or response-body error boundary. Neither CLI repair duplicates that work.
 
-Main is now `a085bf7411c3089806a3bad361cc186efd06304d`: the maintainer
-merged209 at19:50:01UTC (d61) after a clean review, then docs-only212 added an
-agent-tool pointer without runtime changes.207 was already merged. Validated
-210/211 refreshes below contain d61, not the later docs-only commit; edits are
-available to maintainers for any further required refresh.
+Main is now `75a79e7237b854096bca18919e8d0e491b01371b`: the maintainer
+merged209 at19:50:01UTC (d61), then docs-only212 (a085), then211 at20:29:32UTC.
+207 was already merged. This coordination branch merged that accepted latest
+main while retaining its earlier commit. The validated210/211 source heads below
+contain d61, not the later main wrappers. Open210 permits maintainer edits for
+any further required refresh.
 The earlier413e883/36561cb/56c snapshots and all original contribution refs
 remain unchanged. **Allow edits by maintainers is enabled and GET-verified on
-all our open PRs (210/211), and will be ensured when opening future PRs.**
+both then-open PRs (210/211), and will be ensured when opening future PRs.
+211's closed-PR edit flag is not an open-PR requirement.**
 
-**210/211 remain open;207/209 are maintainer-merged;205/206 deferred.**
+**210 remains open;207/209/211 are maintainer-merged;205/206 deferred.**
 Maintainer accepted205's public-route constraint report and closed it at19:18UTC.
 Revisit when supported Inventory/public low-stock returns, not through a bypass.
 [Disposition](https://github.com/dinkuskit/commerce/pull/205#issuecomment-6506135430)
@@ -56,7 +58,7 @@ Pending work is not newly certified, rejected or assumed fixed upstream.
 | 4 | Payment binding readiness | [Maintainer-merged #207](https://github.com/dinkuskit/commerce/pull/207),17:49:29UTC | Maintainer supplied real-TCP evidence and obtained fresh review. Included in main19b, not yet inferred published. +11 source backend bytes /28 headroom; no real charge/provider qualification. |
 | 5 | Low-stock feed availability | [Closed/deferred #205](https://github.com/dinkuskit/commerce/pull/205), unmerged | Maintainer accepts constraint report: no supported public low-stock input in v1. Correct serializer guard/proof retained; revisit with supported Inventory/public projection, not fixtures or admission bypass. |
 | 6 | Development DOMPurify lock hardening | Pending fresh dependency/browser evidence | Development lock only; not independently locked installed hosts or clearance of Astro findings. Historical audit counts are not current security/exploit results. |
-| 7 | Settings country guidance/form readiness | [Open #211](https://github.com/dinkuskit/commerce/pull/211), head `fd5107490518d8701614c4188e4ff65d9ed5a66f` | Main d61 refresh, exact801/110 plus fresh SDK/native form1/1 each. No #6/DOMPurify dependency. Original9b and its chosen stack preserved. Published-before/proposed-after mounted UI; exact759/110 gates, no policy change. |
+| 7 | Settings country guidance/form readiness | [Maintainer-merged #211](https://github.com/dinkuskit/commerce/pull/211),20:29:32UTC; source `fd5107490518d8701614c4188e4ff65d9ed5a66f` | Main d61 refresh, exact801/110 plus fresh SDK/native form1/1 each. No #6/DOMPurify dependency. Original9b and its chosen stack preserved. Published-before/proposed-after mounted UI; exact759/110 gates, no policy change. |
 | 8 | NaN host feed pagination | [Closed/deferred #206](https://github.com/dinkuskit/commerce/pull/206), unmerged | Correct/tested but no active caller. No automatic reopening; no HTTP DoS or opaque-cursor redesign claim. See maintainer disposition above. |
 | 9 | Legacy-contact shopper-profile seed | Pending fresh base/headroom handling | Original #6→#7→#9 stack needed settings headroom; remeasure current-main budget before choosing a new base. Do not blindly cherry-pick. Existing corrupt profiles are not migrated. |
 | 10 | Invalid requested CLI profiles | [Maintainer-merged #209](https://github.com/dinkuskit/commerce/pull/209),19:50UTC | Clean review at3fa27c, included in main d61. Original440 and alias3fa preserved. Prevents invalid future dispatch, not discovery/cleanup of earlier wrong-site writes or installed-release qualification. |
@@ -73,7 +75,7 @@ rebasing frozen snapshots or treating isolated patches as a release roll-up.
 
 ## Latest d61 refresh and maintainer-edit setting
 
-Maintainer requested main d61 in210/211 after209 merged. Both aliases received
+Before211's later merge, the maintainer requested main d61 in210/211 after209 merged. Both aliases received
 **two-parent merge commits, not rebases**, retaining their earlier head as first
 parent. The expected210 article conflict keeps BOTH profile and timeout
 paragraphs;211 merged cleanly. No other open contribution was pulled in.
@@ -96,7 +98,8 @@ physical checkout or release qualification. No dependency lock changes.
 
 **Review scope:**209's clean review was followed by its maintainer merge.
 210's earlier clean review binds a9, not new41; the owner requested fresh
-reviews for210/211 at20:15. No clearance is inferred from dispatch/progress.
+reviews for210/211 at20:15, then merged211 at20:29.210 is still open at this
+snapshot. No clearance is inferred from dispatch/progress.
 Maintainer edits were enabled with PATCH and independently GET-verified; no
 broader credential/repository permission changes. Shared editable aliases may
 advance through maintainer work: inspect remote history before writing and

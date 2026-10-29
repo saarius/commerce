@@ -1,17 +1,17 @@
 # Commerce contributions: owner review index
 
-**Update: 2026-10-29.207/209 maintainer-merged;210/211 refreshed onto main d61.205/206 deferred. Maintainer edits enabled on all our open PRs. No combined release.**
+**Update: 2026-10-29.207/209/211 maintainer-merged;210 remains open with maintainer edits enabled.205/206 deferred. Fresh SIGINT preparation is held for accepted transport/current-main handling. No combined release.**
 
 - [#205 — low-stock feed availability](https://github.com/dinkuskit/commerce/pull/205): **CLOSED/deferred by maintainer** after accepting the public-route constraint report. Correct guard retained in fork; revisit when supported Inventory/public low-stock returns, not by bypassing v1.
 - [#207 — payment binding readiness](https://github.com/dinkuskit/commerce/pull/207): **MERGED by maintainer** at17:49:29UTC after maintainer-supplied real-TCP evidence and fresh review. Not release/provider qualification.
 - [#209 — invalid requested CLI profiles](https://github.com/dinkuskit/commerce/pull/209): **MERGED by maintainer** at19:50UTC after clean review of3fa27c. Included in main d61; not publication or installed-release qualification.
 - [#210 — CLI response-body transport](https://github.com/dinkuskit/commerce/pull/210): refreshed head41eedb5, exact811/110 gates. Both CLI article paragraphs retained; prior a9 clean review does not clear the new head.
-- [#211 — merchant country guidance](https://github.com/dinkuskit/commerce/pull/211): refreshed headfd51074, exact801/110 gates plus current-head SDK/native settings1/1 each. No DOMPurify change. [Published/proposed mounted UI evidence](https://github.com/saarius/commerce/blob/a239ed87bc8a85437981c54a07be13efbffd8f27/proof/settings-country-guidance-current-20261029/PROOF.md),759/110 exact-head gates; source sandbox/native form journeys1/1 each.
+- [#211 — merchant country guidance](https://github.com/dinkuskit/commerce/pull/211): **MERGED by maintainer20:29:32UTC**, main75a79e7. Validated sourcefd51074 had exact801/110 gates plus current-head SDK/native settings1/1 each. No DOMPurify change. [Published/proposed mounted UI evidence](https://github.com/saarius/commerce/blob/a239ed87bc8a85437981c54a07be13efbffd8f27/proof/settings-country-guidance-current-20261029/PROOF.md),759/110 exact-head gates; source sandbox/native form journeys1/1 each.
 - [#206 — NaN host feed pagination: closed/deferred, unmerged](https://github.com/dinkuskit/commerce/pull/206). Maintainer accepts correctness/testing but there is no active caller. Leave closed unless a real caller makes it relevant; keep helper-specific developer documentation out of the shop-owner reference.
 
 New [205 public-route diagnostic](https://github.com/saarius/commerce/blob/a7691582a88fa06584d5f9dbe77581d3df1cc3bf/proof/feed-host-constraint-20261029/README.md): official Registry0.6.0 and main19b actual handlers behind a TCP harness produced no legitimate low-stock input. Twelve compatibility/constraint checks passed, **not positive proof or full CMS installation**. Maintainer accepted deferral at19:18UTC and closed205; no provider feature was added.
 
-This index uses upstream main `a085bf7411c3089806a3bad361cc186efd06304d`, which includes the maintainer's207/209 merges and a later docs-only212 pointer. The validated210/211 heads contain d61; the subsequent a085 change adds no runtime code. Maintainer edits are enabled for any further required main refresh. The previous413e883 snapshot is [preserved](https://github.com/saarius/commerce/blob/413e883829272b851243ad672e67811a875e417a/proof/contribution-review-20261029/README.md). All new upstream PRs must allow maintainer edits, and the setting was PATCHed/GET-verified on210/211. Prior36561cb is [retained](https://github.com/saarius/commerce/blob/36561cb534068dae1e19b56c85eee0406fff1cb0/proof/contribution-review-20261029/README.md), as are earlier snapshots. Prior56c remains [unchanged](https://github.com/saarius/commerce/blob/56c6e66556da620eaa1ff6e9ed501720c4687695/proof/contribution-review-20261029/README.md); frozen source identities below still refer to04dcf5e.
+This index now contains upstream main `75a79e7237b854096bca18919e8d0e491b01371b`, including maintainer merges207/209/211 and docs-only212. It merged that accepted main without rewriting its earlier coordination commit. The validated210/211 heads contain d61; the subsequent a085 change adds no runtime code. Maintainer edits are enabled for any further required main refresh. The previous413e883 snapshot is [preserved](https://github.com/saarius/commerce/blob/413e883829272b851243ad672e67811a875e417a/proof/contribution-review-20261029/README.md). All new upstream PRs must allow maintainer edits, and the setting was PATCHed/GET-verified on210/211. Prior36561cb is [retained](https://github.com/saarius/commerce/blob/36561cb534068dae1e19b56c85eee0406fff1cb0/proof/contribution-review-20261029/README.md), as are earlier snapshots. Prior56c remains [unchanged](https://github.com/saarius/commerce/blob/56c6e66556da620eaa1ff6e9ed501720c4687695/proof/contribution-review-20261029/README.md); frozen source identities below still refer to04dcf5e.
 
 See **[SUBMISSIONS.md](SUBMISSIONS.md)** for fresh exact-head validation,
 pre-submission duplicate checks, dependencies, remaining findings, later browser
@@ -32,8 +32,8 @@ at `review/upstream-04dcf5e`. It was still current main at the first two submiss
 Fork `main` was not the comparison base: it initially lagged by 105 commits.
 Source-package versions do not establish a published Registry beta's contents.
 
-**This review-index branch contains current upstream application code (207
-and209 already merged by its maintainer), not a roll-up of unmerged repairs.** It adds only this proof directory; no application, lockfile,
+**This review-index branch contains current upstream application code (207,
+209 and211 already merged by its maintainer), not a roll-up of unmerged repairs.** It adds only this proof directory; no application, lockfile,
 release, ledger, permission, deployment or maintainer-store change.
 
 ## Suggested review order
