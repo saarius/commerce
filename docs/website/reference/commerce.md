@@ -156,6 +156,10 @@ Reconciliation requires a persisted paid checkout order before acknowledging its
 
 Coupon codes are refused at checkout on Registry stores in this release.
 
+## Dependency auditing
+
+Audit the deployed host's own dependency tree as well as the Commerce plugin. EmDash supplies the admin UI and the host's image-processing services; those are not contained in Commerce's Registry backend. A dependency-lock update in this repository does not update an independently installed host. In particular, a clean `npm audit --omit=dev` result in this repository is not proof that a native or Registry host is free of vulnerable dependencies: host packages are development dependencies here and must also be checked in the host's lockfile.
+
 ## Next steps
 
 Start with [your first product](/docs/store-owners/first-product), or build the host in [Integrate DinkusKit into a site](/docs/developers/integrate).

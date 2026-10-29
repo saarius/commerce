@@ -1,0 +1,56 @@
+{
+  "node": "v24.22.0",
+  "platform": "linux",
+  "architecture": "x64",
+  "manifestSha256": "9436fc603585c14a994400ac18bc088656f414b38cbbbe4cb368e8c9c8fefcda",
+  "lockSha256": "9a905b85ef5192bb453ddd73512d94901bcd0175045b93cfff27796966e0c976",
+  "backend": {
+    "bytes": 131033,
+    "sha256": "29e86beb6d40af0050ea8e2582113aa5dc65417d355c535ac765bab0ea1ecf68"
+  },
+  "emdashPeer": "1.2.0",
+  "emdashIntegrity": "sha512-f9s7khWeuOxX5cRimlu9o224hn9TuKnYk/0Vsu1CS9oaVn78V1+MWyfEsZc2iDv8JYWrezEZFkpy/Q6pRgVgzg==",
+  "admin": {
+    "version": "1.2.0",
+    "sha256": "0e5a660496e27a8ab270de40b53dbda7fae91a406c9b084e432fc36036f8c42d"
+  },
+  "dompurify": {
+    "version": "3.4.17",
+    "declaredRange": "^3.3.2",
+    "path": "node_modules/dompurify/dist/purify.cjs.js",
+    "browserAssetSha256": "a7b6dc750251c79c95592d6abf8908bcecb51319b0b5c4194b82222566ed29b9"
+  },
+  "astro": {
+    "version": "7.1.3",
+    "sharp": {
+      "path": "node_modules/sharp/dist/index.cjs",
+      "versions": {
+        "sharp": "0.35.4",
+        "vips": "8.18.6",
+        "heif": "1.23.2"
+      }
+    }
+  },
+  "sdkMiniflare": {
+    "version": "4.20260730.0",
+    "sharp": {
+      "path": "node_modules/@emdash-cms/sandbox-workerd/node_modules/sharp/dist/index.cjs",
+      "versions": {
+        "sharp": "0.35.2",
+        "vips": "8.18.3",
+        "heif": "1.23.0"
+      }
+    }
+  },
+  "wranglerMiniflare": {
+    "version": "5.20260826.0-alpha",
+    "sharp": {
+      "path": "node_modules/miniflare/node_modules/sharp/dist/index.cjs",
+      "versions": {
+        "sharp": "0.35.2",
+        "vips": "8.18.3",
+        "heif": "1.23.0"
+      }
+    }
+  }
+}
