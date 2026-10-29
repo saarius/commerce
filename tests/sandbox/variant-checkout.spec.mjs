@@ -434,7 +434,12 @@ test('merchant edits choices and independent prices on desktop and phone', async
     await phoneForm.getByRole('textbox',{name:'Regular',exact:true}).fill('29');
     await phoneForm.getByRole('button',{name:/^Save/}).click();
     await expect.poll(() => all(catalog).find(r => r.itemId === owned[0]).catalogData.items[owned[2]].price.regular.minor).toBe('2900');
+    // The pinned host can close its phone sheet after a panel action. Reload
+    // and reopen for durable readback; do not resubmit the price mutation.
+    await page.reload();
+    await openPanel(page);
     await expect(phoneForm.getByRole('textbox',{name:'Regular',exact:true})).toHaveValue('29.00');
+    await phoneForm.getByRole('textbox',{name:'Regular',exact:true}).scrollIntoViewIfNeeded();
     if (shopper) {
       await shopper.getByRole('button',{name:'Refresh payment status'}).click();
       await expect(shopper.locator('[data-checkout-result]')).toContainText('"state": "paid"');
