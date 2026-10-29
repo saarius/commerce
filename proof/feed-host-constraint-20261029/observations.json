@@ -1,0 +1,238 @@
+{
+  "checkedAt": "2026-10-29T18:26:49.484Z",
+  "source": "19b25b2878803f85db94c6c4853df1d7d1e4f448",
+  "probeSha256": "c7ec733f5d58d81dd63fc404f3be3f10d3a7240736d9f8153f3873cba268ed4f",
+  "identities": {
+    "main": {
+      "commit": "19b25b2878803f85db94c6c4853df1d7d1e4f448",
+      "sourceSha256": "6e4adaa6359f7e8f9ce773c3c4a84b26cbfaa72db778d342f2f636d00229ea47"
+    },
+    "proposed": {
+      "commit": "efec42c4e2a73b29d5d434529c575c1efed2ff35",
+      "sourceSha256": "f91d9f228bc9d0db182b81784d398abc796117aa0fc5dbfe1a5c01acc5b8bcf6"
+    },
+    "official-registry-0.6.0": {
+      "label": "official-registry-0.6.0",
+      "version": "0.6.0",
+      "bytes": 131050,
+      "sha256": "f292f09c1c360f828a0c96614fd69342327b23374150088c6c151ff1b61ed471"
+    },
+    "source-main-19b25b2": {
+      "label": "source-main-19b25b2",
+      "version": "0.6.0",
+      "bytes": 131044,
+      "sha256": "dd8e6018be154d4f65002d46340dee47fe521f85f029cee2f1571deaf46c38f9"
+    }
+  },
+  "cases": [
+    {
+      "artifact": "official-registry-0.6.0",
+      "scenario": "manual-in-stock",
+      "publicStatus": "in-stock",
+      "sellable": true,
+      "listable": true,
+      "feeds": {
+        "main": {
+          "google": "in stock",
+          "meta": "in stock"
+        },
+        "proposed": {
+          "google": "in stock",
+          "meta": "in stock"
+        }
+      }
+    },
+    {
+      "artifact": "official-registry-0.6.0",
+      "scenario": "manual-out-of-stock",
+      "publicStatus": "out-of-stock",
+      "sellable": false,
+      "listable": true,
+      "feeds": {
+        "main": {
+          "google": "out of stock",
+          "meta": "out of stock"
+        },
+        "proposed": {
+          "google": "out of stock",
+          "meta": "out of stock"
+        }
+      }
+    },
+    {
+      "artifact": "official-registry-0.6.0",
+      "scenario": "manual-available-on-backorder",
+      "publicStatus": "available-on-backorder",
+      "sellable": true,
+      "listable": true,
+      "feeds": {
+        "main": {
+          "google": "backorder",
+          "meta": "available for order"
+        },
+        "proposed": {
+          "google": "backorder",
+          "meta": "available for order"
+        }
+      }
+    },
+    {
+      "artifact": "official-registry-0.6.0",
+      "scenario": "manual-low-stock-refused",
+      "publicStatus": "in-stock",
+      "sellable": true,
+      "listable": true,
+      "feeds": {
+        "main": {
+          "google": "in stock",
+          "meta": "in stock"
+        },
+        "proposed": {
+          "google": "in stock",
+          "meta": "in stock"
+        }
+      },
+      "refusal": "Choose In stock, Out of stock, or On backorder."
+    },
+    {
+      "artifact": "official-registry-0.6.0",
+      "scenario": "manage-stock-refused",
+      "publicStatus": "in-stock",
+      "sellable": true,
+      "listable": true,
+      "feeds": {
+        "main": {
+          "google": "in stock",
+          "meta": "in stock"
+        },
+        "proposed": {
+          "google": "in stock",
+          "meta": "in stock"
+        }
+      },
+      "refusal": "Manage stock is coming soon and cannot be turned on."
+    },
+    {
+      "artifact": "official-registry-0.6.0",
+      "scenario": "legacy-managed-diagnostic-not-active-inventory",
+      "publicStatus": "availability-unavailable",
+      "sellable": false,
+      "listable": true,
+      "feeds": {
+        "main": {
+          "google": "out of stock",
+          "meta": "out of stock"
+        },
+        "proposed": {
+          "google": "out of stock",
+          "meta": "out of stock"
+        }
+      }
+    },
+    {
+      "artifact": "source-main-19b25b2",
+      "scenario": "manual-in-stock",
+      "publicStatus": "in-stock",
+      "sellable": true,
+      "listable": true,
+      "feeds": {
+        "main": {
+          "google": "in stock",
+          "meta": "in stock"
+        },
+        "proposed": {
+          "google": "in stock",
+          "meta": "in stock"
+        }
+      }
+    },
+    {
+      "artifact": "source-main-19b25b2",
+      "scenario": "manual-out-of-stock",
+      "publicStatus": "out-of-stock",
+      "sellable": false,
+      "listable": true,
+      "feeds": {
+        "main": {
+          "google": "out of stock",
+          "meta": "out of stock"
+        },
+        "proposed": {
+          "google": "out of stock",
+          "meta": "out of stock"
+        }
+      }
+    },
+    {
+      "artifact": "source-main-19b25b2",
+      "scenario": "manual-available-on-backorder",
+      "publicStatus": "available-on-backorder",
+      "sellable": true,
+      "listable": true,
+      "feeds": {
+        "main": {
+          "google": "backorder",
+          "meta": "available for order"
+        },
+        "proposed": {
+          "google": "backorder",
+          "meta": "available for order"
+        }
+      }
+    },
+    {
+      "artifact": "source-main-19b25b2",
+      "scenario": "manual-low-stock-refused",
+      "publicStatus": "in-stock",
+      "sellable": true,
+      "listable": true,
+      "feeds": {
+        "main": {
+          "google": "in stock",
+          "meta": "in stock"
+        },
+        "proposed": {
+          "google": "in stock",
+          "meta": "in stock"
+        }
+      },
+      "refusal": "Choose In stock, Out of stock, or On backorder."
+    },
+    {
+      "artifact": "source-main-19b25b2",
+      "scenario": "manage-stock-refused",
+      "publicStatus": "in-stock",
+      "sellable": true,
+      "listable": true,
+      "feeds": {
+        "main": {
+          "google": "in stock",
+          "meta": "in stock"
+        },
+        "proposed": {
+          "google": "in stock",
+          "meta": "in stock"
+        }
+      },
+      "refusal": "Manage stock is coming soon and cannot be turned on."
+    },
+    {
+      "artifact": "source-main-19b25b2",
+      "scenario": "legacy-managed-diagnostic-not-active-inventory",
+      "publicStatus": "availability-unavailable",
+      "sellable": false,
+      "listable": true,
+      "feeds": {
+        "main": {
+          "google": "out of stock",
+          "meta": "out of stock"
+        },
+        "proposed": {
+          "google": "out of stock",
+          "meta": "out of stock"
+        }
+      }
+    }
+  ],
+  "scope": "Real TCP gateway -> pinned SDK WorkerdSandboxRunner/SQLite -> actual public handlers -> HTTP feed response. Synthetic host identity/content and data; not a complete CMS Registry installation. No legitimate public low-stock state reached; this does NOT satisfy the requested positive proof."
+}
