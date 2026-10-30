@@ -1,0 +1,75 @@
+---
+// Operator-only route: NOT in the public Caddy allowlist. No operator token here.
+import installed from '../../store-config.json';
+let products = [];
+try {
+  const response = await fetch('http://127.0.0.1:65100/_emdash/api/plugins/' + installed.pluginId + '/catalog/public', { signal: AbortSignal.timeout(8000) });
+  const body = await response.json();
+  if (response.ok && body.success === true) products = body.data.products.flatMap(p => (p.variants?.members ?? []).filter(m => m.fulfillment === 'physical' && m.price?.currency === 'USD' && m.availability.sellable).map(m => ({ id: m.catalogItemId, name: p.name + (m.selections.length ? ' — ' + m.selections.map(s => s.value).join(' / ') : ' — default option') })));
+} catch { /* Catalog unavailable keeps checkout disabled. */ }
+const fields = [['name','Full name'],['line1','Address'],['line2','Address line2 (optional)'],['city','City'],['region','State / region'],['postalCode','Postal code'],['country','Country (two-letter code)']];
+---
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width"/><meta name="robots" content="noindex,nofollow"/><title>Operator TEST checkout — Saarius</title><style>
+:root{font-family:system-ui,sans-serif;color:#20382e;background:#f8f5ed}*{box-sizing:border-box}body{max-width:55rem;margin:auto;padding:1rem}a{color:inherit}.notice{padding:1rem;background:#e4ebde;border-radius:.5rem}fieldset{margin:1rem 0;padding:1rem;border:1px solid #a5b7a5}.addresses{display:grid;grid-template-columns:1fr 1fr;gap:1rem}label{display:block;margin:.6rem 0}input,select,button{font:inherit;max-width:100%;padding:.6rem}input,select{display:block;width:100%}button{background:#203e31;color:white;border:0;border-radius:.4rem;margin:.5rem .5rem .5rem 0;cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}#result{white-space:pre-wrap;overflow-wrap:anywhere}#payment-link{display:block;margin:1rem 0}[hidden]{display:none!important}@media(max-width:650px){.addresses{grid-template-columns:1fr}}
+</style></head><body><a href="/">Back to catalog</a><h1>Operator TEST checkout</h1><p class="notice">Experimental physical-item checkout for this synthetic store. Public access and mutations remain blocked by the proxy. Only fresh, explicitly TEST readiness permits preparation or submission. Never enter a real card. A DinkusKit grant is not processor readiness.</p>
+<p id="readiness" role="status" aria-live="polite">Checking TEST checkout availability…</p><button id="begin" disabled>Begin TEST checkout</button><button id="check" disabled>Check retained checkout status</button>
+<form id="order"><fieldset id="contact-fields" disabled><legend>Test customer and item</legend><label>Item<select id="item" required>{products.map(p=><option value={p.id}>{p.name}</option>)}</select></label><label>Quantity<input id="quantity" type="number" required min="1" max="99" value="1"/></label><label>Email<input name="email" type="email" maxlength="254" autocomplete="off" required/></label><label>Phone <span id="phone-hint">(if required)</span><input name="phone" type="tel" maxlength="64" autocomplete="off"/></label>
+<div class="addresses">{['delivery','billing'].map(kind=><fieldset><legend>{kind === 'delivery' ? 'Delivery address' : 'Billing address'}</legend>{fields.map(([field,label])=><label>{label}<input name={kind+'.'+field} maxlength={field==='country'?2:200} required={!['line2','region'].includes(field)} pattern={field==='country'?'[A-Za-z]{2}':undefined} autocomplete="off"/></label>)}</fieldset>)}</div>
+<p>For US delivery, supply a valid state. Commerce enforces its current shipping countries, contact requirements and authoritative prices. This narrow consumer lists explicit physical variant members and collects both addresses; it is not a general digital/simple-product storefront.</p><button type="submit" id="submit">Submit one TEST checkout request</button></fieldset></form>
+<p id="result" role="status" aria-live="polite"></p><a id="payment-link" hidden target="_blank" rel="noopener noreferrer">Open Stripe TEST payment in a new tab</a><p>The guest capability stays in this tab's session storage, never a URL or log. Contact details are not saved there. After any uncertain submission, use Check status—never submit again. Keep this tab open; this first version intentionally has no automatic retry, polling, reset or released-attempt retry UI.</p>
+<div id="checkout-config" data-plugin-id={installed.pluginId} data-has-products={products.length>0?'yes':'no'}></div>
+<script>
+import { createGuestCheckout, isTestReadiness, stripeTestRedirect } from '../lib/guest-checkout.mjs';
+const $ = (id) => document.getElementById(id);
+const config = $('checkout-config'), begin = $('begin'), check = $('check'), fieldset = $('contact-fields'), result = $('result'), link = $('payment-link');
+let client;
+function synchronize() {
+  const { phase, busy } = client.snapshot();
+  fieldset.disabled = phase !== 'prepared' || busy;
+  check.disabled = !['prepared','unknown'].includes(phase) || busy;
+  begin.disabled = true;
+}
+function showProjection(value) {
+  link.hidden = true; link.removeAttribute('href');
+  const total = value.total?.currency === 'USD' && /^(0|[1-9][0-9]{0,19})$/.test(value.total.minor) ? '$' + (BigInt(value.total.minor)/100n) + '.' + String(BigInt(value.total.minor)%100n).padStart(2,'0') : 'not yet available';
+  result.textContent = 'Commerce state: ' + value.state + '. Canonical total: ' + total + '. ' + (value.state === 'paid' ? 'Inspect Commerce Orders for the TEST marker before qualifying a TEST purchase.' : 'A request or payment link is not proof of payment or an order.');
+  const redirect = stripeTestRedirect(value.redirectUrl);
+  if (redirect && value.state === 'pending') { link.href = redirect; link.hidden = false; }
+  else if (value.redirectUrl) result.textContent += ' Payment navigation was blocked: not an allowlisted Stripe TEST URL.';
+}
+async function availability() {
+  const ready = await client.readiness();
+  const supported = isTestReadiness(ready);
+  $('readiness').textContent = supported ? 'Commerce reports TEST configuration readiness. The server still validates every request.' : 'TEST checkout is unavailable. Finish legitimate checkout and processor setup. No checkout was prepared or submitted.';
+  begin.disabled = !supported || client.snapshot().phase !== 'empty' || config.dataset.hasProducts !== 'yes';
+}
+try {
+  client = createGuestCheckout({ pluginId: config.dataset.pluginId, storage: sessionStorage });
+  synchronize();
+  if (client.snapshot().phase !== 'empty') result.textContent = 'A checkout is retained in this tab. Check its status; do not submit again after an uncertain result.';
+  await availability();
+} catch { $('readiness').textContent = 'TEST availability or recovery storage could not be confirmed. No checkout was sent.'; begin.disabled = true; }
+begin.addEventListener('click', async () => {
+  begin.disabled = true; check.disabled = true;
+  try { const prepared = await client.prepare(); if (!prepared) { await availability(); return; } document.querySelector('[name="phone"]').required = prepared.requirePhoneNumber; $('phone-hint').textContent = prepared.requirePhoneNumber ? '(required)' : '(optional)'; result.textContent = 'Capability prepared; no checkout or payment submitted. Fill the test contact and submit once.'; }
+  catch { result.textContent = 'Preparation could not be confirmed. No automatic retry was made.'; }
+  finally { synchronize(); }
+});
+$('order').addEventListener('submit', async event => {
+  event.preventDefault();
+  const values = new FormData(event.currentTarget), address = kind => Object.fromEntries(['name','line1','line2','city','region','postalCode','country'].map(field => [field, String(values.get(kind+'.'+field) ?? '').trim()]));
+  const contact = { email: String(values.get('email') ?? ''), ...(values.get('phone') ? { phone: String(values.get('phone')) } : {}), delivery: address('delivery'), billing: address('billing') };
+  const quantity = Number($('quantity').value);
+  if (!Number.isSafeInteger(quantity) || quantity<1 || quantity>99) return;
+  fieldset.disabled = true; check.disabled = true; link.hidden = true;
+  try { const value = await client.start([{ catalogItemId: $('item').value, quantity }], contact); if (!value) { result.textContent = 'TEST readiness is no longer confirmed. No start request was sent.'; return; } showProjection(value); }
+  catch { result.textContent = 'The checkout outcome could not be confirmed. Do not submit again. Check retained status or inspect Commerce Orders.'; }
+  finally { synchronize(); }
+});
+check.addEventListener('click', async () => {
+  check.disabled = true; fieldset.disabled = true;
+  try { showProjection(await client.check()); }
+  catch { result.textContent = 'Status could not be confirmed. Keep the retained checkout; no new start request was made.'; }
+  finally { synchronize(); }
+});
+</script></body></html>

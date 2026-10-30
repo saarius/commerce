@@ -5,6 +5,17 @@
 This fork-only coordination checkpoint adds public-safe evidence, not product
 changes, release approval or an upstream pull request.
 
+## Later own consumer checkpoint —06:22UTC
+
+[Operator TEST checkout consumer and safe captures](../operator-test-checkout-20261030/PROOF.md):
+real installed Commerce0.7.0-beta.3 +Payments0.5.0-beta.1, anonymous private
+1440/390px unavailable UI **2/2**, zero guest POSTs/capabilities. Review copies
+of the independent consumer's four source/test files are included;23offline
+protocol tests are not provider proof. Earlier browser failures and the native
+fieldset assertion correction are explicit. No processor onboarding, payment,
+order, full release gate, platform diagnostic or new upstream PR is claimed.
+The03:09 packet below remains historical, not relabeled with this later result.
+
 ## Contribution disposition
 
 All merges below were performed by the maintainer, not this assistant. No own

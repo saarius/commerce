@@ -1,0 +1,42 @@
+{
+  "schema": "saarius.operator-test-checkout-review/v1",
+  "appCommit": "f7beadca918e684253dcf12d70b6ca1c70b68de2",
+  "commerceMain": "7740b4c14e614740c454ed67aeb6e8eaac49db6d",
+  "commerceVersion": "0.7.0-beta.3",
+  "paymentsVersion": "0.5.0-beta.1",
+  "scope": "unavailable installed-readiness UI; no mutation or purchase",
+  "files": {
+    "consumer/src/lib/guest-checkout.mjs": {
+      "bytes": 5416,
+      "sha256": "fe20f864a4bf13fdbeb77232e3c27371ebbeac83f0059766a23e5018e2f760c4"
+    },
+    "consumer/src/pages/checkout.astro": {
+      "bytes": 8955,
+      "sha256": "09a30fd92867c30b45cde54b7ec3a9004d9d0c66343a84bc64f54b05e4f4a9fb"
+    },
+    "consumer/src/pages/index.astro": {
+      "bytes": 6754,
+      "sha256": "8ae24e913ecb265fce2126d8a85efced6f74a8bdb73dbb76067c08ad93ffa2ca"
+    },
+    "consumer/guest-checkout.test.mjs": {
+      "bytes": 7485,
+      "sha256": "a612d6a8ba1938d2e559f7381a672c3dbfb75244702a162b644f27512895feb8"
+    },
+    "desktop-unavailable.png": {
+      "bytes": 140905,
+      "sha256": "705346aaf24b063d0862090f2aa0e25baf90a20e40f4b9a4d5403fe5045fe111",
+      "width": 1440,
+      "height": 1587
+    },
+    "phone-unavailable.png": {
+      "bytes": 143267,
+      "sha256": "94722284c93b202162cb8e8a7e7320901520a66d9174cfe5c00ec7a2671ddf74",
+      "width": 390,
+      "height": 2551
+    },
+    "browser-result.json": {
+      "bytes": 731,
+      "sha256": "cf76a3e2ba5c0e1764f557c64b076501992fe1b56ac93b4d9a6a1a00d70c2a53"
+    }
+  }
+}
