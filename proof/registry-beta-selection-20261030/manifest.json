@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "checkedAt": "2026-10-30T01:49:00Z",
+  "scope": "Historical installed-beta and scanner identity evidence, not index-head UI rerun or full working checkout",
+  "captures": [
+    {
+      "path": "desktop.png",
+      "bytes": 140758,
+      "sha256": "61b19f5150d8464cdef59d7b93efa3e81a04da9d408f8384e5e5053b75c656fe",
+      "width": 1440,
+      "height": 1278,
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "scope": "Own synthetic installed-beta store screenshot, no real purchase."
+    },
+    {
+      "path": "phone.png",
+      "bytes": 117311,
+      "sha256": "6747697fe2e30ad2bd838501cc9a9a0cf9a41c49c417a7e32f3b0e714aba5fa8",
+      "width": 390,
+      "height": 1701,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scope": "Own synthetic installed-beta store screenshot, no real purchase."
+    }
+  ],
+  "scannerFiles": [
+    {
+      "path": "registry-selection.mjs",
+      "bytes": 2815,
+      "sha256": "8142dac7929f6577eb185fc9343e98879988767828548d2d515d46b5ac554bb1"
+    },
+    {
+      "path": "registry-selection.test.mjs",
+      "bytes": 1982,
+      "sha256": "7fc515a2d9df602878749dc6b8beab2455446272f055c7188020eb790284f560"
+    }
+  ],
+  "storefrontSourceSha256": "6a325b0a33f01b1fdd7df42a1ac91e42ca8d5414091cd7fc88d9f70ad1e65e1b",
+  "storefrontBrowserChecks": {
+    "passed": 2,
+    "completedAt": "2026-10-30T01:34:43Z",
+    "checkout": "unavailable; no purchase request"
+  },
+  "scannerChecks": {
+    "passed": 8,
+    "skipped": 0,
+    "negativeMutant": {
+      "passed": 7,
+      "failed": 1,
+      "exitCode": 1,
+      "expected": true
+    }
+  }
+}

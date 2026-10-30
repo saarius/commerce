@@ -1,0 +1,29 @@
+{
+  "checkedAt": "2026-10-30T03:04:56.836Z",
+  "method": "Actual authenticated EmDash Registry update API on own host; no raw plugin row/native Commerce/descriptor injection",
+  "status": 200,
+  "pluginId": "r_fjzjvld3ssb4j63o",
+  "oldVersion": "0.7.0-beta.2",
+  "newVersion": "0.7.0-beta.3",
+  "releaseUri": "at://did:plc:ekk4pjmkh3k3ql2kfoex3qt4/com.emdashcms.experimental.package.release/dinkus-commerce-beta:0.7.0-beta.3",
+  "verification": {
+    "profileCid": "bafyreibnnwpe5ahd6gumynkvatirpsix3tb2u3etiaf7m4vvzyqy6r3y2e",
+    "releaseCid": "bafyreiheg7fka3jeiqhq4stkqk53drywwnqajzikdm6t2gjznzkcafpvae",
+    "provenance": "verified",
+    "requireProvenance": true
+  },
+  "capabilityChanges": {
+    "added": 0,
+    "removed": 1
+  },
+  "backend": {
+    "bytes": 130676,
+    "sha256": "a630ca239b3573cd5943cb430fb8e26702c946ba6d7c38438fcc86ac01c98f92",
+    "limit": 131072
+  },
+  "sourceReference": {
+    "tag": "v0.7.0-beta.3",
+    "commit": "7740b4c14e614740c454ed67aeb6e8eaac49db6d"
+  },
+  "limits": "SDK verification result, not independent cryptographic/security/release/provider certification"
+}

@@ -1,0 +1,59 @@
+{
+  "scope": "Public-safe synthetic summaries/media only. Source hashes are traceability, not source/build attestation or exact commit execution.",
+  "sources": [
+    {
+      "path": "src/pages/index.astro",
+      "sha256": "08627fd6d21815c64c8541dc2ff5909b5fbf09c450a2009ae75de1a9be926d11"
+    },
+    {
+      "path": "src/middleware.ts",
+      "sha256": "1f48f85ec38bba4b61fb427a77042afa8e2f94ee3397b55fe3bf84cbcb87a2cc"
+    },
+    {
+      "path": "src/features/product-on-sale/index.ts",
+      "sha256": "20bf8ce4854d9678d8ef5d5cef3dd923e9b7e11708acb3217e707197fe00e560"
+    },
+    {
+      "path": "src/features/product-url-plugin/index.ts",
+      "sha256": "11f9204581acb6940842f362914ce688e8b5aeef32ad41103eacef3a471317db"
+    },
+    {
+      "path": "src/features/store-shell/seeded-page-products.ts",
+      "sha256": "f855ddaa7bb1fba35d606ae4f5b64a1b051b287a591de12fe776e90f532d1e46"
+    },
+    {
+      "path": "server.mjs",
+      "sha256": "663f412c16c8cfd9bd99f09e63314982251662ab7e79ed0c4cd148f32879bc6a"
+    },
+    {
+      "path": "store-config.json",
+      "sha256": "6a025e87078c268c505c3bd793af1ef59ab3f79d7944447c0fdc542c53a41973"
+    }
+  ],
+  "media": [
+    {
+      "path": "desktop.png",
+      "sha256": "54076f61cdb61d7d2926dfeb071d94d95cf6432353a171c67eb168e392b2c9c3",
+      "bytes": 143701,
+      "width": 1440,
+      "height": 1278,
+      "manuallyReviewedAt": "2026-10-30T03:27:32Z"
+    },
+    {
+      "path": "phone.png",
+      "sha256": "1015a769cf4b655fb6c7f6bc3cf20d94c3b4a3010360fa0a08565a0736440261",
+      "bytes": 121162,
+      "width": 390,
+      "height": 1722,
+      "manuallyReviewedAt": "2026-10-30T03:27:32Z"
+    }
+  ],
+  "versions": {
+    "node": "v24.22.0",
+    "emdash": "1.2.0",
+    "astro": "7.1.3",
+    "astroNode": "11.0.2",
+    "sandboxWorkerd": "0.9.3"
+  },
+  "templateCommit": "314dad31ea0654d992991a428b555a51e2bf8522"
+}

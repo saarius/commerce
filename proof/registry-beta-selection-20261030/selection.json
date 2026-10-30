@@ -1,0 +1,108 @@
+{
+  "checkedAt": "2026-10-30T01:33:53.745Z",
+  "publisher": "did:plc:ekk4pjmkh3k3ql2kfoex3qt4",
+  "pages": 2,
+  "scannedRecords": 47,
+  "terminal": true,
+  "rule": "Latest official separate beta package when present; stable only when no beta package release exists. Discovery is not installation or moderation/provenance certification.",
+  "selected": {
+    "package": "dinkus-commerce-beta",
+    "version": "0.7.0-beta.2",
+    "cid": "bafyreicsp4rzodzyetcsy2w22z425tqudphnqchsiqdefdivdqqbfmxfnm",
+    "uri": "at://did:plc:ekk4pjmkh3k3ql2kfoex3qt4/com.emdashcms.experimental.package.release/dinkus-commerce-beta:0.7.0-beta.2"
+  },
+  "latestStable": "0.6.0",
+  "latestBeta": "0.7.0-beta.2",
+  "versions": [
+    {
+      "package": "dinkus-commerce-beta",
+      "version": "0.3.0-beta.0",
+      "cid": "bafyreic3to6o4zexhg3eap7w5a5a5lr7yqby7n7bk6krkg5ult34qkbwfu"
+    },
+    {
+      "package": "dinkus-commerce-beta",
+      "version": "0.3.0-beta.1",
+      "cid": "bafyreifl4phouojkqovoj4h7aqjnvnmn752hzrkm5x2zsfitjgv5oxmhpa"
+    },
+    {
+      "package": "dinkus-commerce-beta",
+      "version": "0.3.0-beta.2",
+      "cid": "bafyreifzeebybp5cramwiypyk472unbvmjagnqnrdru5e7uysqck3wu7nu"
+    },
+    {
+      "package": "dinkus-commerce-beta",
+      "version": "0.3.0-beta.3",
+      "cid": "bafyreieapej56brpy2ifqva23rjccfpcr633hrac7pyh7yxjhux44nwsva"
+    },
+    {
+      "package": "dinkus-commerce-beta",
+      "version": "0.3.0-beta.4",
+      "cid": "bafyreiczqxpkvorc4lzqoyykilwva4hwzzpxls4yvc4faondq4ktsmj2r4"
+    },
+    {
+      "package": "dinkus-commerce-beta",
+      "version": "0.4.0-beta.1",
+      "cid": "bafyreieovr72wiksjin62wvjgc67axbxmvjn7utkrn4ytlvnx7bseoj4ny"
+    },
+    {
+      "package": "dinkus-commerce-beta",
+      "version": "0.5.0-beta.1",
+      "cid": "bafyreig7rguins234ftqdbtzf2uu6jzquxweggrl6dycxhi2uwcizkvtea"
+    },
+    {
+      "package": "dinkus-commerce-beta",
+      "version": "0.6.0-beta.1",
+      "cid": "bafyreift3jscenvb6qo6l2icuwc3hzstckwptznu557k5djwciy64zcwy4"
+    },
+    {
+      "package": "dinkus-commerce-beta",
+      "version": "0.7.0-beta.1",
+      "cid": "bafyreicya3kbgvst3ma4uqvpet2hmmszqozimd7dcsakxwarcwp5ikkts4"
+    },
+    {
+      "package": "dinkus-commerce-beta",
+      "version": "0.7.0-beta.2",
+      "cid": "bafyreicsp4rzodzyetcsy2w22z425tqudphnqchsiqdefdivdqqbfmxfnm"
+    },
+    {
+      "package": "dinkus-commerce",
+      "version": "0.1.0",
+      "cid": "bafyreibtwmjibvs3kkaripr3fmo23m66kzzeo7i2w572g5cbwpkeyc2wkq"
+    },
+    {
+      "package": "dinkus-commerce",
+      "version": "0.2.0",
+      "cid": "bafyreiatq7sawnz2a5hzjd42mkavxysbqoglefxlfzbvigvl6n4b3auquq"
+    },
+    {
+      "package": "dinkus-commerce",
+      "version": "0.2.1",
+      "cid": "bafyreiai72e23wa32mr34sewi7liawzly5svfk4jsjmexziqbrbrj5oph4"
+    },
+    {
+      "package": "dinkus-commerce",
+      "version": "0.2.2",
+      "cid": "bafyreidee44l6a4v5tuanwkr7h4nsc733wnsb3qmrdoukzqvctjx2niad4"
+    },
+    {
+      "package": "dinkus-commerce",
+      "version": "0.3.0",
+      "cid": "bafyreib34kon6kg646qx6sdukpom2eqa2j7bowgvsdskymrmjv3zj7pgoi"
+    },
+    {
+      "package": "dinkus-commerce",
+      "version": "0.4.0",
+      "cid": "bafyreifeg6qpdlzdjhfyymeftjb3taye224t3ixamwywbz4covkeevxqpm"
+    },
+    {
+      "package": "dinkus-commerce",
+      "version": "0.5.0",
+      "cid": "bafyreiazrmaic5fkfeca6zaiu3yrjhbj6safo3xattj6jodumafxhplcp4"
+    },
+    {
+      "package": "dinkus-commerce",
+      "version": "0.6.0",
+      "cid": "bafyreigfp6327jdw2sqotlojpz5a5tlzypyd6jpm4jtboeoa5tmc2pamuq"
+    }
+  ]
+}

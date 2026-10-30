@@ -1,0 +1,148 @@
+{
+  "host": {
+    "checkedAt": "2026-10-30T03:09:21.196Z",
+    "mode": "production Astro standalone behind Caddy, operator requests direct loopback with expiring own-site token",
+    "installedVersion": "0.7.0-beta.3",
+    "templateCommit": "314dad31ea0654d992991a428b555a51e2bf8522",
+    "passed": 7,
+    "checks": [
+      "anonymous unpublish denied; catalog retained",
+      "CMS unpublish automatically off sale",
+      "CMS publish automatically on sale",
+      "unlinked page publish refused422 without catalog change",
+      "CMS trash automatically off sale",
+      "restore remains off sale",
+      "explicit republish restores canonical price/availability"
+    ],
+    "scope": "Own actual installed-beta host integration. No manual sale-state route calls, checkout/payment/order/provider or canonical-release qualification."
+  },
+  "boundary": {
+    "checkedAt": "2026-10-30T03:09:25.523Z",
+    "passed": 18,
+    "results": [
+      {
+        "path": "/",
+        "status": 200
+      },
+      {
+        "path": "/_emdash/api/plugins/r_fjzjvld3ssb4j63o/catalog/public",
+        "status": 200
+      },
+      {
+        "path": "/_emdash/api/plugins/r_fjzjvld3ssb4j63o/checkout/guest/readiness",
+        "status": 200
+      },
+      {
+        "path": "/_emdash/admin",
+        "status": 404
+      },
+      {
+        "path": "/_emdash/api/auth/dev-bypass",
+        "status": 404
+      },
+      {
+        "path": "/_emdash/api/setup/dev-bypass",
+        "status": 404
+      },
+      {
+        "path": "/_emdash/api/admin/api-tokens",
+        "status": 404
+      },
+      {
+        "path": "/_image?href=http://127.0.0.1/",
+        "status": 404
+      },
+      {
+        "path": "/@fs/etc/passwd",
+        "status": 404
+      },
+      {
+        "path": "/src/middleware.ts",
+        "status": 404
+      },
+      {
+        "path": "/_astro/../_emdash/api/auth/dev-bypass",
+        "status": 404
+      },
+      {
+        "path": "/_astro/%2e%2e/_emdash/api/auth/dev-bypass",
+        "status": 404
+      },
+      {
+        "path": "/_astro/%2e%2e%2f_emdash/api/auth/dev-bypass",
+        "status": 404
+      },
+      {
+        "path": "/_astro/%252e%252e/_emdash/api/auth/dev-bypass",
+        "status": 404
+      },
+      {
+        "check": "forwarded local-IP spoof denied",
+        "status": 404
+      },
+      {
+        "path": "/",
+        "method": "POST",
+        "status": 404
+      },
+      {
+        "path": "/_emdash/api/plugins/r_fjzjvld3ssb4j63o/checkout/guest/start",
+        "method": "POST",
+        "status": 404
+      },
+      {
+        "path": "/_emdash/api/plugins/r_fjzjvld3ssb4j63o/catalog-items/set-on-sale",
+        "method": "POST",
+        "status": 404
+      }
+    ],
+    "scope": "Targeted own Caddy allowlist checks only, not penetration/security certification or a purchase flow"
+  },
+  "browser": {
+    "completedBy": "2026-10-30T03:09:29.555Z",
+    "passed": 2,
+    "viewports": [
+      {
+        "name": "desktop",
+        "width": 1440,
+        "height": 1100
+      },
+      {
+        "name": "phone",
+        "width": 390,
+        "height": 844
+      }
+    ],
+    "checks": [
+      "public HTTPS catalog contains one synthetic notebook",
+      "add2=>24.00/remove1=>12.00 estimate",
+      "real installed readiness returns200/unavailable",
+      "empty basket disables readiness button",
+      "no horizontal overflow"
+    ],
+    "limits": "Desktop Chromium/mouse, not physical touch, Safari or complete mobile purchase journey"
+  },
+  "lifecycle": {
+    "naturalStopResult": "success",
+    "exitStatus": 0,
+    "restarted": true,
+    "scope": "Corrected SDK1.2 internal singleton bridge, HTTP drain then sandbox and DB shutdown; beta3 run between host and public checks. Earlier default/facade shutdown90s failures retained, not passing evidence."
+  },
+  "security": {
+    "scope": "Targeted route probes, not security certification",
+    "checkedAt": "2026-10-30T03:37:47.382Z",
+    "statuses": [
+      403,
+      403,
+      401
+    ]
+  },
+  "unproved": [
+    "merchant account/Connect/provider setup",
+    "actual purchase/payment/order/shipment",
+    "full canonical release gates",
+    "default-three-host browser gate",
+    "physical device/Safari/touch",
+    "independent security/provenance certification"
+  ]
+}
