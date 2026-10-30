@@ -1,0 +1,228 @@
+# Commerce contributions: owner review index
+
+**Latest snapshot2026-10-30 01:49UTC:** accepted main **fd74eaebc7b4e1053394519d88d51509c014e29b**. [218](https://github.com/dinkuskit/commerce/pull/218) MAINTAINER-MERGED01:12:24UTC asfd74eae, exactmerge/RESTverified; no assistant merge. [220](https://github.com/dinkuskit/commerce/pull/220) OPEN**OWNER8160fbeb92af20eab0b3447823a7702fb5e8dfa8** (owner Updatebranch, parentsd14+fd), maintainertrueGET. Parallel LOCALONLYC4**c4e5d415dea9770f2703478f2c59568006c549db** has identical parents/tree2c90c06e4bb37fa04b39eccdd248256aa01c7559. LOCALC4 fresh852/852unit+110/110integration+native2/sandbox2/allgates**01:46:52UTC**. These are C4 qualification, NOT a claim of tests run on exact8160; parent/tree identity separately verified. Ownerhead preserved, no forcepush/localC4 push or unnecessary changes. Review progress on8160 isn't clearance. Public phone report still honestly binds its earlier captures/manifest to da008, not the current merge.
+
+**IMPORTANT EVIDENCE ERRATUM:** earlier “no official beta available” was MY scan error: stable-only package filter missed separate**dinkus-commerce-beta**. Latest0.7.0-beta.2 was already indexed2026-10-28. Old0.6.0tests remain valid STABLE controls, NOT latest-beta qualification. [Correction211/also205](https://github.com/dinkuskit/commerce/pull/211#issuecomment-6512784886);205/206/217 stay closed/deferred, no manufactured relevance. [Corrected scanner/tests, exact Registry installation and own-store checkpoint](../registry-beta-selection-20261030/PROOF.md):8/8regressions, negativeold-filter mutant7/1expectedexit1; live2pages47records/18Commerceversions, beta0.7.0-beta.2 selected/CIDmatched. Actual own-loopback SDKRegistryverify200/install201, no descriptor/native Commerce: runtime r_fjzjvld3ssb4j63o/provenanceverified(required), installedbackend131033/39/SHA29e86… =frozen04/betatag, NOT proposedmain130676/a630. Synthetic merchant/publishedcatalog1 and desktop+phonebasket/readiness2checks pass; **checkout unavailable/NO purchase/payment**, legitimate Connect/provider+hostpublish wiring still needed. No full working transaction/production/device/security/release claim. Only safe summary/digests/two reviewed PNGs, no rawDB/log/session/capabilities.
+
+This coordination branch's APP is acceptedfd ONLY, **not open220**. Index34+newscanner8 tests are separate from C4 product/browser checks; live10PR/35refs identities aren't approval/combined-release proof. Prior[49c2069](https://github.com/saarius/commerce/blob/49c20694d0ef318a5e50f54132fd62a1230ce101/proof/contribution-review-20261029/README.md)/all earlier index snapshots/original12heads/forkmain79 preserved. Header erratum SUPERSEDES ALL historical no-beta/latest-selection claims below and in linked frozen reports; source-bound other results retain their exact scopes.
+
+**Current snapshot 2026-10-30 00:37UTC:** accepted main **2a37c079c4fe86ad45fcdb4715a0f73322c931e7** (#219 reverted214; no private Oracle bootstrap). [#218](https://github.com/dinkuskit/commerce/pull/218) OPEN**3bed871**, direct child of maintainer Update-branch0b17. Requested empty changeset fixed; actual checker and all listed GitHub CI checks green, current-head852/110+4browser+gates00:11:41. Claw review edited00:18:47 READY3bed/no findings/proof4/6, not merge authority. Source6aec parallel merge was preserved locally, NOT pushed over owner0b17. Immediate post-push REST stale-head assertion stopped body generation; freshGET3bed preceded the actual bodyPATCH, no stale-head body write.
+
+[#220 — phone-sized variant price-save coverage](https://github.com/dinkuskit/commerce/pull/220) OPEN**d14f867**, source**da00829** on accepted2a, independent of open218. Test-only28.00->29->canonical2900->reload29.00; native frozen paid-order/payment stays2800. Parent native2/sandbox2 green (coverage gap, not product failure). Source**835/835+110/110 +native2/sandbox2**, allgates00:29:59. Exact proof-only final**835/835+110/110**+allgates/source digests/three reviewed PNGs/proof delta**00:35:48UTC**; browser NOT replayed after proof-only commit, source test bytes bound explicitly. [Report/captures/reproduce](https://github.com/saarius/commerce/blob/d14f8678bbc366e92907a6b5862ce00d09c28141/proof/variant-phone-current-20261030/PROOF.md). Zero runtime bytes, backend130676/396/a630 unchanged main. Phone-sized desktop Chromium/mouse, not touch/device/Safari; local source SDK fixtures, not official Registry/provider/full gate/security/release qualification. Empty changeset no version bump; maintainer edits enabled/GET-verified.
+
+This index's application code is accepted2a ONLY, **not open218/220**. Prior[2e2d4ee](https://github.com/saarius/commerce/blob/2e2d4ee834396cb7ff3d222544a0751eec79058d/proof/contribution-review-20261029/README.md)/all older snapshots and twelve original heads/forkmain79 unchanged.217/205/206 remain CLOSED/deferred; no actual legacy-data compatibility bytes or unsupported stock/caller work reopened. Frozen verifier original-ten only; separate10PR/34refs identity snapshot is not tests/approval/release.
+
+**Earlier snapshot 2026-10-29 23:31UTC:** [#216](https://github.com/dinkuskit/commerce/pull/216) **maintainer-merged23:04:46** as de1481a; [#217](https://github.com/dinkuskit/commerce/pull/217) **CLOSED/deferred23:13:41**. Owner accepts the code bug/proof but states there is no actual old contact data: v1 does not spend bundle bytes on compatibility with older data that does not exist. Preserve c49 evidence; do not reopen without a real affected store. Acknowledged [6510742975](https://github.com/dinkuskit/commerce/pull/217#issuecomment-6510742975). No assistant merge, migration or release.
+
+[#218 — single-host browser diagnostics](https://github.com/dinkuskit/commerce/pull/218) **OPEN677b7a1**, on accepted a566 (includes216/214). Explicit one-project/one-host opt-in; unset/empty preserves three and canonical storefront/core/full rejects any nonempty selector before child gates. Zero runtime/backend bytes added. [Fresh source-bound evidence](https://github.com/saarius/commerce/blob/677b7a18cf07538b6c54077761dda881d825de1e/proof/single-host-current-20261029/PROOF.md): baseline17=4pass/13fail, source88/proof9e838/110+four actual browser cases; de-merge418852/110+four cases; exact677**852/852 unit/workflow +110/110 integration**, four fresh browser cases again (sandbox guest1/native guest1/native-variant2), all gates **23:29:44UTC**. Backend130676/396/a630ca23 unchanged main. No default-three-host/full-gate/official Registry/provider/device/security/performance qualification; wrapper plans mock npm. Maintainer edits enabled/GET-verified.
+
+This index contains accepted **a566 application code only**, NOT218's diagnostic selector or closed217's legacy normalization. Prior [6d60 index](https://github.com/saarius/commerce/blob/6d60baefde321659086b32abd96ac1d82bdec2d0/proof/contribution-review-20261029/README.md) and all older refs are unchanged. Frozen manifest/verifier still original-ten/11refs; newer PR/ref metadata is separately verified, not release approval.
+
+**Earlier snapshot22:21UTC: accepted main4e4ca75 (including213billing/215settings).216 refreshed576e0d9/835+110 gates21:59:13, requested Ctrl-C-then-Billing conflict resolved, clean review22:04 but no merge inferred. New217 legacy-contact default seeding, standalonec49aa07/833+112 gates22:19:27. Both OPEN, maintainer edits enabled/GET-verified.205/206 remain deferred. Prior a2/becfc/all earlier index refs unchanged. No combined-release qualification.**
+
+[#217 — prevent new unreadable shopper-profile seeds](https://github.com/dinkuskit/commerce/pull/217): sourceb75/finalc49 on accepted4e, no DOMPurify/settings/open216 dependency. Historical source receiver8823272 stores the bad contact through real native SDK SQLite; current deliberate kept-record reader admits it, sign-in succeeds but next profile is UNAVAILABLE before repair. Afterrepair2/2 reads succeed. Customer baseline10pass/8fail, compiledworkerd2pass/2fail; source/final833/112+gates. [Proof, producer probe and limits](https://github.com/saarius/commerce/blob/c49aa07144cb3936a087b31300c87383f1feb7f0/proof/shopper-legacy-main-20261029/PROOF.md). **New-seed prevention only, not existing customer recovery, official old Registry release/first-party checkout history or full installed-upgrade proof.** Standalone130729/343, +53 on currentmain130676/396; old over-cap stack evidence preserved, not erased.
+
+
+**Earlier snapshot: 2026-10-29 21:20UTC.207/209/210/211 maintainer-merged; new216 is the focused SIGINT repair, with maintainer edits enabled/GET-verified.205/206 deferred. No combined release.**
+
+- [#205 — low-stock feed availability](https://github.com/dinkuskit/commerce/pull/205): **CLOSED/deferred by maintainer** after accepting the public-route constraint report. Correct guard retained in fork; revisit when supported Inventory/public low-stock returns, not by bypassing v1.
+- [#207 — payment binding readiness](https://github.com/dinkuskit/commerce/pull/207): **MERGED by maintainer** at17:49:29UTC after maintainer-supplied real-TCP evidence and fresh review. Not release/provider qualification.
+- [#209 — invalid requested CLI profiles](https://github.com/dinkuskit/commerce/pull/209): **MERGED by maintainer** at19:50UTC after clean review of3fa27c. Included in main d61; not publication or installed-release qualification.
+- [#210 — CLI response-body transport](https://github.com/dinkuskit/commerce/pull/210): **MERGED by maintainer21:06:34UTC**, main00fb693. Final source2e648bb (clean75main merge) passed exact814/110+gates20:44:23UTC, backend131007/65. Earlier41/a9 reports remain historical.
+- [#216 — truthful SIGINT outcome](https://github.com/dinkuskit/commerce/pull/216): **OPEN576e0d9**, includes requested main4e;835/110+focused14+gates21:59:13, backend130676/396. Ctrl-C paragraph followed by Billing addresses preserved, clean review22:04. Original source965/initialfinal4b85 evidence remains separately scoped. Fresh parent3pass/11fail; source/final828/110+gates, three source14/14 stability runs. Final completed21:17:44UTC. [Bounded real-process/native-HTTP proof](https://github.com/saarius/commerce/blob/4b85ded311cc0f9cff90bfb08a0bef656451114c/proof/cli-sigint-main-20261029/PROOF.md); request receipt is not durable commit. No open transport dependency or shared-kernel edit.
+- [#211 — merchant country guidance](https://github.com/dinkuskit/commerce/pull/211): **MERGED by maintainer20:29:32UTC**, main75a79e7. Validated sourcefd51074 had exact801/110 gates plus current-head SDK/native settings1/1 each. No DOMPurify change. [Published/proposed mounted UI evidence](https://github.com/saarius/commerce/blob/a239ed87bc8a85437981c54a07be13efbffd8f27/proof/settings-country-guidance-current-20261029/PROOF.md),759/110 exact-head gates; source sandbox/native form journeys1/1 each.
+- [#206 — NaN host feed pagination: closed/deferred, unmerged](https://github.com/dinkuskit/commerce/pull/206). Maintainer accepts correctness/testing but there is no active caller. Leave closed unless a real caller makes it relevant; keep helper-specific developer documentation out of the shop-owner reference.
+
+New [205 public-route diagnostic](https://github.com/saarius/commerce/blob/a7691582a88fa06584d5f9dbe77581d3df1cc3bf/proof/feed-host-constraint-20261029/README.md): official Registry0.6.0 and main19b actual handlers behind a TCP harness produced no legitimate low-stock input. Twelve compatibility/constraint checks passed, **not positive proof or full CMS installation**. Maintainer accepted deferral at19:18UTC and closed205; no provider feature was added.
+
+This successor uses accepted upstream main `fd74eaebc7b4e1053394519d88d51509c014e29b`, including218 diagnostics,219 hook revert and216 SIGINT. It is not a roll-up of open220 or deferred217. Prior a2a2bf3 is [preserved unchanged](https://github.com/saarius/commerce/blob/a2a2bf3bc01ae9d8ff2d25f7730cabdeb7d3cfc6/proof/contribution-review-20261029/README.md). The prior37c snapshot is [preserved unchanged](https://github.com/saarius/commerce/blob/37c6bdfcbcc741d9ffcf95b4127769cc45c23624/proof/contribution-review-20261029/README.md).216 explicitly allows maintainer edits (GET-verified); an unrelated GitHub-app-on-fork limitation may still prevent their push, so authorized contributor refreshes remain available without broader app permissions. The previous413e883 snapshot is [preserved](https://github.com/saarius/commerce/blob/413e883829272b851243ad672e67811a875e417a/proof/contribution-review-20261029/README.md). All new upstream PRs must allow maintainer edits, and the setting was PATCHed/GET-verified on210/211. Prior36561cb is [retained](https://github.com/saarius/commerce/blob/36561cb534068dae1e19b56c85eee0406fff1cb0/proof/contribution-review-20261029/README.md), as are earlier snapshots. Prior56c remains [unchanged](https://github.com/saarius/commerce/blob/56c6e66556da620eaa1ff6e9ed501720c4687695/proof/contribution-review-20261029/README.md); frozen source identities below still refer to04dcf5e.
+
+See **[SUBMISSIONS.md](SUBMISSIONS.md)** for fresh exact-head validation,
+pre-submission duplicate checks, dependencies, remaining findings, later browser
+contributions and release/installed-host limits. PR state and feedback may
+advance after this snapshot; no approval or merge is implied.
+
+The first submission snapshot at [52b378b](https://github.com/saarius/commerce/blob/52b378bf453b7d8e96df04b8a6d8d761cee69526/proof/contribution-review-20261029/README.md) is also retained unchanged. CLI submission aliases permit review updates without moving the original contribution refs; #210 initially added a documentation-only child to the original runtime/test head. Per maintainer request, CLI aliases advanced through main19b/d61/75 merge commits (not rebases); original heads and every prior merge are preserved. See fresh merge-head checks in SUBMISSIONS.
+
+The original ten-entry snapshot is preserved at immutable
+[`f12ec8b`](https://github.com/saarius/commerce/blob/f12ec8b8a747c00e0926251d39d246e2f217e9e2/proof/contribution-review-20261029/README.md).
+This successor copies its manifest and verifier unchanged, adds submission
+status and retains every published contribution head and proof. The older
+snapshot's no-PR status is historical, not the current submission disposition.
+
+All **original-ten comparisons below** use immutable commit IDs. Their source base is
+`04dcf5e1ef296cc9ca8d719a11fec731d6961660` (package manifest `0.6.0`), preserved
+at `review/upstream-04dcf5e`. It was still current main at the first two submission batches, not the new211 submission.
+Fork `main` was not the comparison base: it initially lagged by 105 commits.
+Source-package versions do not establish a published Registry beta's contents.
+
+**This review-index branch contains current upstream application code (207,
+209,210 and211 already merged by its maintainer), not a roll-up of unmerged repairs.** It adds only this proof directory; no application, lockfile,
+release, ledger, permission, deployment or maintainer-store change.
+
+## Suggested review order
+
+- **Owner decision needed:** #3 supplies deterministic counterexamples to a
+  stronger catalog preview guarantee. Its documentation correction is
+  reviewable, but **no runtime atomicity repair** is included. Stronger
+  persistence/protocol work needs evaluation with the existing decision.
+- **Dispatch and data-integrity repairs:** #1/#2 distinguish uncertain writes,
+  #10 rejects invalid profile selection before dispatch, #4 closes a malformed
+  binding-admission gap, and #9 prevents new unreadable legacy profile seeds.
+- **Other bounded repairs/hardening:** #5 repairs host feed serialization; #6
+  updates one development dependency; #7 corrects existing settings guidance
+  and a mounted-form test readiness condition. #5 and #8 are **deferred**, not
+  active merge candidates without their supported input/caller.
+
+This is an evaluation order, not merge authority or a claim of deployed
+severity. Every reproduction uses public-safe synthetic data. No affected
+production store was established.
+
+## Exact comparisons, proof and recorded budgets
+
+Backend sizes are **previously recorded per-branch results**, not a fresh
+combined build. The SDK per-file cap is **131072 bytes**. The original04 baseline
+is **131033 bytes / 39 headroom**, SHA-256
+`29e86beb6d40af0050ea8e2582113aa5dc65417d355c535ac765bab0ea1ecf68`.
+The [manifest](manifest.json) contains full heads, base relationships, branch
+names and SHA-256 digests of the cited proof files.
+
+| # | Contribution | Immutable comparison / evidence | Required base | Backend bytes / headroom |
+| --- | --- | --- | --- | ---: |
+| 1 | CLI response-body transport | [diff](https://github.com/saarius/commerce/compare/04dcf5e1ef296cc9ca8d719a11fec731d6961660...08483dade447e31b223969fd30eded51f48e81da) · [proof](https://github.com/saarius/commerce/blob/08483dade447e31b223969fd30eded51f48e81da/proof/cli-response-body-errors-20261029/PROOF.md) | upstream base | 131033 / 39 |
+| 2 | CLI SIGINT outcome | [diff](https://github.com/saarius/commerce/compare/08483dade447e31b223969fd30eded51f48e81da...31666da5fe9d288bbcf27cd21d31c78353fedaa6) · [proof](https://github.com/saarius/commerce/blob/31666da5fe9d288bbcf27cd21d31c78353fedaa6/proof/cli-sigint-outcome-20261029/PROOF.md) | #1 | 131033 / 39 |
+| 3 | Catalog preview concurrency **audit only** | [diff](https://github.com/saarius/commerce/compare/04dcf5e1ef296cc9ca8d719a11fec731d6961660...04e9448a4014071b36cecb597b9d579d22cee97b) · [finding](https://github.com/saarius/commerce/blob/04e9448a4014071b36cecb597b9d579d22cee97b/proof/catalog-preview-race-20261029/FINDING.md) | upstream base | 131033 / 39 |
+| 4 | Payment binding readiness | [diff](https://github.com/saarius/commerce/compare/04dcf5e1ef296cc9ca8d719a11fec731d6961660...1d20f263221fff0d578d7704119921df76ae8d1d) · [proof](https://github.com/saarius/commerce/blob/1d20f263221fff0d578d7704119921df76ae8d1d/proof/payment-binding-readiness-20261029/PROOF.md) | upstream base | 131044 / 28 |
+| 5 | Low-stock feed availability | [diff](https://github.com/saarius/commerce/compare/04dcf5e1ef296cc9ca8d719a11fec731d6961660...efec42c4e2a73b29d5d434529c575c1efed2ff35) · [proof](https://github.com/saarius/commerce/blob/efec42c4e2a73b29d5d434529c575c1efed2ff35/proof/feed-low-stock-availability-20261029/PROOF.md) | upstream base | 131033 / 39 |
+| 6 | Development DOMPurify hardening | [diff](https://github.com/saarius/commerce/compare/04dcf5e1ef296cc9ca8d719a11fec731d6961660...6ceb330902264d146a954b6ab7fb376ac7cebb55) · [report](https://github.com/saarius/commerce/blob/6ceb330902264d146a954b6ab7fb376ac7cebb55/proof/dependency-exposure-20261029/REPORT.md) | upstream base | 131033 / 39 |
+| 7 | Settings guidance and form readiness | [diff](https://github.com/saarius/commerce/compare/6ceb330902264d146a954b6ab7fb376ac7cebb55...9b0284dffa76461be17fbb29c218bf2ce920fa9c) · [proof](https://github.com/saarius/commerce/blob/9b0284dffa76461be17fbb29c218bf2ce920fa9c/proof/settings-country-guidance-20261029/PROOF.md) | #6 | 130996 / 76 |
+| 8 | NaN host feed pagination | [diff](https://github.com/saarius/commerce/compare/04dcf5e1ef296cc9ca8d719a11fec731d6961660...fce969aa1ca301e7e0bc612b4258e6513011faa0) · [proof](https://github.com/saarius/commerce/blob/fce969aa1ca301e7e0bc612b4258e6513011faa0/proof/feed-pagination-nan-20261029/PROOF.md) | upstream base | 131033 / 39 |
+| 9 | Legacy-order shopper-profile seeding | [diff](https://github.com/saarius/commerce/compare/9b0284dffa76461be17fbb29c218bf2ce920fa9c...9801909abf7a671bc00ffd6a774cf37453dc86de) · [proof](https://github.com/saarius/commerce/blob/9801909abf7a671bc00ffd6a774cf37453dc86de/proof/shopper-legacy-contact-20261029/PROOF.md) | #7 (includes #6) | 131039 / 33 |
+| 10 | Requested CLI profile selection | [diff](https://github.com/saarius/commerce/compare/04dcf5e1ef296cc9ca8d719a11fec731d6961660...440c73f1e6023cdd6c909add231f255a13210cdf) · [proof](https://github.com/saarius/commerce/blob/440c73f1e6023cdd6c909add231f255a13210cdf/proof/cli-profile-selection-20261029/PROOF.md) | upstream base | 131033 / 39 |
+
+The two stacks are `#1 → #2` and `#6 → #7 → #9`. All other entries are
+independent of those stacks. #9's tested settings parent supplies necessary
+headroom; an earlier standalone prototype exceeded the cap. Do not assume its
+published repair fits directly on upstream, or that combining these branches
+preserves byte budgets, dependency closure or test results. **No combined tree
+has been qualified by this index.**
+
+## What the evidence establishes
+
+Counts below summarize original branch-specific passing suites, not a new run
+of all ten suites. Five submitted-repair revalidations are recorded separately
+in [SUBMISSIONS.md](SUBMISSIONS.md). Consult each immutable proof for its source/final-head
+scope, commands, failures, controls and limits. A dash means no full integration
+result is claimed by that proof, not zero tests or a passing skipped suite.
+
+| # | Recorded unit / integration counts | Principal observation and qualification |
+| --- | --- | --- |
+| 1 | 721 / — | Fetch and body consumption share transport handling. Body timeout/disconnection no longer escapes as raw `internal_error`; no retries. A failed response does not prove a write failed. |
+| 2 | 735 / — | Actual loopback receipt followed by SIGINT reports unknown outcome, not “nothing was sent.” Dispatch marking is conservative; receipt is not durable-commit proof. Subprocess coverage is POSIX, not Windows. |
+| 3 | 709 / — | Separate explicit counterexamples produce **8 expected failures / 2 controls passing / exit 1**. They are evidence against the stronger atomic claim, not passing repair regressions. Normal tests remain green separately. |
+| 4 | 756 / 110 | Malformed explicit readiness flags do not reach session creation, including compiled-workerd cases. Omitted flags/true and historical lookup remain supported. No forged shopper binding or real charge is demonstrated. |
+| 5 | 715 / 106 | The real availability resolver with a synthetic low-stock provider feeds correct Google/Meta serialization; JSON-LD remains LimitedAvailability. Not live Inventory or channel ingestion certification. |
+| 6 | 708 / 106 | DOMPurify 3.4.16 → 3.4.17, one lock entry. Explicit isolated Chromium-library cases improve 2/6 → 6/6 under advisory-specific configurations; not demonstrated EmDash XSS. |
+| 7 | 711 / 106 | Full suites at source `1169336`; selected final local sandbox/workerd and native settings cases each pass 1/1, no retries. At evidence-only final head, 27 focused checks/audits rerun, **not full suites again**. |
+| 8 | 726 / 106 | NaN size previously repeated an empty page/cursor; now RangeError, preserving defaults, clamps and numeric-cursor behavior. Host helper only, not deployed HTTP DoS. |
+| 9 | 723 / 108 | Synthetic legacy contact could seed a profile that immediately became UNAVAILABLE; independent field normalization prevents new invalid seeds. Actual compiled-workerd/SDK SQLite cases included. Existing damaged customer records still fail closed. |
+| 10 | 750 / 106 | Invalid requested profiles previously sent authenticated creation requests and kept synthetic Drafts at the base loopback site; now no dispatch. Valid empty aliases/precedence remain supported; no repair of earlier wrong-site records. |
+
+Typecheck, repository/feature contract audits, ledger and diff checks are
+recorded by the individual proofs. Repository contract audits are **not npm
+vulnerability audits**. Failed/cancelled build, installation, browser and wrapper
+attempts are not passing evidence. In particular, #10 discloses an initial
+post-gate artifact-reporting path error and a corrected artifact check; its
+exact final head subsequently passed all gates in a corrected bounded run.
+
+### Security, browser and host boundaries
+
+- #6 changes this checkout's development lock, **not independently locked
+  consumer hosts**. The last recorded security audit still had 25 affected
+  packages after that update (26 on the upstream lock), including critical
+  Astro. Those are historical package counts, not a live audit or demonstrated
+  application exploit count. `npm audit --omit=dev` is not host clearance.
+- The inspected EmDash Markdown sanitizer did not use the DOMPurify advisory
+  modes/hooks. Astro's actual Sharp importer resolved a newer native library
+  than separate SDK tooling; neither observation clears all hosts/platforms.
+- #7's project called `registry` is a **local sandbox-site/workerd fixture**,
+  not installation from the external Registry. Its selected desktop settings
+  cases are not a complete storefront journey, mobile, real-provider or
+  deployed-host qualification.
+- #4/#9's compiled runtime, SDK/SQLite and synthetic email sinks improve local
+  integration coverage but do not establish production/provider behavior.
+- The shared CLI kernel changes require maintainer synchronization across
+  companion repositories; only this authorized Commerce fork was changed.
+
+## Decisions and work not silently authorized
+
+1. Stronger catalog preview atomicity belongs with `catalog-api-20261027` and
+   needs a precise multi-record/media/retry protocol and budget evaluation.
+2. Repair/migration of already-damaged shopper records needs owner review.
+   #9 deliberately preserves fail-closed behavior for those records.
+3. Previously wrong-site CLI writes are not discovered or cleaned up by #10.
+4. Broader Astro/tooling remediation needs a compatible scoped update and host
+   proof; do not use bulk audit-fix downgrades or weaken the bundle cap.
+5. No merge, package publication, release, production mutation or deployment
+   is authorized by this snapshot. Scope/decision locks remain unchanged.
+
+## Check the frozen identities
+
+Node 24.22.0 and Git are sufficient; **npm install is not needed** for these
+identity checks. From a checkout with the listed commit objects:
+
+```sh
+node --test proof/contribution-review-20261029/verify.test.mjs
+node proof/contribution-review-20261029/verify.mjs
+# Explicit opt-in network read; does not fetch or change local refs:
+node proof/contribution-review-20261029/verify.mjs --remote
+```
+
+`verify.mjs` checks manifest shape, stack ancestry, commit objects, and each
+proof's SHA-256 over its raw Git blob. `--remote` additionally requires the
+listed public fork refs, including the base snapshot, to still match the
+recorded commits. A moved or deleted ref fails; no snapshot is silently
+updated. Current upstream main may legitimately advance; the frozen base is
+not a promise that it remains the latest tip.
+
+If a fresh/shallow checkout lacks objects, fetch them **explicitly before**
+verification (this preparation updates remote-tracking refs, not local branches):
+
+```sh
+git fetch https://github.com/saarius/commerce.git \
+  'refs/heads/saarius/*:refs/remotes/saarius-review/*'
+```
+
+The verifier itself never fetches, checks out, builds, runs product tests,
+merges, installs, writes refs or modifies a worktree. It has no arbitrary URL,
+shell-command or deployment option. Raw Git failure diagnostics are suppressed;
+only check labels are reported. Its output explicitly lists builds, test
+results, bundle bytes and installed hosts as **not checked**. Reported byte
+counts are metadata with arithmetic headroom, not artifact measurements.
+Proof digests establish identity, not correctness, signatures, authorship or
+approval. Only the listed refs are checked; this is not automatic discovery of
+every branch on the fork.
+
+The verifier's own tests include negative metadata/proof/ref controls and real
+synthetic Git repositories, including HEAD/index/worktree preservation. They
+are explicit proof-tool tests, outside normal product test globs. **Docs: not
+applicable** to the product article: this handoff changes no product behavior
+or setup step and is not a package release changeset.
+
+### Index-specific verification
+
+On Node **24.22.0**, Linux x64, the index-tool checks passed **34/34**, no
+skips. Local commit/ancestry/proof-digest checks passed for all ten entries;
+an explicit remote check matched all **11 refs** (ten contributions plus the
+base snapshot). Typecheck, repository/feature contract audits, GrillTrack
+validation and diff checks passed. Negative controls include actual unrelated
+Git commits and missing Git, not only successful mocked calls.
+
+These original index-specific results concern review tooling and frozen
+identities. That original index cycle did **not** rerun the ten product suites.
+The submission cycles separately reran five proposed repair heads (including
+now-deferred #206);
+see [SUBMISSIONS.md](SUBMISSIONS.md) rather than attributing fresh results to
+all ten entries. The unchanged verifier still checks only the original
+manifest, not PR state or additional browser contributions. No combined
+artifact, installed-release, host-security or Windows qualification is claimed.

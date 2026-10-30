@@ -1,0 +1,11 @@
+import {test}from'node:test';import assert from'node:assert/strict';
+import{selectCommerce,scanCommerce,STABLE_PACKAGE as S,BETA_PACKAGE as B}from'./registry-selection.mjs';
+const record=(pkg,version)=>({uri:pkg+':'+version,cid:pkg+'-'+version,value:{package:pkg,version}});
+test('separate beta package beats stable even when stable semver is greater',()=>{const b=record(B,'0.7.0-beta.2');assert.equal(selectCommerce([record(S,'1.0.0'),b]).selected,b);});
+test('numeric beta ordering is not lexical or list order',()=>{assert.equal(selectCommerce([record(B,'0.7.0-beta.2'),record(B,'0.7.0-beta.10'),record(B,'0.6.0-beta.20')]).selected.value.version,'0.7.0-beta.10');});
+test('fallback stable only in absence of separate beta releases',()=>{assert.equal(selectCommerce([record(S,'0.6.0'),record(S,'0.5.0')]).selected.value.version,'0.6.0');});
+test('unrelated plugin beta cannot select Commerce',()=>{assert.equal(selectCommerce([record('dinkus-payments-beta','99.0.0-beta.1'),record(S,'0.6.0')]).selected.value.package,S);});
+test('empty discovery fails closed',()=>assert.throws(()=>selectCommerce([]),/No official/));
+test('full pagination finds beta on later page and checks latest metadata CID',async()=>{const s=record(S,'0.6.0'),b=record(B,'0.7.0-beta.2');let calls=0;const out=await scanCommerce(async url=>{calls++;return{status:200,json:async()=>calls===1?{records:[s],cursor:'next'}:calls===2?{records:[b]}:{uri:b.uri,cid:b.cid,package:B,version:b.value.version}}});assert.equal(out.pages,2);assert.equal(out.selected.package,B);assert.equal(calls,3);});
+test('repeated cursor refuses incomplete discovery',async()=>assert.rejects(scanCommerce(async()=>({status:200,json:async()=>({records:[],cursor:'repeat'})})),/Repeated Registry cursor/));
+test('aggregator CID mismatch refuses rather than silently changing artifact',async()=>{let n=0;await assert.rejects(scanCommerce(async()=>({status:200,json:async()=>++n===1?{records:[record(S,'0.6.0')]}:{cid:'wrong'}})));});

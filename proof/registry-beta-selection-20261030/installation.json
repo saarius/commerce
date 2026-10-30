@@ -1,0 +1,39 @@
+{
+  "installedAt": "2026-10-30T01:19:21.403Z",
+  "status": 201,
+  "pluginId": "r_fjzjvld3ssb4j63o",
+  "publisherDid": "did:plc:ekk4pjmkh3k3ql2kfoex3qt4",
+  "slug": "dinkus-commerce-beta",
+  "version": "0.7.0-beta.2",
+  "verification": {
+    "profileCid": "bafyreibnnwpe5ahd6gumynkvatirpsix3tb2u3etiaf7m4vvzyqy6r3y2e",
+    "releaseCid": "bafyreicsp4rzodzyetcsy2w22z425tqudphnqchsiqdefdivdqqbfmxfnm",
+    "provenance": "verified",
+    "policy": {
+      "requireProvenance": true,
+      "confirmation": "escalation-only",
+      "approvers": [
+        "did:plc:ekk4pjmkh3k3ql2kfoex3qt4"
+      ]
+    }
+  },
+  "releaseUri": "at://did:plc:ekk4pjmkh3k3ql2kfoex3qt4/com.emdashcms.experimental.package.release/dinkus-commerce-beta:0.7.0-beta.2",
+  "releaseCid": "bafyreicsp4rzodzyetcsy2w22z425tqudphnqchsiqdefdivdqqbfmxfnm",
+  "artifactMetadata": {
+    "blob": {
+      "ref": {
+        "$link": "bafkreihd5lyhetpdhv4d2qbxtqbxbgngw4u7obdfq4jdd52pfpiklpwyqq"
+      },
+      "size": 53069,
+      "$type": "blob",
+      "mimeType": "application/gzip"
+    },
+    "checksum": "bciqoh2xqojg6gplyhvadphadocm2nnzj64cglbysgh3u6k6quw7nrba",
+    "contentType": "application/gzip"
+  },
+  "backend": {
+    "bytes": 131033,
+    "sha256": "29e86beb6d40af0050ea8e2582113aa5dc65417d355c535ac765bab0ea1ecf68"
+  },
+  "scope": "Observed real SDK HTTP verify/install with its policy/signature/provenance validation. No independent cryptographic audit; no configured descriptor/native Commerce. Own synthetic loopback host, no real checkout/provider."
+}
