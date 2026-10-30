@@ -1,0 +1,40 @@
+---
+import installed from '../../store-config.json';
+import { resolveCatalogImage } from '../lib/catalog-image.mjs';
+import { handleMediaGet } from 'emdash';
+import { getDb } from 'emdash/runtime';
+const endpoint='http://127.0.0.1:65100/_emdash/api/plugins/'+installed.pluginId;
+let products=[]; let unavailable=false;
+try {
+  const response=await fetch(endpoint+'/catalog/public');
+  const body=await response.json();
+  if(!response.ok||!body.success)throw new Error('Catalog unavailable');
+  products=await Promise.all(body.data.products.map(async product=>({...product,publicImage:await resolveCatalogImage(product.image,{
+    readMedia:async id=>handleMediaGet(await getDb(),id),
+    publicMediaUrl:key=>Astro.locals.emdash.getPublicMediaUrl(key),
+    siteUrl:Astro.site?.href ?? Astro.url.origin,
+  })})));
+}catch{unavailable=true;}
+const money=(price)=>price ? new Intl.NumberFormat('en-US',{style:'currency',currency:price.currency}).format(Number(price.minor)/100) : 'Choose an option';
+---
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width"/><meta name="robots" content="noindex,nofollow"/><title>Saarius workshop — demo store</title>
+<style>
+:root{font-family:system-ui,sans-serif;color:#20382e;background:#f8f5ed}*{box-sizing:border-box}body{margin:0}header,main,footer{max-width:68rem;margin:auto;padding:1.5rem}header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #cbd7ca}a{color:inherit}h1{font-size:clamp(2.6rem,7vw,5rem);max-width:12ch;line-height:1.02;margin:2rem 0}h2{margin-top:0}.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:.8rem}.intro{font-size:1.2rem;max-width:45ch}.notice{background:#e4ebde;padding:1rem;border-radius:1rem}.layout{display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;margin:2rem 0}.product,aside{padding:1.5rem;border:1px solid #cbd7ca;border-radius:1rem;background:white}.illustration{background:#e5bc80;min-height:13rem;display:grid;place-items:center;font-size:5rem;border-radius:.6rem;margin-bottom:1.5rem}.product-image{display:block;width:100%;height:auto;border-radius:.6rem;margin-bottom:1.5rem;background:#f4eddc}.price{font-size:1.7rem;font-weight:600}button{background:#203e31;color:white;font:inherit;border:0;padding:.8rem 1rem;border-radius:.5rem;cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}button.secondary{background:#eef1e8;color:#203e31;padding:.4rem .6rem}li{margin:.8rem 0;line-height:1.8}ul{padding-left:1rem}.muted{color:#536b5d;font-size:.9rem}#checkout-status{line-height:1.5}footer{border-top:1px solid #cbd7ca}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}@media(max-width:700px){.layout{grid-template-columns:1fr}header,main,footer{padding:1rem}h1{margin-top:1rem}}
+</style></head><body>
+<header><strong>SAARIUS / WORKSHOP</strong><span class="muted">Independent demo</span></header>
+<main><p class="eyebrow">Small things, thoughtfully made</p><h1>Make room for good ideas.</h1><p class="intro">A workshop notebook for plans, sketches and whatever comes next.</p>
+<p class="notice"><strong>Synthetic demo only.</strong> No real purchases, payments or shipments. Catalog and availability come from the officially installed Commerce {installed.version} plugin. This HTTPS preview is read-only; administration is restricted to the operator's local connection.</p>
+<div class="layout"><section aria-label="Shop products">{unavailable?<p role="alert">The catalog is unavailable. Please try again later.</p>:products.length===0?<p>No products are available yet.</p>:products.map(product=><article class="product" data-product={JSON.stringify(product)}>{product.publicImage?<img class="product-image" src={product.publicImage.src} alt={product.publicImage.alt} width={product.publicImage.width} height={product.publicImage.height} decoding="async"/>:<div class="illustration" aria-hidden="true">▤</div>}<p class="eyebrow">Workshop essentials</p><h2>{product.name}</h2><p>A quiet place to collect your ideas. Synthetic merchandise; not a real offer.</p><p class="price">{money(product.price)}</p><p>{product.availability.sellable?'In stock':'Currently unavailable'}</p><button data-add={product.id} disabled={!product.availability.sellable}>Add to basket</button></article>)}</section>
+<aside aria-labelledby="basket-heading"><h2 id="basket-heading">Your basket</h2><ul id="basket"></ul><p id="basket-empty">Your basket is empty.</p><p id="basket-total"></p><button id="checkout" disabled>Check checkout availability</button><p id="checkout-status" role="status" aria-live="polite"></p><p class="muted">Prices shown here are estimates. Commerce rereads authoritative prices and availability before any checkout. Checkout setup is incomplete; a DinkusKit connection alone does not establish processor readiness.</p></aside></div>
+<p class="muted">Inventory is off. This demo uses Commerce's manual availability, not a stock count.</p></main>
+<footer><p>Saarius workshop · Independent DinkusKit Commerce evaluation · No purchases</p></footer>
+<script define:vars={{pluginId:installed.pluginId}}>
+const products=new Map([...document.querySelectorAll('[data-product]')].map(node=>{const p=JSON.parse(node.dataset.product);return[p.id,p]}));
+const basket=new Map();
+const format=(minor,currency)=>new Intl.NumberFormat('en-US',{style:'currency',currency}).format(Number(minor)/100);
+const list=document.querySelector('#basket'),checkout=document.querySelector('#checkout'),status=document.querySelector('#checkout-status');
+function render(){list.replaceChildren();let total=0n;let currency='USD';for(const[id,quantity]of basket){const p=products.get(id);if(!p?.price)continue;const li=document.createElement('li');li.append(document.createTextNode(p.name+' ×'+quantity+' '));const remove=document.createElement('button');remove.className='secondary';remove.textContent='Remove';remove.setAttribute('aria-label','Remove '+p.name);remove.addEventListener('click',()=>{if(quantity===1)basket.delete(id);else basket.set(id,quantity-1);render()});li.append(remove);list.append(li);total+=BigInt(p.price.minor)*BigInt(quantity);currency=p.price.currency;}document.querySelector('#basket-empty').hidden=basket.size>0;document.querySelector('#basket-total').textContent=basket.size?'Estimated total: '+format(total,currency):'';checkout.disabled=basket.size===0;status.textContent='';}
+for(const button of document.querySelectorAll('[data-add]'))button.addEventListener('click',()=>{const id=button.dataset.add,p=products.get(id);if(!p?.price||!p.availability.sellable)return;const count=basket.get(id)||0;if(count<99)basket.set(id,count+1);render()});
+checkout.addEventListener('click',async()=>{checkout.disabled=true;status.textContent='Checking checkout…';try{const res=await fetch('/_emdash/api/plugins/'+encodeURIComponent(pluginId)+'/checkout/guest/readiness',{headers:{Origin:location.origin}});const body=await res.json();if(!res.ok||!body.success)throw new Error('Readiness unavailable');status.textContent=body.data.status==='supported'?'Checkout reports configuration readiness, but this public preview does not submit orders. Operator TEST checkout is private. No purchase was sent.':'Checkout is unavailable: checkout and processor setup is not complete. No purchase was sent.';}catch{status.textContent='Checkout availability could not be confirmed. No purchase was sent.';}finally{checkout.disabled=basket.size===0;}});
+render();
+</script></body></html>

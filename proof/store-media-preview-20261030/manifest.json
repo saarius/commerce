@@ -1,0 +1,21 @@
+{
+  "schema": "saarius.media-preview-review/v1",
+  "ownSource": "b59cfe9c616373f53a8940987c88c0dbdf479586",
+  "commerceMain": "7740b4c14e614740c454ed67aeb6e8eaac49db6d",
+  "ownOfflineTests": 69,
+  "mapperTests": 18,
+  "basketReadinessRequalified": false,
+  "canonicalReleaseQualified": false,
+  "files": {
+    "PROOF.md": "6493a62f42bcd87bc1fb84cba5f783b0cabb908bcf2ce06e6321d2634208cbca",
+    "consumer/catalog-image.test.mjs": "c1285f1fe33870cc6ea3af21a3a58ec9ab37bcf29895065a1577a78658e85a3d",
+    "consumer/src/lib/catalog-image.mjs": "3c47ca1c04399fd5ba7743ae203eb92d43c8cd5394d7f9042e642bc78ac25a5b",
+    "consumer/src/pages/index.astro": "4f4564f1c1fe8dbb3d941ed5b75551e6e80b9a1b1153bb24e28b2fcc065bd171",
+    "consumer/tools/notebook-illustration.py": "e1a6ad0e98eb2f47e15b35154040682c284d172713a367fd5d02748f4427e8b5",
+    "desktop.png": "4047139a3fbaeeab4e9dcc66dfe83795b83a48361637e6944971e3808f610a91",
+    "notebook-illustration.png": "b6834e74507418d107e08ebd9f4c7797abe04a5d09cff2308ba01a631746ce30",
+    "phone.png": "667f185361ca33b374f36e4bfb1ecc17225b47b65167445e66a9d1b112149476",
+    "result.json": "029214ab12210e57dea4e281a181a89dd6b01397eb257b697006e94f66829e6a",
+    "verify.test.mjs": "4c365e99c44c74e727bcb4a41d776ccade0498ec9916c960c3528819950ebcf3"
+  }
+}

@@ -5,6 +5,18 @@
 This fork-only coordination checkpoint adds public-safe evidence, not product
 changes, release approval or an upstream pull request.
 
+## Own media integration checkpoint —11:24UTC
+
+[Installed-beta media panel and public host mapping](../store-media-preview-20261030/PROOF.md):
+one original synthetic PNG uploaded through the real SDK, selected through the
+actual installed product-image panel, then mapped using documented EmDash public
+APIs. Same canonical USD1200 price. Two public desktop/phone image cases pass;
+only the reviewed PNG's exact GET/HEAD URL is exposed,7additional denials and18
+existing boundary cases pass. Own69offline tests/build pass. Intermediate OWN
+host assumptions/failures are disclosed; this is not a Commerce bug fix. New
+basket/readiness check FAILED30s (and a foreground wrapper was tool-terminated);
+no new basket, provider-payment or canonical-release qualification is claimed.
+
 ## Later consumer recovery correction —10:35UTC
 
 [Status-only retained-capability review](../operator-recovery-only-20261030/PROOF.md):
