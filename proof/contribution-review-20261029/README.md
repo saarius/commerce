@@ -5,6 +5,22 @@
 This fork-only coordination checkpoint adds public-safe evidence, not product
 changes, release approval or an upstream pull request.
 
+## Later consumer recovery correction —10:35UTC
+
+[Status-only retained-capability review](../operator-recovery-only-20261030/PROOF.md):
+OWN client bug, not Commerce. A cached pre-start record could implicitly resume
+submission after release; actual native handlers plus a synthetic payment port
+reproduce two synthetic sessions. Before2controls/6failures, after8/8; own suite51.
+Retained records are now status-only, even before a first start. Same-page observed
+attempts lock submission before persistence. Actual unavailable UI with synthetic
+browser-only retained records confirms disabled forms/manual status available;
+empty-tab2viewports+18public+2basket+3private-path checks pass later10:35. Earlier
+10:31/10:33 browser failures remain failures, cause unknown; no cold-start,
+provider-paid or full-release claim. Own9f42d63, unchanged official installedbetas.
+This is fork-only evidence, not an upstream behavior PR. [Question222](https://github.com/dinkuskit/commerce/issues/222)
+asks for the legitimate independent TEST setup prerequisite; no privileged
+workaround or invented merchant information is authorized.
+
 ## Later corrected-consumer UI checks —08:56UTC
 
 [Updated bounded proof and safe captures](../operator-capability-contract-20261030/PROOF.md#later-unchanged-driver-run-0856utc):
@@ -39,8 +55,9 @@ The03:09 packet below remains historical, not relabeled with this later result.
 
 ## Contribution disposition
 
-All merges below were performed by the maintainer, not this assistant. No own
-upstream PR remains open at this snapshot. Closed PRs need not retain the
+All merges below were performed by the maintainer, not this assistant. The ten
+historical PRs in this table are closed (merged or deferred); the later docs
+[PR221](https://github.com/dinkuskit/commerce/pull/221) remains open. Closed PRs need not retain the
 open-PR maintainer-edit flag. Original source branches and every earlier
 checkpoint are preserved; no force push or owner-head replacement.
 

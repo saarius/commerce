@@ -1,0 +1,16 @@
+{
+  "scope": "Actual unavailable installed UI; synthetic browser-only retained record; no POST",
+  "results": [
+    {
+      "requested": false,
+      "actualReadiness": "unavailable",
+      "fieldsetDisabled": false,
+      "allControlsDisabled": false,
+      "beginDisabled": true,
+      "checkEnabled": true,
+      "guestPosts": 0,
+      "pageErrors": 0,
+      "overflow": false
+    }
+  ]
+}

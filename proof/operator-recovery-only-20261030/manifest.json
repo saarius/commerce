@@ -1,0 +1,43 @@
+{
+  "schema": "saarius.consumer-recovery-review/v1",
+  "ownSource": "9f42d63df5d96a9f69886340dbe4e52c73e049e1",
+  "ownParent": "8cfaeb88e5369ed00472f9f58a465fd0fd914c04",
+  "commerceBuildSource": "a3e87b721669cf6f0c5e8573b44e824b94a5404b",
+  "acceptedMain": "7740b4c14e614740c454ed67aeb6e8eaac49db6d",
+  "priorConsumerSha256": "7d315d194926446d4ff15aff750d005de69fab1ce9e02a8502d8e2e254ca3c7a",
+  "runtimeModules": {
+    "guest.js": "84430e681a423f81e90598c37c45ae636f4f225ffe93731b03329263a0ab560c",
+    "capability.js": "8fb10da93c8b9942e68d72eed6a1a7096d90737937abb91e4af7aef6dd11cb38",
+    "project.js": "13125130cf8488a6d3566bf92990c6a6d70616452846a5a16560654ba18309cb",
+    "orchestrate.js": "635602fe91ecbfd79c2631fe53088b21694fc6cb1bae3dc3bb3431e594bfe3d9"
+  },
+  "checks": {
+    "nativeRecovery": {
+      "beforePass": 2,
+      "beforeFail": 6,
+      "afterPass": 8
+    },
+    "coreTests": 852,
+    "ownOfflineTests": 51,
+    "browserFirstFailed": true,
+    "browserLaterFailed": true,
+    "browserPostObservationPassed": true,
+    "canonicalReleaseQualified": false,
+    "providerPaidQualified": false
+  },
+  "files": {
+    "PROOF.md": "781c17ce1e75befff0416337a31f02f9e254caf97aa9a7ed8c33760ef6c3f5aa",
+    "after-browser.json": "5590180ec15c6ed7d10960f2bd7a4628e3bc4bd4508d45b3a5e9e70906c198d4",
+    "after-requested.png": "ae60509018190326055b087a6b7b86c6498fba9e233cec2ce3dfcc1db015a707",
+    "after-unrequested.png": "ae60509018190326055b087a6b7b86c6498fba9e233cec2ce3dfcc1db015a707",
+    "before-browser.json": "9c6040e85c4ad77d72ad6f69c78d19452f6f696272b709985a054e3c17090701",
+    "before-unrequested.png": "1003048f504ea55d3e0ff1c5f1ea5174afa3fce669ab24c926daa7aa93e73a4b",
+    "capability-source.test.mjs": "b716dc9b02b87f814ca7aa6cbe7d6696d0c286a1c0495b6c0cb56ea899d332e5",
+    "consumer/guest-checkout.test.mjs": "15ce5f92a6440a2337d48407741266dcf1f6fe40cb60dad59f060292e9f4e657",
+    "consumer/src/lib/guest-checkout.mjs": "f59d6f82bbcdcbe01f3416c3101966b991ee35d0daaebbc53d0fcba170967cc1",
+    "consumer/src/pages/checkout.astro": "b78fd98875899d154581ae22b594ac10fe7e8611a8559c0b6d9ad40a9aa91034",
+    "empty-browser.json": "1a293be113e518257a3c65e56898227a9ca9187dab1e0f4fcd5269281edd34f5",
+    "recovery-source.test.mjs": "a1ac6b92e6ef1bcd7dc8f5af30bc932208745d4c2217b321cf0f1ca5e466fb86",
+    "verify.test.mjs": "763bb92886262d115aa5f9f3a3a3dbc903fe1cdf68b719fe98a2d25d8c636acc"
+  }
+}
