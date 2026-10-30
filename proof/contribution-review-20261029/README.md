@@ -5,6 +5,17 @@
 This fork-only coordination checkpoint adds public-safe evidence, not product
 changes, release approval or an upstream pull request.
 
+## Consumer correction and documentation PR —08:22UTC
+
+[Own prepare parser correction](../operator-capability-contract-20261030/PROOF.md):
+the earlier WIP client/positive fixtures incorrectly flattened the capability.
+Real Commerce mint/authorization code exposes this own-client mistake; corrected
+source and counterexample tests are included. Earlier unavailable UI checks remain
+historical, not payment proof. [PR221](https://github.com/dinkuskit/commerce/pull/221)
+clarifies the EXISTING contract in the reference (open at08:17, maintainer edits
+verified enabled); it does not change Commerce behavior.42offline consumer checks
+and853core tests passed in their stated scopes. No purchase qualification.
+
 ## Later own consumer checkpoint —06:22UTC
 
 [Operator TEST checkout consumer and safe captures](../operator-test-checkout-20261030/PROOF.md):
