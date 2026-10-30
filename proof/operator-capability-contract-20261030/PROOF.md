@@ -53,8 +53,10 @@ Corrected own app built and natural production restoration succeeded08:11.
 First new browser gate FAILED08:14:05 at30s network-idle navigation; it had loaded
 HTML and JS and issued a real readiness GET but had no readiness response before
 the deadline. Cause unproved; do not relabel it or simply increase timeouts.
-An ordinary public read later returned real200/unavailable in508ms08:20. A later
-warm-browser run is separate evidence, not a cold-start or payment qualification.
+An ordinary public read later returned real200/unavailable in508ms08:20. The
+later warm-browser run ALSO FAILED08:21:29 at30s network-idle navigation. Thus
+there is NO new2/2browser qualification for8cfaeb8. These failed checks are not
+attributed to the parser fix or to a Commerce defect without further evidence.
 
 Commerce beta.3 and Payments beta.1 remain installed; a fresh terminal2page
 scan of both exact package pairs08:15 still selected these versions and checked
