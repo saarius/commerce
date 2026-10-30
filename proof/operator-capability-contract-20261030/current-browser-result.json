@@ -1,0 +1,28 @@
+{
+  "checkedAt": "2026-10-30T08:56:15.781Z",
+  "commerceVersion": "0.7.0-beta.3",
+  "paymentsVersion": "0.5.0-beta.1",
+  "results": [
+    {
+      "viewport": "desktop",
+      "readiness": "unavailable",
+      "guestPosts": 0,
+      "sessionCapabilities": 0,
+      "horizontalOverflow": false,
+      "pageErrors": 0,
+      "navigationStatus": 200,
+      "loopback": true
+    },
+    {
+      "viewport": "phone",
+      "readiness": "unavailable",
+      "guestPosts": 0,
+      "sessionCapabilities": 0,
+      "horizontalOverflow": false,
+      "pageErrors": 0,
+      "navigationStatus": 200,
+      "loopback": true
+    }
+  ],
+  "scope": "operator-local anonymous real installed readiness; NO mutation/provider/payment qualification"
+}

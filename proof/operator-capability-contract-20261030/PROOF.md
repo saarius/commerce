@@ -47,7 +47,7 @@ backend130676bytes/SHA256
 `a630ca239b3573cd5943cb430fb8e26702c946ba6d7c38438fcc86ac01c98f92`, unchanged.
 Maintainer edits independently verified enabled08:17. No upstream merge/release.
 
-## Deployment limitations
+## Deployment limitations at the08:22 checkpoint
 
 Corrected own app built and natural production restoration succeeded08:11.
 First new browser gate FAILED08:14:05 at30s network-idle navigation; it had loaded
@@ -62,4 +62,34 @@ Commerce beta.3 and Payments beta.1 remain installed; a fresh terminal2page
 scan of both exact package pairs08:15 still selected these versions and checked
 advertised identities. No installed-store prepare/start/capability/card/order,
 processor onboarding, platform diagnostic or charge was performed. Public
-mutations and `/checkout` remain denied; processor mode remains unestablished.
+mutations and `/checkout` remain denied; processor mode was unestablished at
+that checkpoint.
+
+## Later unchanged-driver run —08:56UTC
+
+On exact same own app8cfaeb8, the original browser driver subsequently passed
+**both1440×1100 and390×844 anonymous operator-local cases** at08:56:15. It observed
+actual installed readiness200/exact `unavailable` schema, disabled fieldset AND
+all descendant controls, disabled actions, one explicit member, hidden payment
+link, zero guest POSTs/capabilities/pageerrors and no horizontal overflow. Safe
+`current-browser-result.json` and the two new empty-input captures are bound by
+`current-browser-manifest.json`; captures manually reviewed08:58. No app or
+server source, timeout, assertion, browser security flag or final-driver
+permission grant changed to get this result.
+
+The same sequential job also passed18public boundary probes,2real HTTPS
+basket/readiness viewport cases and3public `/checkout` denial probes. A new
+complete terminal2page both-channel Registry scan immediately before the run
+still selected Commercebeta.3 and Paymentsbeta.1. Runtime remained the
+uninstrumented production server. These are warm/later checks, not proof of a
+cold-start deadline, provider readiness, successful installed preparation/start
+or paid TEST order. The two prior failures remain failures, cause unproved.
+
+Separate passive transport trials later succeeded with HTTP/2 and HTTP/3. A
+loopback-permission experiment had already received the real response BEFORE
+the disposable-context grant, so that is not an established cause/fix either.
+No global security disabling, server permissions change or provider injection
+was used. The later success must not be presented as an explanation of earlier
+network stalls. PR221's public CI checks are green; review/merge remains the
+maintainer's decision. Later merchant setup investigation is not qualified by
+this anonymous UI packet.

@@ -1,0 +1,18 @@
+{
+  "appCommit": "8cfaeb88e5369ed00472f9f58a465fd0fd914c04",
+  "scope": "later unchanged-driver unavailable checks only; prior failures preserved",
+  "files": {
+    "desktop-current-unavailable.png": {
+      "bytes": 140905,
+      "sha256": "705346aaf24b063d0862090f2aa0e25baf90a20e40f4b9a4d5403fe5045fe111"
+    },
+    "phone-current-unavailable.png": {
+      "bytes": 143267,
+      "sha256": "94722284c93b202162cb8e8a7e7320901520a66d9174cfe5c00ec7a2671ddf74"
+    },
+    "current-browser-result.json": {
+      "bytes": 731,
+      "sha256": "a3e1e7471a8f94b9b1d5589cbed04ae59c44be4b007b9514c27e7e7af367ba4f"
+    }
+  }
+}

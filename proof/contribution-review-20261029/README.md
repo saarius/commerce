@@ -5,6 +5,16 @@
 This fork-only coordination checkpoint adds public-safe evidence, not product
 changes, release approval or an upstream pull request.
 
+## Later corrected-consumer UI checks —08:56UTC
+
+[Updated bounded proof and safe captures](../operator-capability-contract-20261030/PROOF.md#later-unchanged-driver-run-0856utc):
+unchanged app8cfaeb8 and driver now pass2private anonymous unavailable cases,
+18public boundaries,2public basket cases and3private-route denial probes. Prior
+08:14/08:21 failures are preserved, cause unproved. No installed prepare/start,
+provider-paid TEST purchase or full release claim. PR221's CI checks are green;
+maintainer review/merge remains pending. Historical checkpoints below retain
+original scopes.
+
 ## Consumer correction and documentation PR —08:22UTC
 
 [Own prepare parser correction](../operator-capability-contract-20261030/PROOF.md):
