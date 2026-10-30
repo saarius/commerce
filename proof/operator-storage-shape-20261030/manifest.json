@@ -1,0 +1,25 @@
+{
+  "schema": "saarius.own-storage-shape-review/v1",
+  "ownSource": "307ee1fde1f9356f0f3918f39480b0278d56bac9",
+  "priorOwnSource": "b59cfe9c616373f53a8940987c88c0dbdf479586",
+  "commerceRuntimeSource": "7740b4c14e614740c454ed67aeb6e8eaac49db6d",
+  "priorConsumerSha256": "f59d6f82bbcdcbe01f3416c3101966b991ee35d0daaebbc53d0fcba170967cc1",
+  "ownChecksBeforeBuild": 84,
+  "sourceCases": 9,
+  "baselineControlsPass": 3,
+  "baselineCasesFail": 6,
+  "baselineExpectedExit": 1,
+  "postDeployBrowserGatePassed": false,
+  "canonicalReleaseQualified": false,
+  "files": {
+    "PROOF.md": "93d3c6c5495b2165cbad0aa654fb428f8c555c07b63c6be43a045e80b055dd35",
+    "after-failed-browser.json": "ecc6daa85fa38792251d137b4f04b99b84d5703d69a7d5b969e8c87cf06c2232",
+    "before-array.png": "ae60509018190326055b087a6b7b86c6498fba9e233cec2ce3dfcc1db015a707",
+    "before-browser.json": "e2fb7f0544504527cddf43cd3157ed04897df2baa303105c5fccb0cc58b014a9",
+    "consumer/guest-checkout.test.mjs": "bd652cc69831016a2f5eaf985149d6ec5f42e713ac603253b8e3e52ad76851ac",
+    "consumer/src/lib/guest-checkout.mjs": "9e5dcda6cb00509a0a4dfb3c24e5bbf28af7e57f377867dcafd894160709934b",
+    "consumer/src/pages/checkout.astro": "cf442f82e0e20b90757077e4ef2a7b466cbf8d3773739d71b3eda2a1dbe5b9c0",
+    "source-contract.test.mjs": "c92b5209fa46862798e3efdf1472d54cc077b94745bbfe532e04129d5b94c622",
+    "verify.test.mjs": "711453f9b7d6d256c850aa9e1355c0edb943548ec7beba120993f8600f85e9d6"
+  }
+}

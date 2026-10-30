@@ -5,6 +5,18 @@
 This fork-only coordination checkpoint adds public-safe evidence, not product
 changes, release approval or an upstream pull request.
 
+## Own malformed recovery-storage correction —12:48UTC
+
+[Source counterexample and explicit failed browser gates](../operator-storage-shape-20261030/PROOF.md):
+own307ee1 now treats only a missing key as absent, requires a real string token,
+and blocks empty/coerced malformed records without rewriting them. Real Commerce
+mint/status+memoryCAS fixture: before3controls pass/6fail (including a replacement
+synthetic mint), fixed9/9.84own checks/build pass. Before installed browser reveals
+enabled status for a synthetic malformed record; after original and diagnostic
+browser gates BOTH FAIL30s. Passive diagnostic shows blocked controls, NOT a
+completed UI/readiness qualification. No new Commerce bug/PR/provider operation
+or release/security/payment claim. Existing packets/failures remain unchanged.
+
 ## Own media integration checkpoint —11:24UTC
 
 [Installed-beta media panel and public host mapping](../store-media-preview-20261030/PROOF.md):

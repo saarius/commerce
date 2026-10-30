@@ -1,0 +1,23 @@
+{
+  "error": {
+    "name": "TimeoutError",
+    "message": "locator.waitFor: Timeout 30000ms exceeded."
+  },
+  "events": [
+    {
+      "at": 1793364379190,
+      "kind": "request"
+    },
+    {
+      "at": 1793364409176,
+      "kind": "requestfailed"
+    }
+  ],
+  "ui": {
+    "readiness": "TEST availability or recovery storage could not be confirmed. No checkout was sent.",
+    "result": "Saved checkout recovery data is invalid or unreadable. No new checkout was submitted. Keep this tab and inspect Commerce Orders; do not clear stored recovery data to retry.",
+    "beginDisabled": true,
+    "checkDisabled": true,
+    "fieldsetDisabled": true
+  }
+}

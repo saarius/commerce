@@ -1,0 +1,18 @@
+{
+  "scope": "Actual unavailable installed UI; malformed synthetic browser-only records; no POST/status/prepare/start",
+  "results": [
+    {
+      "name": "array",
+      "actualReadiness": "unavailable",
+      "fieldsetDisabled": true,
+      "allControlsDisabled": true,
+      "beginDisabled": true,
+      "checkDisabled": false,
+      "blockedMessage": false,
+      "storageUnchanged": true,
+      "guestPosts": 0,
+      "pageErrors": 0,
+      "overflow": false
+    }
+  ]
+}
