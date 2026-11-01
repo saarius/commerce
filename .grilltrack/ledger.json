@@ -16326,10 +16326,38 @@
           "review_source_identity": null,
           "to": "locked",
           "verification_ref": null
+        },
+        {
+          "at": "2026-11-01T21:25:26+00:00",
+          "choice": "No. The package root stops being an EmDash plugin entry: createPlugin, its default export, the dinkusCommerce native descriptor, the native routes, native storage declarations and native admin wiring are removed, with the native consumer smoke, the native test site and the native halves of the settings and route-auth checks. The root keeps every library export host apps import (catalog, checkout, customers, orders, feeds, structured-data, store-settings, storefront-availability, inventory-provider, inventory-setup, fixed-bundles and CATALOG_API_ROUTE), and the feature subpaths are unchanged. EmDash sites install Commerce only as the Registry (sandboxed) build (./sandbox, ./descriptor). backend.js stays under 131,072 bytes. Breaking for anyone mounting createPlugin; a changeset says so.",
+          "from": "locked",
+          "implementation_ref": null,
+          "note": "bounded implementation recorded",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "implemented",
+          "verification_ref": null
+        },
+        {
+          "at": "2026-11-01T21:25:26+00:00",
+          "choice": "No. The package root stops being an EmDash plugin entry: createPlugin, its default export, the dinkusCommerce native descriptor, the native routes, native storage declarations and native admin wiring are removed, with the native consumer smoke, the native test site and the native halves of the settings and route-auth checks. The root keeps every library export host apps import (catalog, checkout, customers, orders, feeds, structured-data, store-settings, storefront-availability, inventory-provider, inventory-setup, fixed-bundles and CATALOG_API_ROUTE), and the feature subpaths are unchanged. EmDash sites install Commerce only as the Registry (sandboxed) build (./sandbox, ./descriptor). backend.js stays under 131,072 bytes. Breaking for anyone mounting createPlugin; a changeset says so.",
+          "from": "implemented",
+          "implementation_ref": "687de90: package root re-exports only (createPlugin, default, dinkusCommerce removed; 372 library exports kept); native lanes, test site, consumer smoke, settings and route-auth halves removed; package consumer smoke added; docs and changeset",
+          "note": "verification recorded in cumulative context",
+          "repair_required": false,
+          "review_classifications": [],
+          "review_ref": null,
+          "review_result": null,
+          "review_source_identity": null,
+          "to": "verified",
+          "verification_ref": null
         }
       ],
       "id": "commerce-remove-native-entry-20261101",
-      "implementation_ref": null,
+      "implementation_ref": "687de90: package root re-exports only (createPlugin, default, dinkusCommerce removed; 372 library exports kept); native lanes, test site, consumer smoke, settings and route-auth halves removed; package consumer smoke added; docs and changeset",
       "question": "Does Commerce keep its native entry (createPlugin and dinkusCommerce at the package root) now that every store and the Template Store run the Registry build?",
       "rationale": "Ronald's instruction, 1 Nov 2026: \"Commerce: remove the native entry, keeping the library exports\"",
       "repair_required": false,
@@ -16338,10 +16366,10 @@
       "review_ref": null,
       "review_result": null,
       "review_source_identity": null,
-      "status": "locked",
+      "status": "verified",
       "superseded_by": null,
-      "updated_at": "2026-11-01T21:06:13+00:00",
-      "verification_ref": null
+      "updated_at": "2026-11-01T21:25:26+00:00",
+      "verification_ref": "file:.grilltrack/proof/commerce-remove-native-entry-20261101/PROOF.md"
     }
   ],
   "last_activation": {
@@ -16378,5 +16406,5 @@
   "status": "active",
   "title": "Installed checkout and guarded coupon composition",
   "track_id": "gt-join-1df678b7d46eb74d8c3624fd751d1dcf",
-  "updated_at": "2026-11-01T21:06:13+00:00"
+  "updated_at": "2026-11-01T21:25:26+00:00"
 }
