@@ -322,3 +322,35 @@ test("storefront agent feeds project aiProjection, policies, and virtual-card mi
   const agentsMdWithoutDom = buildStorefrontAgentsMd({ ...options, checkoutBreakdownSelector: undefined });
   assert.equal(agentsMdWithoutDom.includes("data-checkout-total-minor"), false);
 });
+
+test("agent guide sizes cards from frozen start pricing, not optional DOM estimates", () => {
+  const options = { storeName: "Example Store", siteOrigin: "https://shop.example.test", products: [facts()] };
+  for (const checkoutBreakdownSelector of [undefined, "[data-checkout-breakdown]"]) {
+    const guide = buildStorefrontAgentsMd({ ...options, checkoutBreakdownSelector });
+    assert.match(guide, /final card limit exclusively from Commerce's authoritative frozen `data\.checkout\.pricing\.finalTotal\.minor`/);
+    if (checkoutBreakdownSelector) {
+      assert.match(guide, /pre-start \*\*estimate\*\* attributes/);
+      assert.match(guide, /before Commerce applies coupons, free-shipping thresholds, or authoritative start pricing/);
+      assert.match(guide, /5000-cent basket.*5500.*5000-cent free-shipping threshold/);
+    } else {
+      assert.equal(guide.includes("data-checkout-total-minor"), false);
+    }
+  }
+});
+
+test("agent guide distinguishes an unresolved attempt from an authoritative release", () => {
+  const guide = buildStorefrontAgentsMd({ storeName: "Example Store", siteOrigin: "https://shop.example.test", products: [facts()] });
+  const recovery = guide.split("\n").find(line => line.includes('state === "recoverable-failure"'));
+  assert.ok(recovery);
+  assert.match(recovery, /do not treat the attempt as released or issue a fresh/);
+  assert.match(recovery, /preserve the active `attemptId`/);
+  assert.match(recovery, /same attempt/);
+  const release = guide.split("\n").find(line => line.includes('state === "released-retry"'));
+  assert.ok(release);
+  assert.notEqual(recovery, release);
+  assert.match(release, /data\.checkout\.retryAfter === data\.checkout\.attemptId/);
+  assert.match(release, /retain the existing `x-commerce-guest-capability`/);
+  assert.match(release, /successor/);
+  assert.match(guide, /at most 5 checks per attempt/);
+  assert.match(guide, /data\.checkout\.state === "paid".*data\.checkout\.order/);
+});

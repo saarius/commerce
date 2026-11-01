@@ -906,7 +906,20 @@ test("an existing unknown payment attempt never becomes prepared status", async 
   assert.equal(status.checkout.attemptId, started.checkout.attemptId);
   assert.equal(status.checkout.state, "recoverable-failure");
   assert.equal(status.checkout.redirectUrl, null);
+  assert.equal(status.checkout.retryAfter, null);
   assert.equal(f.synth.counts().paymentCreates, before);
+  await f.storage.catalogPrices.put("hat", {
+    recordKind: "catalog-price", recordId: "hat", catalogItemId: "hat",
+    regular: { currency: "USD", minor: "300" },
+  });
+  const replay = await invokeGuest(f.plugin.routes[GUEST_CHECKOUT_START_ROUTE], f.storage, lines(), { capability: token });
+  assert.equal(replay.checkout.attemptId, started.checkout.attemptId);
+  assert.equal(replay.checkout.total.minor, "250");
+  assert.equal(replay.checkout.retryAfter, null);
+  await assert.rejects(
+    invokeGuest(f.plugin.routes[GUEST_CHECKOUT_START_ROUTE], f.storage, lines("hat", 2), { capability: token }),
+    (error) => error.code === "CHECKOUT_FROZEN",
+  );
   assert.equal(await countCollection(f.storage, CHECKOUT_COLLECTION), 1);
 });
 
