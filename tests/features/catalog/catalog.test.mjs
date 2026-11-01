@@ -5,15 +5,13 @@ import { PluginRouteError } from "emdash";
 import {
   CatalogError,
   catalogUniqueIndexName,
-  createPlugin,
   createCatalogItem,
-  dinkusCommerce,
   identifyConfirmedUniqueViolation,
   normalizeSku,
   setCatalogItemSku,
 } from "../../../dist/index.js";
-
-const commercePlugin = createPlugin();
+import registryPlugin from "../../../dist/sandbox/plugin.mjs";
+import registryDescriptor from "../../../dist/sandbox/index.mjs";
 
 function uniqueViolation(field, collection = "catalogItems", pluginId = "dinkus-commerce") {
   const error = new Error(
@@ -499,41 +497,17 @@ test("only an exact named unique violation is classified as atomic proof", () =>
   assert.equal(identifyConfirmedUniqueViolation(installed, 'catalog_items', 'r_othernamespace'), null);
 });
 
-test("the EmDash plugin exposes the private catalog route and both unique declarations", () => {
-  assert.deepEqual(dinkusCommerce(), {
-    id: "dinkus-commerce",
-    version: "0.2.0",
-    format: "native",
-    entrypoint: "@dinkuskit/commerce",
-    adminPages: [
-      { path: "/orders", label: "Orders", icon: "storefront", group: "Dinkus Commerce" },
-      { path: "/settings", label: "Commerce settings", icon: "settings", group: "Dinkus Commerce" },
-    ],
-    editorPanels: [{
-      id: "product",
-      title: "Dinkus Commerce",
-      route: "product-panel",
-      collections: ["products"],
-      draft: { read: { fields: ["title"] } },
-    }, {
-      id: "product-media",
-      title: "Product image & gallery",
-      route: "product-media-panel",
-      collections: ["products"],
-    }],
-    options: {},
-  });
-  // The local Manage stock test aid is gone with the native-only routes; only the site URL is an option.
-  assert.deepEqual(dinkusCommerce({ enableLocalStockManagement: true }).options, {});
-  assert.deepEqual(dinkusCommerce({ siteUrl: "http://127.0.0.1:4321" }).options, { siteUrl: "http://127.0.0.1:4321" });
-  assert.equal(commercePlugin.id, "dinkus-commerce");
-  assert.deepEqual(commercePlugin.storage.catalogItems, {
+test("the Registry build exposes the private catalog route and both unique declarations", () => {
+  // The package root is a library; EmDash sites install the Registry build (commerce-remove-native-entry-20261101).
+  assert.equal(registryDescriptor.id, "dinkus-commerce");
+  assert.equal(registryDescriptor.entrypoint, "@dinkuskit/commerce/sandbox");
+  assert.deepEqual(registryDescriptor.storage.catalog_items, {
     indexes: [],
     uniqueIndexes: ["commandId", "skuKey"],
   });
-  // Products are made through the private catalog route (and the product panel) on both builds.
-  assert.equal(commercePlugin.routes["catalog-items/create"], undefined);
-  assert.equal(commercePlugin.routes.catalog.public, false);
-  assert.equal(commercePlugin.routes.catalog.permission, "content:edit_any");
-  assert.equal(commercePlugin.routes["catalog-items/set-on-sale"].permission, "content:publish_any");
+  // Products are made through the private catalog route and the product panel.
+  assert.equal(registryPlugin.routes["catalog-items/create"], undefined);
+  assert.equal(registryPlugin.routes.catalog.public, false);
+  assert.equal(registryPlugin.routes.catalog.permission, "content:edit_any");
+  assert.equal(registryPlugin.routes["catalog-items/set-on-sale"].permission, "content:publish_any");
 });

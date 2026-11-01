@@ -10,7 +10,13 @@ import {
   COMMERCE_PLUGIN_ID,
   GUEST_CHECKOUT_PREPARE_ROUTE,
   GUEST_CHECKOUT_START_ROUTE,
-  createPlugin,
+  GUEST_CHECKOUT_STATUS_ROUTE,
+  ORDER_NUMBERS_COLLECTION,
+  ORDERS_COLLECTION,
+  createGuestCheckoutPrepareRoute,
+  createGuestCheckoutStartRoute,
+  createGuestCheckoutStatusRoute,
+  createPaidOrderReceiver,
   guestCheckoutPrepareRoute,
   guestCheckoutStartRoute,
   guestCheckoutStatusRoute,
@@ -214,8 +220,34 @@ export async function prepareGuest(route, storage, options = {}) {
   return invokeGuest(route, storage, {}, { ...options, route: GUEST_CHECKOUT_PREPARE_ROUTE });
 }
 
+// Checkout hands each paid order to Orders, which keeps its own copy.
+const paidOrders = (storage) => createPaidOrderReceiver(storage[ORDERS_COLLECTION], storage[ORDER_NUMBERS_COLLECTION]);
+
+/**
+ * The library's guest checkout routes, given host options the way a host composes them: a site URL and the
+ * checkout host's own (the two must agree). The package root no longer mounts them as an EmDash plugin
+ * (commerce-remove-native-entry-20261101); the Registry build has its own installed handlers.
+ */
+export function mountGuestRoutes(options = {}) {
+  const topLevelSiteUrl = options.siteUrl;
+  const checkoutSiteUrl = options.checkout?.siteUrl;
+  const host = Object.freeze({
+    ...options.checkout,
+    topLevelSiteUrl,
+    checkoutSiteUrl,
+    siteUrl: checkoutSiteUrl ?? topLevelSiteUrl,
+  });
+  return {
+    routes: {
+      [GUEST_CHECKOUT_PREPARE_ROUTE]: createGuestCheckoutPrepareRoute(host),
+      [GUEST_CHECKOUT_START_ROUTE]: createGuestCheckoutStartRoute(host, paidOrders),
+      [GUEST_CHECKOUT_STATUS_ROUTE]: createGuestCheckoutStatusRoute(host, paidOrders),
+    },
+  };
+}
+
 export function injectedPluginRoutes(host) {
-  return createPlugin({ checkout: host });
+  return mountGuestRoutes({ checkout: host });
 }
 
 export {

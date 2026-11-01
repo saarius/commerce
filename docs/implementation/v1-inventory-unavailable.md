@@ -1,5 +1,10 @@
 # Commerce v1 Inventory availability
 
+> **Note (1 Nov 2026):** the native entry (`createPlugin`, `dinkusCommerce`) this
+> record mentions is removed; the package root is a library and EmDash sites
+> install the Registry build (`commerce-remove-native-entry-20261101`). This is a
+> historical record of the slice as built.
+
 Commerce v1 does not wait on a production Inventory service. Native admin keeps
 the Manage stock slider after Regular and Sale. By default the control is gray,
 disabled, and paired with adjacent Coming soon on the same row. Fresh products

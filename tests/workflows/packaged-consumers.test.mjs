@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
 import test from 'node:test';
 import { mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -30,7 +29,7 @@ test('consumer CI keeps failure propagation and uploads only explicit synthetic 
   const workflow = readFileSync(new URL('../../.github/workflows/repo-contract.yml', import.meta.url), 'utf8');
   const verifier = readFileSync(new URL('../../bin/verify-commerce', import.meta.url), 'utf8');
   const packaged = verifier.match(/packaged\)([\s\S]*?)\n  core\)/)?.[1];
-  assert.match(packaged, /npm run test:sandbox:orders[\s\S]*npm run test:consumer:native/);
+  assert.match(packaged, /npm run test:sandbox:orders[\s\S]*npm run test:consumer:package/);
   const core = verifier.match(/core\)([\s\S]*?)\n  full\)/)?.[1];
   assert.match(core, /verify-commerce" checks[\s\S]*verify-commerce" storefront[\s\S]*verify-commerce" packaged/);
   assert.match(verifier, /full\)[\s\S]*"\$script_dir\/verify-commerce" core[\s\S]*npm run test:settings/);
@@ -47,47 +46,9 @@ test('consumer CI keeps failure propagation and uploads only explicit synthetic 
   assert.doesNotMatch(workflow, /\/evidence\/\*|trace\.zip|storage-state|\.db/);
 });
 
-test('native consumer smoke teardown destroys stdio streams, unrefs host, and escalates process group to SIGKILL', async () => {
-  const script = readFileSync(new URL('../../scripts/check-native-consumer.mjs', import.meta.url), 'utf8');
-  const teardownBlock = script.match(/let browser, page, stoppingHost;\n([\s\S]*?)\nprocess\.once\('exit'/)?.[1];
-  assert.ok(teardownBlock, 'expected stopHost teardown block in scripts/check-native-consumer.mjs');
-  assert.match(teardownBlock, /host\.stdout\.destroy\(\)/);
-  assert.match(teardownBlock, /host\.stderr\.destroy\(\)/);
-  assert.match(teardownBlock, /host\.unref\(\)/);
-  assert.match(teardownBlock, /signalHost\('SIGTERM'\)/);
-  assert.match(teardownBlock, /signalHost\('SIGKILL'\)/);
-  assert.match(script, /finally \{\n await browser\?\.close\(\);\n \/\/ Only this test's newly spawned host process group is touched\.\n await stopHost\(\);\n\}/);
-
-  const host = spawn(process.execPath, ['-e', `
-    import { spawn } from 'node:child_process';
-    spawn(process.execPath, ['-e', 'process.on("SIGTERM", () => {}); console.log("READY"); setInterval(() => {}, 1000);'], { stdio: 'inherit' });
-    setInterval(() => {}, 1000);
-  `], { detached: process.platform !== 'win32', stdio: ['ignore', 'pipe', 'pipe'] });
-
-  let unrefCalled = false;
-  const originalUnref = host.unref.bind(host);
-  host.unref = () => {
-    unrefCalled = true;
-    return originalUnref();
-  };
-
-  await new Promise((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error('Timed out waiting for synthetic host worker')), 5000);
-    host.once('error', reject);
-    host.stdout.on('data', (chunk) => {
-      if (String(chunk).includes('READY')) {
-        clearTimeout(timer);
-        resolve();
-      }
-    });
-  });
-
-  const makeTeardown = new Function('host', `let stoppingHost;\n${teardownBlock}\nreturn { signalHost, stopHost };`);
-  const { signalHost, stopHost } = makeTeardown(host);
-
-  await stopHost();
-  assert.equal(host.stdout.destroyed, true);
-  assert.equal(host.stderr.destroyed, true);
-  assert.equal(unrefCalled, true);
-  assert.equal(signalHost(0), false);
+test('package consumer smoke proves the library root without mounting a plugin', () => {
+  const script = readFileSync(new URL('../../scripts/check-package-consumer.mjs', import.meta.url), 'utf8');
+  assert.match(script, /for \(const name of \['createPlugin', 'dinkusCommerce', 'default'\]\) assert\.equal\(commerce\[name\], undefined, name\)/);
+  assert.match(script, /for \(const \[subpath, declaration\] of Object\.entries\(pkg\.exports\)\)/);
+  assert.doesNotMatch(script, /astro|chromium|createPlugin\(|dinkusCommerce\(/);
 });

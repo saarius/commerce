@@ -9,7 +9,6 @@ import { describeRoutes, loadRouteManifest, ROUTE_PREFIX } from "../scripts/rout
 // lists only the exact public shopper paths.
 const root = resolve(import.meta.dirname, "..");
 const sandbox = (await import("../dist/sandbox/plugin.mjs")).default;
-const { createPlugin } = await import("../dist/index.js");
 
 const SANDBOX_PUBLIC = [
   "catalog/public GET",
@@ -25,8 +24,6 @@ const SANDBOX_PUBLIC = [
   "account/orders GET",
   "account/profile GET,POST",
 ];
-// Connect is a Registry install's only: the native entry has no store-proof route.
-const NATIVE_PUBLIC = SANDBOX_PUBLIC.filter((route) => !route.includes("/readiness") && !route.startsWith("store-proof"));
 
 function publicSet(routes) {
   return Object.entries(routes)
@@ -37,7 +34,6 @@ function publicSet(routes) {
 
 for (const [label, routes, expected] of [
   ["sandbox", sandbox.routes, SANDBOX_PUBLIC],
-  ["native", createPlugin().routes, NATIVE_PUBLIC],
 ]) {
   test(`${label}: every route declares public or admin`, () => {
     const undeclared = Object.entries(routes).filter(([, route]) => typeof route.public !== "boolean").map(([name]) => name);
@@ -68,4 +64,6 @@ test("published route manifest matches the built sandbox plugin", async () => {
     assert.ok(path.startsWith(ROUTE_PREFIX) && !path.endsWith("/") && !path.includes("*"));
   }
   assert.deepEqual(published.publicRoutes, published.routes.filter((r) => r.public).map((r) => r.path));
+  // The package root is a library, not a plugin entry, so the manifest describes the Registry build only.
+  assert.equal(Object.hasOwn(published, "native"), false);
 });

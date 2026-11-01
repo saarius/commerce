@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 // Every Commerce route must say whether it is public or admin (issue #79).
-// This manifest is generated from the built plugins, outside the sandbox
+// This manifest is generated from the built Registry plugin, outside the sandbox
 // bundle, so stores can open only the exact public paths in Cloudflare Access.
 export const PLUGIN_ID = 'dinkus-commerce';
 export const ROUTE_PREFIX = `/_emdash/api/plugins/${PLUGIN_ID}/`;
@@ -28,16 +28,13 @@ export function describeRoutes(routes, label) {
 
 export async function loadRouteManifest(root, backend) {
   const sandbox = (await import(pathToFileURL(resolve(root, 'dist/sandbox/plugin.mjs')).href)).default;
-  const { createPlugin } = await import(pathToFileURL(resolve(root, 'dist/index.js')).href);
   const routes = describeRoutes(sandbox.routes, 'sandbox');
-  const native = describeRoutes(createPlugin().routes, 'native');
   return {
     schema: 'dinkus-commerce/route-manifest@1',
     plugin: PLUGIN_ID,
     artifact: backend,
     routes,
     publicRoutes: routes.filter(route => route.public).map(route => route.path),
-    native: { routes: native, publicRoutes: native.filter(route => route.public).map(route => route.path) },
   };
 }
 

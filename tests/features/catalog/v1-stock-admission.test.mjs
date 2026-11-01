@@ -12,7 +12,6 @@ import {
   MANAGE_STOCK_UNAVAILABLE_MESSAGE,
   catalogUniqueIndexName,
   createManagedSkuRegistrationClaimKey,
-  createPlugin,
   resolveStorefrontAvailability,
   saveCatalogProductPrices,
 } from "../../../dist/index.js";

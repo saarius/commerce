@@ -16,8 +16,8 @@ const result = spawnSync(resolve('node_modules/.bin/playwright'),
 let collectionFailed = false;
 try {
   const summary = collectSettingsEvidence(directory, evidence);
-  if (summary.status !== "passed" || !["native", "registry"].every(project =>
-    summary.outcomes.some(row => row.project === project && row.status === "passed" && row.expectedStatus === "passed"))) {
+  if (summary.status !== "passed" ||
+    !summary.outcomes.some(row => row.project === "registry" && row.status === "passed" && row.expectedStatus === "passed")) {
     collectionFailed = true;
   }
 }

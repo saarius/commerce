@@ -142,7 +142,7 @@ export function createCommerceClient({ siteUrl, siteUrlSource, pluginId, pluginI
 	// Every orders action is one private POST; EmDash checks the token before Commerce sees it.
 	async function ordersCall(body, what) {
 		const data = unwrap(await adminRequest("POST", `/${ROUTES.orders}`, { body }, body.action !== "list" && body.action !== "show"), what, {
-			onNotFound: routeMissing(ROUTES.orders, "Check --url and --plugin-id. The Registry (sandboxed) Commerce build serves it; the native build has no Orders."),
+			onNotFound: routeMissing(ROUTES.orders, "Check --url and --plugin-id. The Registry (sandboxed) Commerce build serves it."),
 		});
 		if (!isRecord(data)) throw contractError(what, "the response is not an object.");
 		return data;
@@ -194,8 +194,7 @@ export function createCommerceClient({ siteUrl, siteUrlSource, pluginId, pluginI
 			return data === null ? null : checkPublicProduct(data, what);
 		},
 
-		// Both builds list products through the catalog route's list op (Commerce 0.7.0+); the native-only
-		// catalog-items/list route is gone (commerce-one-build-registry-20261031).
+		// Products are listed through the catalog route's list op (Commerce 0.7.0+).
 		async listProducts() {
 			const what = "Listing products";
 			const data = await catalogCall({ op: "list" }, what);

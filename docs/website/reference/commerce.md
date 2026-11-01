@@ -107,7 +107,7 @@ Inventory is planned after v1, and the Registry build has no Manage stock switch
 
 ## Public storefront routes
 
-Prefix these routes with `/_emdash/api/plugins/<installed-plugin-id>/`. Resolve the actual installed identity; the stable Registry runtime ID is `r_gshdrqaldna3r7sn` and the beta package's is `r_fjzjvld3ssb4j63o`. Commerce runs one build, the Registry build; `dinkus-commerce` identifies the native development entry only the Template Store's playground still registers. It serves these routes except `checkout/guest/readiness`, which the Registry build alone registers.
+Prefix these routes with `/_emdash/api/plugins/<installed-plugin-id>/`. Resolve the actual installed identity; the stable Registry runtime ID is `r_gshdrqaldna3r7sn` and the beta package's is `r_fjzjvld3ssb4j63o`. Commerce runs one build, the Registry build, and it serves every route below.
 
 | Route | Method | Contract |
 | --- | --- | --- |
@@ -214,6 +214,10 @@ and are marked **TEST**; do not use them for real fulfillment or postage.
 
 If an order changed after you opened its form, the stale save changes nothing.
 Open the order again and check its current details before retrying.
+
+## Package for host apps
+
+EmDash sites install Commerce only as the Registry build: from the Registry, or from the npm package's `@dinkuskit/commerce/sandbox` entry with its `@dinkuskit/commerce/descriptor`. The package root, `@dinkuskit/commerce`, is a library for host apps such as storefronts and feed builders: it exports Commerce's catalog, checkout, customers, orders, feeds, structured data, store settings, storefront availability, inventory and fixed-bundle functions and types, and the `@dinkuskit/commerce/features/*` entries export the same libraries one feature at a time. It is not an EmDash plugin: the native entry earlier packages carried (`createPlugin`, its default export, and `dinkusCommerce`) is removed, so a site that mounted it installs the Registry build instead. Its camelCase storage is not migrated.
 
 ## Next steps
 

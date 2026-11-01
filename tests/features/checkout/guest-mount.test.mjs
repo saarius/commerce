@@ -13,7 +13,6 @@ import {
   GUEST_CHECKOUT_PREPARE_ROUTE,
   GUEST_CHECKOUT_START_ROUTE,
   GUEST_CHECKOUT_STATUS_ROUTE,
-  createPlugin,
   createGuestCheckoutPrepareRoute,
   createGuestCheckoutStartRoute,
   guestCheckoutPrepareRoute,
@@ -29,12 +28,14 @@ import {
   TRUSTED_SITE,
   initializeGuestCheckoutDatabase,
   injectedPluginRoutes,
+  mountGuestRoutes,
   invokeGuest,
   openGuestCollections,
   prepareGuest,
   seedGuestCatalog,
   syntheticCheckoutHost,
 } from "./guest-dispatch.mjs";
+import registryDescriptor from "../../../dist/sandbox/index.mjs";
 
 function setup(t, { managed = false, inject = true, host } = {}) {
   const dir = mkdtempSync(join(tmpdir(), "guest-mount-"));
@@ -46,7 +47,7 @@ function setup(t, { managed = false, inject = true, host } = {}) {
     rmSync(dir, { recursive: true, force: true });
   });
   const synth = syntheticCheckoutHost({ managed, host });
-  const plugin = inject ? injectedPluginRoutes(synth.host) : createPlugin({ siteUrl: TRUSTED_SITE });
+  const plugin = inject ? injectedPluginRoutes(synth.host) : mountGuestRoutes({ siteUrl: TRUSTED_SITE });
   return { ...opened, path, synth, plugin };
 }
 
@@ -67,10 +68,10 @@ async function countCollection(storage, name) {
   return (await storage[name].query({ limit: 50 })).items.length;
 }
 
-test("default createPlugin mounts checkout storage and public guest routes without a production payments adapter", () => {
-  const plugin = createPlugin();
-  assert.ok(plugin.storage[CHECKOUT_COLLECTION]);
-  assert.ok(plugin.storage[CHECKOUT_GUEST_CAPABILITY_COLLECTION]);
+test("the library's guest routes are public and the Registry build declares checkout storage, without a production payments adapter", () => {
+  assert.ok(registryDescriptor.storage.checkout_carts);
+  assert.ok(registryDescriptor.storage.checkout_guest_capabilities);
+  const plugin = mountGuestRoutes();
   assert.equal(plugin.routes[GUEST_CHECKOUT_PREPARE_ROUTE].public, true);
   assert.equal(plugin.routes[GUEST_CHECKOUT_START_ROUTE].public, true);
   assert.equal(plugin.routes[GUEST_CHECKOUT_STATUS_ROUTE].public, true);
@@ -127,7 +128,7 @@ test("tampered client price is rejected before Commerce freezes a payment amount
 test("mint without trusted tenant scope is denied and writes no capability", async (t) => {
   const f = setup(t, { inject: false });
   await seedGuestCatalog(f.storage);
-  const bare = createPlugin();
+  const bare = mountGuestRoutes();
   await assert.rejects(
     () => prepareGuest(bare.routes[GUEST_CHECKOUT_PREPARE_ROUTE], f.storage, {
       runtimeSiteUrl: "",
@@ -144,7 +145,7 @@ test("frozen constructor options snapshot does not mutate caller options or thro
     paymentBindingRef: "test-binding",
     resolvePayments: async () => null,
   });
-  const plugin = createPlugin({
+  const plugin = mountGuestRoutes({
     siteUrl: "https://shop.example",
     checkout: frozenCheckout,
   });
@@ -156,7 +157,7 @@ test("contradictory or malformed dual siteUrl configurations fail closed before 
   const f = setup(t, { inject: false });
   await seedGuestCatalog(f.storage);
 
-  const conflicting = createPlugin({
+  const conflicting = mountGuestRoutes({
     siteUrl: "https://shop-a.example",
     checkout: { ...f.synth.host, siteUrl: "https://shop-b.example" },
   });
@@ -168,7 +169,7 @@ test("contradictory or malformed dual siteUrl configurations fail closed before 
     (error) => error instanceof PluginRouteError && error.code === "UNAVAILABLE",
   );
 
-  const malformedTop = createPlugin({
+  const malformedTop = mountGuestRoutes({
     siteUrl: "not-a-valid-url",
     checkout: { ...f.synth.host, siteUrl: TRUSTED_SITE },
   });
@@ -180,7 +181,7 @@ test("contradictory or malformed dual siteUrl configurations fail closed before 
     (error) => error instanceof PluginRouteError && error.code === "UNAVAILABLE",
   );
 
-  const malformedCheckout = createPlugin({
+  const malformedCheckout = mountGuestRoutes({
     siteUrl: TRUSTED_SITE,
     checkout: { ...f.synth.host, siteUrl: "not-a-valid-url" },
   });
@@ -201,7 +202,7 @@ test("known-site capability is denied for empty, malformed, or conflicting runti
   await seedGuestCatalog(f.storage);
   const prepared = await prepareGuest(f.plugin.routes[GUEST_CHECKOUT_PREPARE_ROUTE], f.storage);
   const token = capabilityOf(prepared);
-  const noConstructor = createPlugin({
+  const noConstructor = mountGuestRoutes({
     checkout: { ...f.synth.host, siteUrl: undefined },
   });
   await assert.rejects(
@@ -457,7 +458,7 @@ test("authority from a different cart or site is denied", async (t) => {
     (error) => error instanceof PluginRouteError && error.code === "CHECKOUT_NOT_FOUND",
   );
   const otherSite = "http://store-b.test";
-  const otherPlugin = createPlugin({
+  const otherPlugin = mountGuestRoutes({
     checkout: { ...f.synth.host, siteUrl: otherSite },
   });
   await assert.rejects(

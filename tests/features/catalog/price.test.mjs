@@ -7,7 +7,6 @@ import {
   CatalogError,
   clearCatalogItemRegularPrice,
   clearCatalogItemSalePrice,
-  createPlugin,
   resolveCatalogItemPrice,
   setCatalogItemRegularPrice,
   setCatalogItemSalePrice,

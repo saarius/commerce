@@ -25,7 +25,7 @@ test('collector refuses allowlisted symlinks', () => {
   const root = mkdtempSync(join(tmpdir(), 'settings-evidence-'));
   const source = join(root, 'source'); mkdirSync(source);
   const outside = join(root, 'outside.png'); writeFileSync(outside, 'synthetic');
-  symlinkSync(outside, join(source, 'native-failure.png'));
+  symlinkSync(outside, join(source, 'registry-failure.png'));
   assert.throws(() => collectSettingsEvidence(source, join(root, 'safe'), root), /Unsafe evidence/);
 });
 
@@ -33,7 +33,7 @@ test('collector refuses malformed outcomes and reused evidence', () => {
   const root = mkdtempSync(join(tmpdir(), 'settings-evidence-'));
   const source = join(root, 'source'); mkdirSync(source);
   writeFileSync(join(source, 'outcomes.json'), JSON.stringify({ status: 'passed', outcomes: [
-    { project: 'unknown', status: 'passed', expectedStatus: 'passed', durationMs: 1, retry: 0 }
+    { project: 'native', status: 'passed', expectedStatus: 'passed', durationMs: 1, retry: 0 }
   ] }));
   assert.throws(() => collectSettingsEvidence(source, join(root, 'safe'), root), /Invalid outcome/);
   const stale = join(root, 'stale'); mkdirSync(stale);

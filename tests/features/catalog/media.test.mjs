@@ -8,7 +8,6 @@ import {
   CatalogError,
   commerceImageSrcset,
   commerceImageTransformUrl,
-  createPlugin,
   createProductImageProjector,
   loadCatalogItemMedia,
   loadStorefrontPlaceholderImage,
@@ -17,6 +16,8 @@ import {
   saveCatalogItemMedia,
   setStorefrontPlaceholderImage,
 } from "../../../dist/index.js";
+import registryPlugin from "../../../dist/sandbox/plugin.mjs";
+import registryDescriptor from "../../../dist/sandbox/index.mjs";
 
 const HAT = "01HAT000000000000000000000";
 const SIDE = "01SIDE00000000000000000000";
@@ -201,13 +202,10 @@ test("public catalog carries image and gallery ids, falls back to the placeholde
   assert.deepEqual([noAccess.image, noAccess.gallery], [null, []], "without media:read nothing is invented");
 });
 
-test("native plugin declares media/network access and the media collections; pictures are saved through the catalog route", () => {
-  const plugin = createPlugin();
-  assert.deepEqual(plugin.capabilities, ["media:read", "network:request", "email:send", "admin.editor-draft:read"]);
-  assert.deepEqual(plugin.allowedHosts, ["payments.dinkuskit.com"]);
-  assert.ok(plugin.storage.catalogMedia && plugin.storage.storefrontPlaceholderImage);
-  // The native-only save-media and placeholder routes are gone (commerce-one-build-registry-20261031).
-  assert.equal(plugin.routes["catalog-items/save-media"], undefined);
-  assert.equal(plugin.routes["settings/placeholder-image"], undefined);
-  assert.equal(plugin.routes.catalog.permission, "content:edit_any");
+test("the Registry build declares media access and the media collections; pictures are saved through the catalog route", () => {
+  assert.ok(registryDescriptor.capabilities.includes("media:read"));
+  assert.ok(registryDescriptor.storage.catalog_media && registryDescriptor.storage.storefront_placeholder_image);
+  assert.equal(registryPlugin.routes["catalog-items/save-media"], undefined);
+  assert.equal(registryPlugin.routes["settings/placeholder-image"], undefined);
+  assert.equal(registryPlugin.routes.catalog.permission, "content:edit_any");
 });

@@ -705,3 +705,5 @@
 {"action": "decision_superseded", "at": "2026-11-01T04:28:00+00:00", "data": {"affected": [], "decision_id": "coupons-registry-packaging-001", "replacement_id": "commerce-addons-door-20261022"}, "event_id": "51f1f3d6-9ce1-463a-9f9e-1d6407cda24c"}
 {"action": "decision_superseded", "at": "2026-11-01T04:28:00+00:00", "data": {"affected": [], "decision_id": "block-admin-settings-003", "replacement_id": "block-admin-settings-label-004"}, "event_id": "f497afcb-e78b-458d-b430-6ce41eeeb994"}
 {"action": "decision_deferred", "at": "2026-11-01T04:28:00+00:00", "data": {"decision_id": "catalog-hide-oos-structured-data-followup-059"}, "event_id": "1622cdba-9955-43f3-bddd-69bbf7b834f9"}
+{"action": "decision_proposed", "at": "2026-11-01T21:06:13+00:00", "data": {"decision_id": "commerce-remove-native-entry-20261101"}, "event_id": "b65fd21e-4ace-4c54-b334-ccc0743e2bbd"}
+{"action": "decision_locked", "at": "2026-11-01T21:06:13+00:00", "data": {"decision_id": "commerce-remove-native-entry-20261101"}, "event_id": "3148da82-503c-4b8b-9479-1dcfc963a5fb"}

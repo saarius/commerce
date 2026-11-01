@@ -112,8 +112,9 @@ in Commerce settings is gone too: every product is made for its page
 
 ## Block Kit only (commerce-admin-block-kit-only-20261024)
 
-Native installs (stores running Commerce from source, such as the playground)
-get the same admin as Registry stores: the Orders and Commerce settings pages
+Native installs (stores running Commerce from source, such as the playground,
+until the native entry was removed in `commerce-remove-native-entry-20261101`)
+got the same admin as Registry stores: the Orders and Commerce settings pages
 and the product page panel, all Block Kit, so the sidebar reads the same
 everywhere. Commerce has no React admin entry any more (EmDash 1.2.0 serves no
 Block Kit editor panel for a plugin that has one). The native build serves the

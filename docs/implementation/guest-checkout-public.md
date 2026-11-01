@@ -1,5 +1,10 @@
 # Guest checkout public contract for Template Store
 
+> **Note (1 Nov 2026):** the native entry (`createPlugin`, `dinkusCommerce`) this
+> record mentions is removed; the package root is a library and EmDash sites
+> install the Registry build (`commerce-remove-native-entry-20261101`). This is a
+> historical record of the slice as built.
+
 Commerce issue 32 public handoff. Template Store issue 20 consumes this
 artifact and these routes. Template Store renders only these public outputs.
 It does not become a pricing, payment, or order engine.

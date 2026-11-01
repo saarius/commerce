@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 const root = fileURLToPath(new URL("../../", import.meta.url));
 const configUrl = new URL("../../playwright.config.mjs", import.meta.url).href;
 const PROFILE = "COMMERCE_BROWSER_PROOF_PROFILE";
-const names = ["sandbox", "native", "native-variant"];
+const names = ["sandbox"];
 
 function directory(t) {
   const cwd = mkdtempSync(join(tmpdir(), "commerce-browser-profile-"));
@@ -28,7 +28,7 @@ function readConfig(cwd, profile) {
     console.log(JSON.stringify({
       ...config,
       projects: config.projects.map(p => ({...p, testMatch: p.testMatch.source})),
-      databases: [process.env.COMMERCE_PROOF_DB, process.env.COMMERCE_NATIVE_DB, process.env.COMMERCE_NATIVE_VARIANT_DB]
+      databases: [process.env.COMMERCE_PROOF_DB]
     }));
   `;
   const child = spawnSync(process.execPath, ["--input-type=module", "-e", source], {
@@ -38,20 +38,18 @@ function readConfig(cwd, profile) {
 }
 
 for (const profile of [undefined, ""]) {
-  test(`default browser coverage remains three matched projects and hosts (${JSON.stringify(profile)})`, (t) => {
+  test(`default browser coverage is the one Registry project and host (${JSON.stringify(profile)})`, (t) => {
     const cwd = directory(t), result = readConfig(cwd, profile);
     assert.equal(result.status, 0, result.stderr);
     const config = result.config;
     assert.deepEqual(config.projects.map(p => p.name), names);
-    assert.deepEqual(config.webServer.map(s => s.cwd), ["tests/sandbox-site", "tests/native-site", "tests/native-site"]);
+    assert.deepEqual(config.webServer.map(s => s.cwd), ["tests/sandbox-site"]);
     assert.deepEqual(config.projects.map(p => p.use.baseURL), config.webServer.map(s => s.url));
     assert.deepEqual(config.webServer.map(s => s.env.COMMERCE_PROOF_DB), config.databases);
-    assert.equal(new Set(config.databases).size, 3);
+    assert.equal(new Set(config.databases).size, 1);
     assert.equal(config.timeout, 180000);
     assert.equal(config.workers, 1);
     assert.ok(config.webServer.every(s => s.timeout === 120000 && s.reuseExistingServer === false));
-    assert.equal(config.webServer[2].env.COMMERCE_NATIVE_SYNTHETIC, "1");
-    assert.equal(config.webServer[2].env.COMMERCE_NATIVE_PUBLIC_CATALOG, "1");
   });
 }
 
@@ -70,7 +68,8 @@ test("single-host opt-in retains the exact selected project/server configuration
 });
 
 test("unknown profile values fail before making artifact directories", async (t) => {
-  for (const profile of ["registry", "Native", "native-varaint", "constructor", " "]) {
+  // The native lanes went with the native entry (commerce-remove-native-entry-20261101).
+  for (const profile of ["registry", "native", "native-variant", "Sandbox", "constructor", " "]) {
     await t.test(JSON.stringify(profile), (t) => {
       const cwd = directory(t), result = readConfig(cwd, profile);
       assert.notEqual(result.status, 0);
@@ -100,7 +99,7 @@ const posix = { skip: process.platform === "win32" ? "POSIX verification wrapper
 for (const mode of ["storefront", "core", "full"]) {
   test(`canonical ${mode} refuses a diagnostic profile before running any child gate`, posix, (t) => {
     const run = gateFixture(t);
-    const result = run(mode, "native");
+    const result = run(mode, "sandbox");
     assert.equal(result.status, 64, result.stderr);
     assert.match(result.stderr, /COMMERCE_BROWSER_PROOF_PROFILE/);
     assert.equal(result.stdout, "");
@@ -113,7 +112,7 @@ test("canonical full still includes every gate by default and with an empty over
   const expected = [
     "run typecheck", "run test:unit", "run audit:repo", "run test:integration",
     "run build", "run test:sandbox", "run build", "run test:sandbox:orders",
-    "run test:consumer:native", "run test:settings",
+    "run test:consumer:package", "run test:settings",
   ];
   for (const profile of [undefined, ""]) {
     const result = run("full", profile);
@@ -125,10 +124,10 @@ test("canonical full still includes every gate by default and with an empty over
 
 test("quick checks ignore the browser-only override and unsupported modes remain usage errors", posix, (t) => {
   const run = gateFixture(t);
-  const quick = run("quick", "native");
+  const quick = run("quick", "sandbox");
   assert.equal(quick.status, 0, quick.stderr);
   assert.deepEqual(quick.calls, ["run typecheck", "run test:unit", "run audit:repo"]);
-  const invalid = run("unsupported", "native");
+  const invalid = run("unsupported", "sandbox");
   assert.equal(invalid.status, 64);
   assert.deepEqual(invalid.calls, []);
 });

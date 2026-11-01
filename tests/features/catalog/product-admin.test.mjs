@@ -6,12 +6,13 @@ import {
   CatalogError,
   catalogProductCreateInput,
   createManagedSkuRegistrationClaimKey,
-  createPlugin,
   listCatalogProducts,
   releaseManagedSkuRegistrationClaims,
   resolveCatalogItemPrice,
   saveCatalogProductPrices,
 } from "../../../dist/index.js";
+import registryPlugin from "../../../dist/sandbox/plugin.mjs";
+import registryDescriptor from "../../../dist/sandbox/index.mjs";
 
 class MemoryCollection {
   constructor(records = []) {
@@ -343,16 +344,13 @@ test("the product list is by name and the admin routes stay private", async () =
     ["Apple", "Zebra"],
   );
 
-  const plugin = createPlugin();
-  assert.deepEqual(plugin.admin.pages.map((page) => page.path), ["/orders", "/settings"]);
-  assert.equal(plugin.admin.entry, undefined);
-  assert.equal(plugin.routes["product-panel"].permission, "content:edit_any");
-  assert.equal(plugin.routes["product-media-panel"].permission, "content:edit_any");
-  // Prices are saved through the product panel and the private catalog route on both builds; the native
-  // list and save-prices routes are gone (commerce-one-build-registry-20261031).
-  assert.equal(plugin.routes["catalog-items/list"], undefined);
-  assert.equal(plugin.routes["catalog-items/save-prices"], undefined);
-  assert.equal(plugin.routes.catalog.permission, "content:edit_any");
+  assert.deepEqual(registryDescriptor.adminPages.map((page) => page.path), ["/orders", "/settings"]);
+  assert.equal(registryPlugin.routes["product-panel"].permission, "content:edit_any");
+  assert.equal(registryPlugin.routes["product-media-panel"].permission, "content:edit_any");
+  // Prices are saved through the product panel and the private catalog route.
+  assert.equal(registryPlugin.routes["catalog-items/list"], undefined);
+  assert.equal(registryPlugin.routes["catalog-items/save-prices"], undefined);
+  assert.equal(registryPlugin.routes.catalog.permission, "content:edit_any");
 });
 
 test("one Save writes Out of stock and a refused status leaves the stored status unchanged", async () => {

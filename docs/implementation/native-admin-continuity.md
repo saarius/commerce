@@ -1,5 +1,10 @@
 # Native Admin Continuity Compatibility
 
+> **Retired.** The native entry this note describes is removed: Commerce runs one
+> build, the Registry (sandboxed) build (`commerce-one-build-registry-20261031`),
+> and the package root is a library with no `createPlugin` or `dinkusCommerce`
+> (`commerce-remove-native-entry-20261101`). Kept as a historical record.
+
 ## Context and Purpose
 
 PR27 transitioned the primary Commerce distribution path to the registry-safe

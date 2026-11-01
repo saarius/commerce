@@ -7,8 +7,8 @@ for the exact public shopper paths listed here.
 
 ## Rule
 
-- Every route in `src/plugin.ts` (Registry/sandbox) and `createPlugin()`
-  (native) sets `public: true` or `public: false`. There is no implicit default.
+- Every route in `src/plugin.ts` (the Registry/sandbox build, Commerce's one
+  plugin build) sets `public: true` or `public: false`. There is no implicit default.
 - An admin route (`public: false`) names an EmDash permission. EmDash requires
   a signed-in user or API token with that permission, and the CSRF header,
   regardless of Cloudflare Access.
@@ -23,9 +23,11 @@ for the exact public shopper paths listed here.
 ## Manifest
 
 The build writes `dist/sandbox/route-manifest.json`, exported as
-`@dinkuskit/commerce/route-manifest`. It is generated from the built plugins
-by `scripts/route-manifest.mjs` (called from `check-registry-bundle.mjs`), so
-it adds nothing to the sandbox backend.
+`@dinkuskit/commerce/route-manifest`. It is generated from the built Registry
+plugin by `scripts/route-manifest.mjs` (called from `check-registry-bundle.mjs`),
+so it adds nothing to the sandbox backend. It has no `native` section any more:
+the package root is a library, not a plugin entry
+(`commerce-remove-native-entry-20261101`).
 
 ```json
 {
@@ -33,8 +35,7 @@ it adds nothing to the sandbox backend.
   "plugin": "dinkus-commerce",
   "artifact": { "package", "version", "file": "backend.js", "bytes", "sha256" },
   "routes": [{ "name", "path", "public", "methods", "surface": "registry", "auth": "public" | "emdash", "permission"? }],
-  "publicRoutes": ["/_emdash/api/plugins/dinkus-commerce/..."],
-  "native": { "routes": [...], "publicRoutes": [...] }
+  "publicRoutes": ["/_emdash/api/plugins/dinkus-commerce/..."]
 }
 ```
 
@@ -58,5 +59,5 @@ Public Registry/sandbox paths today:
 | `GET` | `/_emdash/api/plugins/dinkus-commerce/account/orders` |
 | `GET,POST` | `/_emdash/api/plugins/dinkus-commerce/account/profile` |
 
-The native plugin mounts the same set without `checkout/guest/readiness`. Never open a
+Never open a
 `/_emdash/api/plugins/dinkus-commerce/*` wildcard.

@@ -36,7 +36,7 @@ case "$mode" in
   packaged)
     npm run build
     npm run test:sandbox:orders
-    npm run test:consumer:native
+    npm run test:consumer:package
     ;;
   core)
     "$script_dir/verify-commerce" checks

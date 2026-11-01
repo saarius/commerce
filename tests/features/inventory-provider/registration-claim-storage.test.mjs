@@ -4,10 +4,10 @@ import test from "node:test";
 import {
   ManagedSkuRegistrationError,
   createManagedSkuRegistrationClaimPort,
-  createPlugin,
   identifyManagedSkuRegistrationClaimUniqueViolation,
   managedSkuRegistrationClaimUniqueIndexName,
 } from "../../../dist/index.js";
+import registryDescriptor from "../../../dist/sandbox/index.mjs";
 
 function uniqueViolation(field) {
   const error = new Error(
@@ -70,8 +70,8 @@ function claimRows(storage) {
   );
 }
 
-test("the plugin declares isolated atomic claim storage", () => {
-  assert.deepEqual(createPlugin().storage.managedSkuClaims, {
+test("the Registry build declares isolated atomic claim storage", () => {
+  assert.deepEqual(registryDescriptor.storage.managed_sku_claims, {
     indexes: ["catalogItemId"],
     uniqueIndexes: ["claimKey", "operationId"],
   });

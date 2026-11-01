@@ -107,22 +107,20 @@ Every route is served at
   The service returns `null` for a missing, unpriced, or unlisted product; the
   CLI reports that as `not_found` and exits `1`.
 - `products list` sends `{ "op": "list" }` to `POST catalog` with the
-  credential, on every build (Commerce 0.7.0+): each product's `catalogItemId`,
-  `name`, `sku` and `archivedAt`; `products show` has its prices and stock. The
-  native-only `catalog-items/list` route is gone
-  (`commerce-one-build-registry-20261031`). A Commerce older than 0.7.0 has no
-  `catalog` route and exits `1` with `route_not_available`.
+  credential (Commerce 0.7.0+): each product's `catalogItemId`,
+  `name`, `sku` and `archivedAt`; `products show` has its prices and stock. A
+  Commerce older than 0.7.0 has no `catalog` route and exits `1` with
+  `route_not_available`.
 - `products show <item-id>` sends `{ "op": "get", "catalogItemId" }` to
   `POST catalog`: the product as its page panel shows it (prices, stock,
   state, weight, identifiers, options and their variants), its pictures and its
   feed channels.
 
 Both public routes and the private `catalog` route are mounted by the Registry
-(sandboxed) build (`src/plugin.ts`) and the native build (`src/index.ts`), with
-the same request rules and response (GrillTrack
-`catalog-native-public-routes-001`, `commerce-one-build-registry-20261031`).
-The `catalog` and `products` commands therefore work on either install on
-Commerce 0.7.0 or later.
+(sandboxed) build (`src/plugin.ts`), Commerce's one build (GrillTrack
+`commerce-one-build-registry-20261031`; the package root's native entry is gone,
+`commerce-remove-native-entry-20261101`). The `catalog` and `products` commands
+work on Commerce 0.7.0 or later.
 
 ### Product commands
 
@@ -162,8 +160,9 @@ does not wrap yet. A refused price save answers `{ saved: false, message }`,
 which the CLI reports as `refused` with Commerce's message. A Registry store
 answers other refusals as `400` with code `ROUTE_ERROR` and Commerce's reason
 after `route catalog failed: `; the CLI reports that as `refused` with the
-reason. A native store answers with Commerce's own error code
-(`SKU_CONFLICT`, `INVALID_INPUT` and so on), which the CLI keeps. Publishing the
+reason. A store still running an earlier package's native entry answers with
+Commerce's own error code (`SKU_CONFLICT`, `INVALID_INPUT` and so on), which the
+CLI keeps. Publishing the
 product's page is what puts it on sale; no CLI command does that.
 
 `products create` is additive and needs no confirmation: a retry with the same
@@ -181,9 +180,9 @@ credential (GrillTrack `commerce-orders-api-001`; `address` is
 `commerce-orders-api-address-001`). The route is private: EmDash
 requires `content:edit_any` (an Editor or Administrator,
 `commerce-orders-staff-access-001`) and, for API tokens, the `admin` scope, and
-Commerce checks the role again, like its Orders page. Only
-the Registry (sandboxed) build mounts it; on a native install the site answers
-`404` and the CLI exits `1` with `route_not_available`.
+Commerce checks the role again, like its Orders page. The
+Registry (sandboxed) build mounts it; a site without it (an earlier package's
+native entry) answers `404` and the CLI exits `1` with `route_not_available`.
 
 | Body | Answer |
 | --- | --- |
@@ -265,7 +264,7 @@ and a message naming the missing API. They never contact the site.
 
 | Command | Missing API |
 | --- | --- |
-| `settings show` | A read-only settings route. Native can read `settings/out-of-stock-listing` and `settings/placeholder-image` but not `settings/storefront-availability`; the Registry build has none. |
+| `settings show` | A read-only settings route; the Registry build has none. |
 
 ### Confirming a product change
 

@@ -16,7 +16,7 @@ needed) and start with `--help` at the depth you need.
    `--plugin-id` only when the site installed Commerce under a different id.
 2. Pick the command for the install. `catalog list|show` reads the public
    storefront projection on the Registry (sandboxed) build and needs no
-   credential. `products list` needs the native build and `EMDASH_TOKEN`.
+   credential. `products list` needs Commerce 0.7.0+ and `EMDASH_TOKEN`.
    `orders list|show|complete|reopen` need the Registry build and an
    `EMDASH_TOKEN` of an administrator. `orders list --status processing` is
    what still needs shipping; an order marked `(TEST)` (`"test": true`) took no
@@ -40,8 +40,7 @@ that read: show it again instead of retrying blindly. Completed means shipped,
 never delivered, and Commerce sends no email for it.
 
 Commands marked `(planned)` exit `1` with `not_implemented` and send nothing.
-Do not work around them by calling the native `catalog-items/set-*` routes
-directly: price and SKU changes wait for Commerce preview/confirm routes so a
+Do not work around them by calling routes directly: price and SKU changes wait for Commerce preview/confirm routes so a
 human approves the exact change.
 
 Apart from the order changes above, this skill reads store data only. It does

@@ -5,6 +5,7 @@ import { PluginRouteError } from "emdash";
 import * as catalog from "../../../dist/features/catalog/index.js";
 import * as catalogStorefront from "../../../dist/features/catalog/storefront/index.js";
 import * as commerce from "../../../dist/index.js";
+import registryPlugin from "../../../dist/sandbox/plugin.mjs";
 
 test("the package root and feature entry expose the same catalog contract", () => {
   assert.equal(commerce.CATALOG_FEATURE_ID, "dinkus.catalog");
@@ -30,8 +31,10 @@ test("the package root and feature entry expose the same catalog contract", () =
   assert.equal(catalog.createCatalogItemRoute, undefined);
   assert.equal(commerce.saveCatalogProductPricesRoute, undefined);
   assert.equal(catalog.DEFAULT_CATALOG_MANUAL_AVAILABILITY, "in-stock");
-  assert.equal(typeof commerce.dinkusCommerce, "function");
-  assert.equal(typeof commerce.createPlugin, "function");
+  // The package root is a library, not an EmDash plugin entry (commerce-remove-native-entry-20261101).
+  assert.equal(commerce.dinkusCommerce, undefined);
+  assert.equal(commerce.createPlugin, undefined);
+  assert.equal(commerce.default, undefined);
 });
 
 test("installed public catalog projects only priced listable products", async () => {
@@ -89,9 +92,10 @@ test("installed public catalog projects only priced listable products", async ()
     }],
   });
 
-  const native = commerce.createPlugin();
-  const publicRoute = native.routes[catalogStorefront.PUBLIC_CATALOG_ROUTE];
-  const itemRoute = native.routes[catalogStorefront.PUBLIC_CATALOG_ITEM_ROUTE];
+  const publicRoute = registryPlugin.routes[catalogStorefront.PUBLIC_CATALOG_ROUTE];
+  const itemRoute = registryPlugin.routes[catalogStorefront.PUBLIC_CATALOG_ITEM_ROUTE];
+  // A Registry route is handed the request and the plugin context separately.
+  const invoke = (route, context) => route.handler({ request: context.request }, context);
   assert.equal(publicRoute.public, true);
   assert.deepEqual(publicRoute.methods, ["GET"]);
   assert.deepEqual(publicRoute.request, { body: "none" });
@@ -101,28 +105,28 @@ test("installed public catalog projects only priced listable products", async ()
   assert.deepEqual(itemRoute.request, { body: "none" });
   assert.equal(itemRoute.cacheControl, "no-store");
 
-  const nativeCatalog = await publicRoute.handler(installedContext);
-  assert.deepEqual(nativeCatalog, response);
-  const nativeItem = await itemRoute.handler({
+  const installedCatalog = await invoke(publicRoute, installedContext);
+  assert.deepEqual(installedCatalog, response);
+  const installedItem = await invoke(itemRoute, {
     ...installedContext,
     request: new Request(
       "http://127.0.0.1/catalog/public/item?itemId=item-public",
       { method: "GET" },
     ),
   });
-  assert.deepEqual(nativeItem, response.products[0]);
-  const nativeUnknownItem = await itemRoute.handler({
+  assert.deepEqual(installedItem, response.products[0]);
+  const unknownItem = await invoke(itemRoute, {
     ...installedContext,
     request: new Request(
       "http://127.0.0.1/catalog/public/item?itemId=missing",
       { method: "GET" },
     ),
   });
-  assert.equal(nativeUnknownItem, null);
+  assert.equal(unknownItem, null);
 
   // By page: the page's last sale names the product, and the product names that page back.
   const pages = { async get(id) { return id === "p:page-public" ? { entryId: "page-public", catalogItemId: "item-public" } : null; } };
-  const byPage = (query) => itemRoute.handler({
+  const byPage = (query) => invoke(itemRoute, {
     ...installedContext,
     storage: { ...installedContext.storage, product_pages: pages },
     request: new Request(`http://127.0.0.1/catalog/public/item?${query}`, { method: "GET" }),

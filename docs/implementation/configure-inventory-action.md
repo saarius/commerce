@@ -1,5 +1,10 @@
 # Configure Inventory action
 
+> **Note (1 Nov 2026):** the native entry (`createPlugin`, `dinkusCommerce`) this
+> record mentions is removed; the package root is a library and EmDash sites
+> install the Registry build (`commerce-remove-native-entry-20261101`). This is a
+> historical record of the slice as built.
+
 This slice gives Commerce a durable store identity and a private product action
 that can start the existing managed-SKU registration contract. It does not add
 a live Inventory transport or visual setup flow.
