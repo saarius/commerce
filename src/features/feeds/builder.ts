@@ -403,13 +403,14 @@ export function buildStorefrontAgentsMd(options: StorefrontAgentFeedOptions): st
   const domLines = domSelector
     ? [
         "",
-        "### Checkout DOM Attributes (`/checkout`)",
-        `On the \`/checkout\` page, \`${domSelector}\` exposes live integer minor-unit attributes alongside formatted USD strings:`,
+        "### Pre-Start Checkout DOM Estimate Attributes (`/checkout`)",
+        `On the \`/checkout\` page, \`${domSelector}\` may expose pre-start **estimate** attributes in integer minor units alongside formatted USD strings (before Commerce applies coupons, free-shipping thresholds, or authoritative start pricing):`,
         "- `data-checkout-currency=\"USD\"`",
-        "- `data-checkout-subtotal-minor=\"<integer-cents>\"`",
-        "- `data-checkout-shipping-minor=\"<integer-cents>\"`",
+        "- `data-checkout-subtotal-minor=\"<estimated-subtotal-cents>\"`",
+        "- `data-checkout-shipping-minor=\"<estimated-shipping-cents>\"`",
         "- `data-checkout-tax-minor=\"0\"`",
-        "- `data-checkout-total-minor=\"<integer-cents>\"`",
+        "- `data-checkout-total-minor=\"<estimated-total-cents>\"`",
+        "- Treat these DOM values as estimates, not card limits: a physical 5000-cent basket plus a 500-cent flat rate may show `5500` even when a 5000-cent free-shipping threshold applies at start. Use Commerce's frozen `data.checkout.pricing.finalTotal.minor` for the final card limit.",
       ]
     : [];
   return [
@@ -426,7 +427,7 @@ export function buildStorefrontAgentsMd(options: StorefrontAgentFeedOptions): st
     `- **Meta Catalog CSV Feed**: \`GET ${feed.siteOrigin}/feeds/meta-catalog.csv\``,
     "",
     "## 2. Deterministic Virtual Card Sizing (`USD` Minor Units)",
-    "Agents provisioning single-use virtual payment cards (Stripe Issuing, Privacy, Lithic, Ramp, or consumer agent wallets) can compute the exact payable total in USD minor units (cents) before or during checkout:",
+    "Agents provisioning single-use virtual payment cards (Stripe Issuing, Privacy, Lithic, Ramp, or consumer agent wallets) must set the final card limit exclusively from Commerce's authoritative frozen `data.checkout.pricing.finalTotal.minor` returned by `POST .../checkout/guest/start`. Before start, catalog and shipping facts support estimates only:",
     `- **Currency**: \`${feed.virtualCardSizing.currency}\``,
     `- **Tax**: Always \`${feed.virtualCardSizing.taxMinor}\` minor units (\`tax: { currency: "USD", minor: "0" }\`). Tax is not added at payment session creation.`,
     `- **Shipping**: ${shippingSummaryLine(feed.virtualCardSizing.shipping)}`,
@@ -451,7 +452,8 @@ export function buildStorefrontAgentsMd(options: StorefrontAgentFeedOptions): st
     "   - Size the virtual card to `data.checkout.pricing.finalTotal.minor` (in USD cents) and navigate to `data.checkout.redirectUrl` (when `data.checkout.state === \"pending\"` and `data.checkout.redirectUrl` is non-null; zero-total checkouts complete immediately with `data.checkout.state === \"paid\"`).",
     `3. **Poll Status / Receipt**: \`POST ${pluginBase}/checkout/guest/status\` with header \`x-commerce-guest-capability: <token>\` and JSON body \`{}\` (or \`{ "attemptId": "<data.checkout.attemptId>" }\`). Bound pending-status checks (at most 5 checks per attempt):`,
     "   - When `data.checkout.state === \"paid\"`, read `data.checkout.order` (`orderId`, `receiptId`, `lines`, `total`, `pricing`).",
-    "   - When `data.checkout.state === \"released-retry\"` or `\"recoverable-failure\"`, stop polling that attempt immediately; retain the existing `x-commerce-guest-capability` token and issue a fresh `POST .../checkout/guest/start` before polling again.",
+    "   - When `data.checkout.state === \"recoverable-failure\"`, do not treat the attempt as released or issue a fresh purchase; preserve the active `attemptId` and existing `x-commerce-guest-capability`, stop tight polling, and recover the same attempt. An idempotent `checkout/guest/start` replay of the same cart resumes that frozen purchase, not a newly priced attempt.",
+    "   - When `data.checkout.state === \"released-retry\"` and `data.checkout.retryAfter === data.checkout.attemptId` (authoritative release fence), stop polling the released attempt; retain the existing `x-commerce-guest-capability` token and issue a successor `POST .../checkout/guest/start` before polling the new attempt.",
     "",
   ].join("\n");
 }
