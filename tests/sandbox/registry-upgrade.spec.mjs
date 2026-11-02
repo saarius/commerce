@@ -38,6 +38,28 @@ const policyRecords = () => {
 const rawPolicyRows = (database) => database.prepare(
   "SELECT * FROM _plugin_storage WHERE plugin_id = ? AND collection IN (" + POLICY_COLLECTIONS.map(() => "?").join(",") + ") ORDER BY collection, id",
 ).all("dinkus-commerce", ...POLICY_COLLECTIONS);
+// A store that once ran the removed native entry kept camelCase collections under the same plugin id. Commerce
+// does not migrate them (commerce-remove-native-entry-20261101); the upgrade must leave them untouched.
+const NATIVE_COLLECTIONS = ["catalogItems", "catalogPrices", "catalogManualAvailability", "storefrontOutOfStockListing",
+  "storeInventoryConfigurations", "checkoutCarts", "checkoutGuestCapabilities", "customerSessions"];
+const nativeRecords = () => {
+  const createdAt = "2026-09-20T09:00:00.000Z";
+  return {
+    catalogItems: { recordKind: "catalog-item", itemId: "native-mug", commandId: "catalog:create:native-mug", kind: "simple-product",
+      name: "Native mug", sku: "NATIVE-MUG", skuKey: "NATIVE-MUG", stockManagement: { mode: "unmanaged" },
+      creationIntent: { manageStock: false }, state: "draft", createdAt },
+    catalogPrices: { recordKind: "catalog-price", recordId: "native-mug", catalogItemId: "native-mug", regular: { currency: "USD", minor: "1500" } },
+    catalogManualAvailability: { recordKind: "catalog-manual-availability", recordId: "native-mug", catalogItemId: "native-mug", status: "in-stock" },
+    storefrontOutOfStockListing: { recordKind: "storefront-out-of-stock-listing", recordId: "active", hideOutOfStock: false, revision: 1 },
+    storeInventoryConfigurations: { recordKind: "store-inventory-configuration", recordId: "active", configurationKey: "store", siteId: "native-site-id" },
+    checkoutCarts: { recordKind: "checkout-cart", cartId: "native-cart", attempts: [], createdAt },
+    checkoutGuestCapabilities: { recordKind: "guest-capability", capabilityId: "native-capability", cartId: "native-cart", createdAt },
+    customerSessions: { recordKind: "customer-session", sessionId: "native-session", emailKey: "shopper@example.test", createdAt },
+  };
+};
+const rawRows = (database, collections) => database.prepare(
+  "SELECT * FROM _plugin_storage WHERE plugin_id = ? AND collection IN (" + collections.map(() => "?").join(",") + ") ORDER BY collection, id",
+).all("dinkus-commerce", ...collections);
 const items = (rows) => Object.values(rows).filter((row) => row.recordKind === "catalog-item");
 const publicCatalog = async (request) => {
   const body = await (await request.get("/_emdash/api/plugins/dinkus-commerce/catalog/public")).json();
@@ -101,7 +123,7 @@ test("the earlier release stocks a Registry store", async ({ page, request }) =>
   // The store's policy records, as the earlier release stored them; its own public read serves the Registry pair.
   const columns = database.prepare("PRAGMA table_info(_plugin_storage)").all().map((column) => column.name);
   const now = new Date().toISOString();
-  for (const [collection, record] of Object.entries(policyRecords())) {
+  for (const [collection, record] of [...Object.entries(policyRecords()), ...Object.entries(nativeRecords())]) {
     const row = { plugin_id: "dinkus-commerce", collection, id: "active", data: JSON.stringify(record), created_at: now, updated_at: now,
       ...(columns.includes("revision") ? { revision: crypto.randomUUID() } : {}) };
     const keys = Object.keys(row).filter((key) => columns.includes(key));
@@ -111,8 +133,9 @@ test("the earlier release stocks a Registry store", async ({ page, request }) =>
   expect(oldPolicies.data).toEqual({ shipping: policyRecords().store_shipping_policy, returns: policyRecords().store_return_policy });
   const snapshot = { from: process.env.COMMERCE_UPGRADE_FROM, ids: { hat: hat.id, scarf: scarf.id, cap: cap.id }, pageId, shop,
     storage: Object.fromEntries(COLLECTIONS.map((name) => [name, rows(name)])), settingsRows: rows("storefront_availability_settings"),
-    policyRows: rawPolicyRows(database) };
+    policyRows: rawPolicyRows(database), nativeRows: rawRows(database, NATIVE_COLLECTIONS) };
   expect(snapshot.policyRows).toHaveLength(4);
+  expect(snapshot.nativeRows).toHaveLength(NATIVE_COLLECTIONS.length);
   expect(Object.keys(snapshot.storage.catalog_prices)).toHaveLength(3);
   expect(items(snapshot.storage.catalog_items).find((row) => row.itemId === cap.id).archivedAt).toBeTruthy();
   writeFileSync(snapshotFile(), JSON.stringify(snapshot, null, 2));
@@ -181,5 +204,10 @@ test("this build keeps the upgraded store's products, settings, page and sellabi
   const policiesRead = await page.request.get("/_emdash/api/plugins/dinkus-commerce/policies/public");
   expect(policiesRead.ok()).toBe(false);
   expect(rawPolicyRows(database)).toEqual(before.policyRows);
+
+  // 8. The removed native entry's camelCase rows are not migrated and not deleted: byte for byte as they were
+  // (commerce-remove-native-entry-20261101). The Registry build never reads them: the native mug is not on sale.
+  expect(rawRows(database, NATIVE_COLLECTIONS)).toEqual(before.nativeRows);
+  expect((await publicCatalog(page.request)).some((item) => item.id === "native-mug")).toBe(false);
   database.close();
 });

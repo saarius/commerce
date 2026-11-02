@@ -71,5 +71,23 @@ which never imported the package root.
 | `bin/verify-commerce packaged` | 3 passed, plus `npm_package_consumer=pass declared-exports library-root cli-help` |
 | `npm run test:settings` | 1 passed (Registry) |
 
+## Existing stores (2 Nov 2026, Node 24.22.0)
+
+`npm run test:registry-upgrade` (from `v0.5.0`, `tests/sandbox/registry-upgrade.spec.mjs`):
+`registry_upgrade=pass`, old phase 1 passed, new phase 1 passed.
+
+- A Registry store stocked through v0.5.0's own admin restarts on this head
+  against the same database and keeps its products, prices, settings, product
+  page, sellability and policy rows (the existing checks, unchanged).
+- The old phase also writes the native entry's camelCase rows under plugin id
+  `dinkus-commerce` (`catalogItems`, `catalogPrices`,
+  `catalogManualAvailability`, `storefrontOutOfStockListing`,
+  `storeInventoryConfigurations`, `checkoutCarts`,
+  `checkoutGuestCapabilities`, `customerSessions`; 8 rows), beside the
+  earlier `storeShippingPolicy` / `storeReturnPolicy` rows. After the upgrade
+  the raw `_plugin_storage` rows of all of them are identical (every column),
+  and the native product is not on the public catalog: no migration, no
+  deletion, as documented.
+
 Route errors in the browser logs are the specs' expected refusals. Local
 fixtures only; no publication, deployment or live payment.
