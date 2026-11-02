@@ -7,12 +7,13 @@ import {
   InventorySetupError,
   configureCatalogItemInventory,
   createCatalogItem, addCatalogVariantOption, resolveCatalogVariantMember, listCatalogProducts, catalogUniqueIndexName,
-  createPlugin,
   createStoreInventoryConfiguration,
   saveCatalogProductPrices,
   managedSkuRegistrationClaimUniqueIndexName,
   storeInventoryConfigurationUniqueIndexName,
 } from "../../../dist/index.js";
+import registryPlugin from "../../../dist/sandbox/plugin.mjs";
+import registryDescriptor from "../../../dist/sandbox/index.mjs";
 
 const binding = {
   providerRef: "dinkuskit.inventory",
@@ -609,13 +610,11 @@ test('native non-default choice tracking remains the authority through provider 
   await assert.rejects(configureCatalogItemInventory({ catalog, configurations, claims }, { catalogItemId: 'large' }), e => e.code === 'MANAGE_STOCK_REQUIRED');
 });
 
-test("the plugin declares the singleton configuration; Configure Inventory has no native route any more", () => {
-  const plugin = createPlugin();
-  assert.deepEqual(plugin.storage[STORE_INVENTORY_CONFIGURATIONS_COLLECTION], {
+test("the Registry build declares the singleton configuration; Configure Inventory has no route", () => {
+  assert.deepEqual(registryDescriptor.storage.store_inventory_configurations, {
     indexes: [],
     uniqueIndexes: ["configurationKey"],
   });
-  // The native-only catalog-items/configure-inventory route is gone (commerce-one-build-registry-20261031);
   // Inventory setup returns with Inventory, in Block Kit.
-  assert.equal(plugin.routes["catalog-items/configure-inventory"], undefined);
+  assert.equal(registryPlugin.routes["catalog-items/configure-inventory"], undefined);
 });

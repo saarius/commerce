@@ -1,42 +1,23 @@
 import { expect, test } from "@playwright/test";
 import Database from "better-sqlite3";
 import {writeFileSync} from "node:fs";
-import { Kysely, SqliteDialect } from 'kysely';
-import { createSettingsAccess } from 'emdash';
-import { OptionsRepository } from 'emdash/internal/plugins/host';
-import { loadMerchantStoreSettings, saveMerchantStoreSettings } from '../../dist/features/store-settings/kernel/index.js';
-import { BLOCK_FORM, openCard, openPanel, openProductPage, setOnSale } from './product-page.mjs';
+import { BLOCK_FORM, openCard, openPanel, openProductPage } from './product-page.mjs';
 
 function proofDb() {
-  const native = test.info().project.name === "native-variant";
-  const url = native ? process.env.COMMERCE_NATIVE_VARIANT_DB : process.env.COMMERCE_PROOF_DB;
+  const url = process.env.COMMERCE_PROOF_DB;
   if (!url) throw new Error("missing variant proof database");
-  return { native, filename: url.replace(/^file:/, "") };
-}
-
-// A digital basket has no delivery address, so billing is typed in full.
-async function fillBilling(page) {
-  for (const [name, value] of [['Billing name', 'Guest Shopper'], ['Billing address line 1', '9 Billing Way'], ['Billing city', 'Toronto'], ['Billing postal code', 'M5V 1A1'], ['Billing country', 'CA']])
-    await page.getByRole('textbox', { name, exact: true }).fill(value);
+  return url.replace(/^file:/, "");
 }
 
 test("same-origin storefront renders concrete grouped members", async ({ page, baseURL }) => {
-  const { native, filename } = proofDb();
-  const db = new Database(filename);
+  const db = new Database(proofDb());
   const now = "2026-10-08T00:00:00.000Z";
   const put = db.prepare("INSERT OR REPLACE INTO _plugin_storage (plugin_id, collection, id, data, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)");
-  const collections = native
-    ? { catalog: "catalogItems", prices: "catalogPrices", availability: "catalogManualAvailability", carts: "checkoutCarts", capabilities: "checkoutGuestCapabilities", associations: "checkoutPaymentAssociations" }
-    : { catalog: "catalog_items", prices: "catalog_prices", availability: "catalog_manual_availability", carts: "checkout_carts", capabilities: "checkout_guest_capabilities", associations: "checkout_payment_associations" };
+  const collections = { catalog: "catalog_items", prices: "catalog_prices", availability: "catalog_manual_availability" };
   const ids = {
-    parent: `variant-proof-${native ? "native" : "sandbox"}-parent`,
-    large: `variant-proof-${native ? "native" : "sandbox"}-large`,
+    parent: "variant-proof-sandbox-parent",
+    large: "variant-proof-sandbox-large",
   };
-  let ownedCartId;
-  let ownedCapabilityId;
-  let ownedAttemptId;
-  let firstCapabilityId;
-  let settingsDb, settings, originalSettings, capturedRequirementRevision;
   const row = (id, data) => put.run("dinkus-commerce", collections.catalog, id, JSON.stringify(data), now, now);
   const price = (id, minor) => put.run("dinkus-commerce", collections.prices, id, JSON.stringify({
     recordKind: "catalog-price", recordId: id, catalogItemId: id, regular: { currency: "USD", minor },
@@ -60,14 +41,13 @@ test("same-origin storefront renders concrete grouped members", async ({ page, b
     ],
   };
   try {
-    base(ids.parent, "PROOF-SHIRT-" + (native ? "NATIVE" : "SANDBOX"), product);
-    base(ids.large, "PROOF-SHIRT-L-" + (native ? "NATIVE" : "SANDBOX"), null, { variantProductId: ids.parent, variantSelections: [{ optionId: "size", valueId: "large" }], variantFulfillment: "physical" });
+    base(ids.parent, "PROOF-SHIRT-" + "SANDBOX", product);
+    base(ids.large, "PROOF-SHIRT-L-" + "SANDBOX", null, { variantProductId: ids.parent, variantSelections: [{ optionId: "size", valueId: "large" }], variantFulfillment: "physical" });
     price(ids.parent, "2000"); price(ids.large, "2400"); availability(ids.parent, "out-of-stock"); availability(ids.large, "in-stock");
     await page.goto(new URL("/", baseURL).toString());
     const variants = page.locator(`[data-variants="${ids.parent}"]`);
     await expect(variants).toContainText("2400");
-    const listingCollection = native ? 'storefrontOutOfStockListing' : 'storefront_out_of_stock_listing';
-    const listing = db.prepare('SELECT data FROM _plugin_storage WHERE plugin_id=? AND collection=? AND id=?').get('dinkus-commerce',listingCollection,'active');
+    const listing = db.prepare('SELECT data FROM _plugin_storage WHERE plugin_id=? AND collection=? AND id=?').get('dinkus-commerce','storefront_out_of_stock_listing','active');
     const hideOutOfStock = listing && JSON.parse(listing.data).hideOutOfStock === true;
     if (hideOutOfStock) await expect(variants.locator(`input[value="${ids.parent}"]`)).toHaveCount(0);
     else {
@@ -76,145 +56,7 @@ test("same-origin storefront renders concrete grouped members", async ({ page, b
     }
     await expect(variants.locator(`input[value="${ids.large}"]`)).toBeEnabled();
 
-    if (native) {
-      settingsDb = new Kysely({ dialect: new SqliteDialect({ database: new Database(filename) }) });
-      settings = createSettingsAccess(new OptionsRepository(settingsDb), 'dinkus-commerce', {});
-      originalSettings = await loadMerchantStoreSettings(settings);
-      const optional = await saveMerchantStoreSettings(settings, { expectedRevision: originalSettings.revision, requirePhoneNumber: false });
-      await variants.locator(`input[value="${ids.large}"]`).check();
-      await page.getByRole("button", { name: "Prepare checkout" }).click();
-      await expect(page.locator('[data-checkout-result]')).toContainText('"ok": true');
-
-      const capability = await page.locator('[data-checkout-result]').textContent();
-      expect(capability).toContain("capability");
-      const prepared = JSON.parse(capability);
-      const token = (prepared.data ?? prepared).capability.capability;
-      ownedCapabilityId = (prepared.data ?? prepared).capabilityId;
-      firstCapabilityId = ownedCapabilityId;
-      expect((prepared.data ?? prepared).contactRequirements).toEqual({requirePhoneNumber:false});
-      expect((prepared.data ?? prepared).checkout.contactRequirements).toBeUndefined();
-      const forged = await page.evaluate(async ({ token, id }) => {
-        const response = await fetch("/_emdash/api/plugins/dinkus-commerce/checkout/guest/start", {
-          method: "POST",
-          headers: { "content-type": "application/json", "x-commerce-guest-capability": token },
-          body: JSON.stringify({ lines: [{ catalogItemId: id, quantity: 1, price: "1" }], total: "1", paid: true }),
-        });
-        return { status: response.status, body: await response.json() };
-      }, { token, id: ids.large });
-      expect(forged.status).toBe(400);
-      expect(JSON.stringify(forged.body)).toMatch(/INVALID_CART|Invalid cart/);
-
-      await expect(page.getByRole('textbox', { name: 'Phone' })).not.toHaveAttribute('required');
-      const cartsBeforeDenial = db.prepare('SELECT COUNT(*) AS n FROM _plugin_storage WHERE plugin_id=? AND collection=?').get('dinkus-commerce', collections.carts).n;
-      const emailDenied = page.waitForResponse(response => response.url().endsWith('/checkout/guest/start') && response.request().method() === 'POST');
-      await page.getByRole("button", { name: "Start checkout" }).click();
-      expect((await emailDenied).status()).toBe(400);
-      await expect(page.locator('[data-checkout-result]')).toContainText('INVALID_CART');
-      expect(db.prepare('SELECT COUNT(*) AS n FROM _plugin_storage WHERE plugin_id=? AND collection=?').get('dinkus-commerce', collections.carts).n).toBe(cartsBeforeDenial);
-      await page.getByRole('textbox', { name: 'Email' }).fill('variant-shopper@example.test');
-      const required = await saveMerchantStoreSettings(settings, {expectedRevision: optional.revision, requirePhoneNumber:true});
-      capturedRequirementRevision = required.revision;
-      const phoneDenied = page.waitForResponse(response => response.url().endsWith('/checkout/guest/start') && response.request().method() === 'POST');
-      await page.getByRole("button", { name: "Start checkout" }).click();
-      expect((await phoneDenied).status()).toBe(400);
-      await expect(page.locator('[data-checkout-result]')).toContainText('INVALID_CART');
-      expect(db.prepare('SELECT COUNT(*) AS n FROM _plugin_storage WHERE plugin_id=? AND collection=?').get('dinkus-commerce', collections.carts).n).toBe(cartsBeforeDenial);
-      await page.getByRole('button', {name:'Prepare checkout'}).click();
-      await expect(page.getByRole('textbox', {name:'Phone'})).toHaveAttribute('required');
-      const refreshed = JSON.parse(await page.locator('[data-checkout-result]').textContent());
-      ownedCapabilityId = (refreshed.data ?? refreshed).capabilityId;
-      expect((refreshed.data ?? refreshed).contactRequirements).toEqual({requirePhoneNumber:true});
-      await page.getByRole('textbox', {name:'Phone'}).fill('555 0142');
-      // The shirt is physical: no address, then an address outside the shipping countries, are both refused.
-      const shipping = await saveMerchantStoreSettings(settings, {expectedRevision: required.revision, storeCountry: 'US'});
-      capturedRequirementRevision = shipping.revision;
-      for (const [country, message] of [[null, 'Delivery address is required'], ['CA', 'The store does not ship to this country']]) {
-        if (country) {
-          await page.getByRole('textbox', {name:'Recipient', exact:true}).fill('Variant Shopper');
-          await page.getByRole('textbox', {name:'Address line 1', exact:true}).fill('1 Proof Street');
-          await page.getByRole('textbox', {name:'City', exact:true}).fill('Proofville');
-          await page.getByRole('textbox', {name:'Postal code', exact:true}).fill('00000');
-          await page.getByRole('textbox', {name:'Country', exact:true}).fill(country);
-        }
-        const addressDenied = page.waitForResponse(response => response.url().endsWith('/checkout/guest/start') && response.request().method() === 'POST');
-        await page.getByRole("button", { name: "Start checkout" }).click();
-        expect((await addressDenied).status()).toBe(400);
-        await expect(page.locator('[data-checkout-result]')).toContainText(message);
-        expect(db.prepare('SELECT COUNT(*) AS n FROM _plugin_storage WHERE plugin_id=? AND collection=?').get('dinkus-commerce', collections.carts).n).toBe(cartsBeforeDenial);
-      }
-      await page.getByRole('textbox', {name:'Country', exact:true}).fill('us');
-      const cartsBeforeRegionDenials = db.prepare('SELECT id, data FROM _plugin_storage WHERE plugin_id=? AND collection=? ORDER BY id')
-        .all('dinkus-commerce', collections.carts);
-      for (const region of ['', 'PR', 'AE', 'Not a state']) {
-        await page.getByRole('textbox', {name:'State or region', exact:true}).fill(region);
-        const regionDenied = page.waitForResponse(response => response.url().endsWith('/checkout/guest/start') && response.request().method() === 'POST');
-        await page.getByRole('button', {name:'Start checkout'}).click();
-        expect((await regionDenied).status()).toBe(400);
-        await expect(page.locator('[data-checkout-result]')).toContainText('Delivery address is invalid');
-        expect(db.prepare('SELECT id, data FROM _plugin_storage WHERE plugin_id=? AND collection=? ORDER BY id')
-          .all('dinkus-commerce', collections.carts)).toEqual(cartsBeforeRegionDenials);
-      }
-      await page.getByRole('textbox', {name:'State or region', exact:true}).fill(' nOrTh cArOlInA ');
-      const checkoutStarted = page.waitForResponse(response => response.url().endsWith('/checkout/guest/start') && response.request().method() === 'POST');
-      await page.getByRole("button", { name: "Start checkout" }).click();
-      const startResponse = await checkoutStarted;
-      expect(startResponse.status()).toBe(200);
-      const startedBody = await startResponse.json();
-      expect((startedBody.data ?? startedBody).checkout.state).toBe('pending');
-      await expect(page.locator('[data-checkout-result]')).toContainText('"state": "pending"');
-      await saveMerchantStoreSettings(settings, {expectedRevision:shipping.revision,requirePhoneNumber:false});
-      await page.getByRole('textbox', {name:'Email'}).fill('changed-draft@example.test');
-      await page.getByRole('textbox', {name:'Phone'}).fill('555 9999');
-
-      await expect(page.locator('[data-frozen-order]')).toContainText("Large");
-
-      const parent = db.prepare("SELECT data FROM _plugin_storage WHERE plugin_id = ? AND collection = ? AND id = ?")
-        .get("dinkus-commerce", collections.catalog, ids.parent);
-      const edited = JSON.parse(parent.data);
-      edited.variantProduct.options[0].values[1].label = "Edited later";
-      db.prepare("UPDATE _plugin_storage SET data = ?, updated_at = ? WHERE plugin_id = ? AND collection = ? AND id = ?")
-        .run(JSON.stringify(edited), now, "dinkus-commerce", collections.catalog, ids.parent);
-      db.prepare("UPDATE _plugin_storage SET data = ?, updated_at = ? WHERE plugin_id = ? AND collection = ? AND id = ?")
-        .run(JSON.stringify({ recordKind: "catalog-price", recordId: ids.large, catalogItemId: ids.large, regular: { currency: "USD", minor: "9999" } }), now, "dinkus-commerce", collections.prices, ids.large);
-      db.prepare("UPDATE _plugin_storage SET data = ?, updated_at = ? WHERE plugin_id = ? AND collection = ? AND id = ?")
-        .run(JSON.stringify({ recordKind: "catalog-manual-availability", recordId: ids.large, catalogItemId: ids.large, status: "out-of-stock" }), now, "dinkus-commerce", collections.availability, ids.large);
-
-      await page.getByRole("button", { name: "Refresh payment status" }).click();
-      await expect(page.locator('[data-checkout-result]')).toContainText('"state": "paid"');
-      await expect(page.locator('[data-checkout-result]')).toContainText('"minor": "2400"');
-      const paidProjection = JSON.parse(await page.locator('[data-checkout-result]').textContent());
-      expect((paidProjection.data ?? paidProjection).checkout.order.variantSelections[0].selections[0].valueLabel).toBe("Large");
-      await page.setViewportSize({ width: 390, height: 844 });
-      await page.screenshot({ path: `${process.env.COMMERCE_PROOF_ARTIFACTS}/variant-checkout-native-phone.png`, fullPage: true });
-      await page.setViewportSize({ width: 1440, height: 1000 });
-      await page.screenshot({ path: `${process.env.COMMERCE_PROOF_ARTIFACTS}/variant-checkout-native-desktop.png`, fullPage: true });
-
-      const capabilityRows = db.prepare("SELECT data FROM _plugin_storage WHERE plugin_id = ? AND collection = ?")
-        .all("dinkus-commerce", collections.capabilities);
-      const capabilityRecord = capabilityRows.map(({ data }) => JSON.parse(data)).find((record) => record.capabilityId === ownedCapabilityId);
-      expect(capabilityRecord).toBeTruthy();
-      ownedCartId = capabilityRecord.cartId;
-      ownedCapabilityId = capabilityRecord.capabilityId;
-      const cartRow = db.prepare("SELECT data FROM _plugin_storage WHERE plugin_id = ? AND collection = ? AND id = ?")
-        .get("dinkus-commerce", collections.carts, capabilityRecord.cartId);
-      const persisted = JSON.parse(cartRow.data);
-      const attempt = persisted.attempts.at(-1);
-      ownedAttemptId = attempt.attemptId;
-      expect(attempt.phase).toBe("paid");
-      expect(attempt.payment.total).toEqual({ currency: "USD", minor: "2400" });
-      expect(attempt.order.total).toEqual({ currency: "USD", minor: "2400" });
-      expect(attempt.order.variantSelections[0].selections[0].valueLabel).toBe("Large");
-      expect(attempt.order.paymentId).toMatch(/^synthetic-payment:/);
-      expect(attempt.contactSnapshot).toMatchObject({contact:{email:'variant-shopper@example.test',phone:'555 0142',
-        delivery:{name:'Variant Shopper',line1:'1 Proof Street',city:'Proofville',region:'nOrTh cArOlInA',postalCode:'00000',country:'US'},
-        billing:{name:'Variant Shopper',line1:'1 Proof Street',city:'Proofville',region:'nOrTh cArOlInA',postalCode:'00000',country:'US'}},requirePhoneNumber:true,revision:capturedRequirementRevision});
-      expect(attempt.order.contactSnapshot).toEqual(attempt.contactSnapshot);
-      expect(JSON.stringify(attempt.payment)).not.toContain('variant-shopper@example.test');
-      expect(JSON.stringify(paidProjection)).not.toContain('variant-shopper@example.test');
-      expect(JSON.stringify(paidProjection)).not.toContain('555 0142');
-    } else {
-      await page.screenshot({ path: `${process.env.COMMERCE_PROOF_ARTIFACTS}/variant-checkout-sandbox.png`, fullPage: true });
-    }
+    await page.screenshot({ path: `${process.env.COMMERCE_PROOF_ARTIFACTS}/variant-checkout-sandbox.png`, fullPage: true });
   } finally {
     for (const [collection, id] of [
       [collections.catalog, ids.parent], [collections.catalog, ids.large],
@@ -222,41 +64,20 @@ test("same-origin storefront renders concrete grouped members", async ({ page, b
       [collections.availability, ids.parent], [collections.availability, ids.large],
     ]) db.prepare("DELETE FROM _plugin_storage WHERE plugin_id = ? AND collection = ? AND id = ?")
       .run("dinkus-commerce", collection, id);
-    if (ownedCartId)
-      db.prepare("DELETE FROM _plugin_storage WHERE plugin_id = ? AND collection = ? AND id = ?")
-        .run("dinkus-commerce", collections.carts, ownedCartId);
-    if (ownedCapabilityId)
-      db.prepare("DELETE FROM _plugin_storage WHERE plugin_id = ? AND collection = ? AND id = ?")
-        .run("dinkus-commerce", collections.capabilities, ownedCapabilityId);
-    if (ownedAttemptId) {
-      const associationRows = db.prepare("SELECT id, data FROM _plugin_storage WHERE plugin_id = ? AND collection = ?")
-        .all("dinkus-commerce", collections.associations);
-      for (const row of associationRows) {
-        const data = JSON.parse(row.data);
-        if (data.attemptId === ownedAttemptId)
-          db.prepare("DELETE FROM _plugin_storage WHERE plugin_id = ? AND collection = ? AND id = ?")
-            .run("dinkus-commerce", collections.associations, row.id);
-      }
-    }
-    if (firstCapabilityId) db.prepare('DELETE FROM _plugin_storage WHERE plugin_id=? AND collection=? AND id=?').run('dinkus-commerce',collections.capabilities,firstCapabilityId);
-    if (settings) { const current = await loadMerchantStoreSettings(settings); await saveMerchantStoreSettings(settings,{expectedRevision:current.revision,requirePhoneNumber:originalSettings.settings.requirePhoneNumber}); }
-    if (settingsDb) await settingsDb.destroy();
     db.close();
   }
 });
 
-test('merchant edits choices and independent prices on desktop and phone', async ({ page, request, browser }) => {
-  const { native, filename } = proofDb();
+test('merchant edits choices and independent prices on desktop and phone', async ({ page, request }) => {
   expect((await request.get('/_emdash/api/setup/dev-bypass')).status()).toBe(200);
-  const db = new Database(filename);
-  const catalog = native ? 'catalogItems' : 'catalog_items';
-  const prices = native ? 'catalogPrices' : 'catalog_prices';
-  const availability = native ? 'catalogManualAvailability' : 'catalog_manual_availability';
+  const db = new Database(proofDb());
+  const catalog = 'catalog_items';
+  const prices = 'catalog_prices';
+  const availability = 'catalog_manual_availability';
   const all = c => db.prepare('SELECT id,data FROM _plugin_storage WHERE plugin_id=? AND collection=?').all('dinkus-commerce',c).map(r => ({ id:r.id, ...JSON.parse(r.data) }));
   const name = 'Merchant variant proof';
   let owned = [];
-  let shopperContext, shopper, guestIds = [], guestCartIds = [], guestAttemptIds = [];
-  const capture = async suffix => page.screenshot({ path: `${process.env.COMMERCE_PROOF_ARTIFACTS}/variant-merchant-${native ? 'native' : 'sandbox'}-${suffix}.png`, fullPage:true });
+  const capture = async suffix => page.screenshot({ path: `${process.env.COMMERCE_PROOF_ARTIFACTS}/variant-merchant-sandbox-${suffix}.png`, fullPage:true });
   try {
     // Native and Registry installs both sell from the product page's Dinkus Commerce panel.
     await page.goto('/_emdash/api/auth/dev-bypass?redirect=/_emdash/admin/plugins/dinkus-commerce/settings');
@@ -273,8 +94,6 @@ test('merchant edits choices and independent prices on desktop and phone', async
     await expect.poll(() => all(catalog).filter(r => r.name === name).length).toBe(1);
     const root = all(catalog).find(r => r.name === name);
     owned = [root.itemId];
-    // The native proof site buys it, so publish the page the way a store's publish check does.
-    if (native) await setOnSale(page.request, { entryId: opened.id, onSale: true });
     expect(root.variantProduct.defaultMemberId).toBe(root.itemId);
     expect(root.variantProduct.options).toHaveLength(0);
     await expect(ui.getByRole('textbox',{name:'Regular',exact:true})).toHaveCount(1);
@@ -310,32 +129,6 @@ test('merchant edits choices and independent prices on desktop and phone', async
     expect(all(catalog).find(r => r.itemId === owned[0]).catalogData.items[owned[1]].price.regular.minor).toBe('2400');
     expect(all(catalog).find(r => r.itemId === owned[0]).catalogData.items[owned[0]].availability.status).toBe('out-of-stock');
     expect((all(catalog).find(r => r.itemId === owned[0]).catalogData.items[owned[1]].availability?.status ?? 'in-stock')).toBe('in-stock');
-    if (native) {
-      shopperContext = await browser.newContext(); shopper = await shopperContext.newPage();
-      await shopper.goto(new URL('/', test.info().project.use.baseURL).href);
-      const choices = shopper.locator(`[data-variants="${root.itemId}"]`);
-      await expect(choices.locator(`input[value="${owned[0]}"]`)).toBeDisabled();
-      await choices.locator(`input[value="${owned[1]}"]`).check();
-      await shopper.getByRole('button',{name:'Prepare checkout'}).click();
-      await expect(shopper.locator('[data-checkout-result]')).toContainText('"ok": true');
-      const prepared = JSON.parse(await shopper.locator('[data-checkout-result]').textContent());
-      const guestId = (prepared.data ?? prepared).capabilityId;
-      guestIds.push(guestId);
-      const capability = all('checkoutGuestCapabilities').find(r => r.capabilityId === guestId);
-      guestCartIds.push(capability.cartId);
-      await shopper.getByRole('textbox',{name:'Email'}).fill('guest-shopper@example.test');
-      await fillBilling(shopper);
-      await shopper.getByRole('button',{name:'Start checkout'}).click();
-      await expect(shopper.locator('[data-checkout-result]')).toContainText('"state": "pending"');
-      await expect(shopper.locator('[data-checkout-result]')).toContainText('\"minor\": \"2400\"');
-      const started = JSON.parse(await shopper.locator('[data-checkout-result]').textContent());
-      const checkout = (started.data ?? started).checkout;
-      guestAttemptIds.push(checkout.attemptId);
-      expect(checkout.total.minor).toBe('2400');
-      expect(checkout.variantSelections[0].catalogItemId).toBe(owned[1]);
-      expect(checkout.variantSelections[0].selections[0].valueLabel).toBe('Large');
-      expect(checkout.variantSelections[0].fulfillment).toBe('digital');
-    }
     // The product page panel has no bulk price form; each choice keeps its own Save.
     await priceForms.nth(0).getByRole('textbox',{name:'Regular',exact:true}).fill('22');
     await priceForms.nth(0).getByRole('button',{name:/^Save/}).click();
@@ -348,7 +141,7 @@ test('merchant edits choices and independent prices on desktop and phone', async
     await ui.locator(BLOCK_FORM).filter({has:page.getByRole('button',{name:'Save options'})}).getByRole('radio',{name:'Physical',exact:true}).last().check();
     const detailResponse = page.waitForResponse(r => r.url().split('?')[0].endsWith('/panel/product') && r.request().method() === 'POST');
     await ui.getByRole('button',{name:'Save options',exact:true}).click();
-    { const r = await detailResponse; writeFileSync(`${process.env.COMMERCE_PROOF_ARTIFACTS}/merchant-details-${native ? 'native' : 'sandbox'}.json`, JSON.stringify({request:r.request().postDataJSON(),response:await r.json()},null,2)); }
+    { const r = await detailResponse; writeFileSync(`${process.env.COMMERCE_PROOF_ARTIFACTS}/merchant-details-sandbox.json`, JSON.stringify({request:r.request().postDataJSON(),response:await r.json()},null,2)); }
     await expect.poll(() => all(catalog).find(r => r.itemId === root.itemId).variantProduct.options[0].values[1].label).toBe('Big');
     await openCard(ui, 'Edit options');
     await expect(ui.getByRole('textbox',{name:'Value: Big',exact:true})).toHaveValue('Big');
@@ -375,19 +168,6 @@ test('merchant edits choices and independent prices on desktop and phone', async
     await freshForm.getByRole('radio',{name:'Out of stock',exact:true}).check();
     await freshForm.getByRole('button',{name:/^Save/}).click();
     await expect.poll(() => all(catalog).find(r => r.itemId === owned[0]).catalogData.items[owned[1]].availability?.status).toBe('out-of-stock');
-    if (shopper) {
-      await shopper.getByRole('button',{name:'Refresh payment status'}).click();
-      await expect(shopper.locator('[data-checkout-result]')).toContainText('"state": "paid"');
-      const result = JSON.parse(await shopper.locator('[data-checkout-result]').textContent());
-      const order = (result.data ?? result).checkout.order;
-      expect(order.total.minor).toBe('2400');
-      expect(order.variantSelections[0].selections[0].valueLabel).toBe('Large');
-      expect(order.variantSelections[0].fulfillment).toBe('digital');
-      const persisted = all('checkoutCarts').find(r => r.id === guestCartIds[0]).attempts.at(-1);
-      expect(persisted.order.total.minor).toBe('2400');
-      expect(persisted.order.variantSelections).toEqual(order.variantSelections);
-      expect(persisted.payment.total.minor).toBe('2400');
-    }
 
     // Append second option (Size × Color) with explicit existing-member values (Sand for Small and Big), then add Medium / Ink.
     await openCard(ui, 'Add another option');
@@ -413,27 +193,6 @@ test('merchant edits choices and independent prices on desktop and phone', async
     await expect(mediumForm.getByRole('textbox',{name:'Regular',exact:true})).toHaveValue('28.00');
     expect(all(catalog).find(r => r.itemId === owned[0]).catalogData.items[owned[2]].price.regular.minor).toBe('2800');
 
-    if (shopper) {
-      await shopper.goto(new URL('/', test.info().project.use.baseURL).href);
-      const choices = shopper.locator(`[data-variants="${root.itemId}"]`);
-      await expect(choices.locator('legend')).toHaveText('Size / Color');
-      await expect(choices).toContainText('Medium / Ink');
-      await choices.locator(`input[value="${owned[2]}"]`).check();
-      await shopper.getByRole('button',{name:'Prepare checkout'}).click();
-      await expect(shopper.locator('[data-checkout-result]')).toContainText('"ok": true');
-      const prepared = JSON.parse(await shopper.locator('[data-checkout-result]').textContent());
-      const guestId = (prepared.data ?? prepared).capabilityId;
-      guestIds.push(guestId);
-      const capability = all('checkoutGuestCapabilities').find(r => r.capabilityId === guestId);
-      guestCartIds.push(capability.cartId);
-      await shopper.getByRole('textbox',{name:'Email'}).fill('medium-ink-shopper@example.test');
-      await fillBilling(shopper);
-      await shopper.getByRole('button',{name:'Start checkout'}).click();
-      await expect(shopper.locator('[data-checkout-result]')).toContainText('"state": "pending"');
-      await expect(shopper.locator('[data-frozen-order]')).toContainText('Medium / Ink');
-      const started = JSON.parse(await shopper.locator('[data-checkout-result]').textContent());
-      guestAttemptIds.push((started.data ?? started).checkout.attemptId);
-    }
 
     // Rename Color and Ink in the editor; the pending Medium / Ink order must keep its frozen Size / Color selections.
     await openCard(ui, 'Edit options');
@@ -442,19 +201,6 @@ test('merchant edits choices and independent prices on desktop and phone', async
     await ui.getByRole('button',{name:'Save options',exact:true}).click();
     await expect.poll(() => all(catalog).find(r => r.itemId === root.itemId).variantProduct.options[1].label).toBe('Shade');
 
-    if (shopper) {
-      await shopper.getByRole('button',{name:'Refresh payment status'}).click();
-      await expect(shopper.locator('[data-checkout-result]')).toContainText('"state": "paid"');
-      const result = JSON.parse(await shopper.locator('[data-checkout-result]').textContent());
-      const order = (result.data ?? result).checkout.order;
-      expect(order.total.minor).toBe('2800');
-      expect(order.variantSelections[0].selections.map(s => [s.optionLabel, s.valueLabel])).toEqual([['Size', 'Medium'], ['Color', 'Ink']]);
-      expect(order.variantSelections[0].fulfillment).toBe('digital');
-      await shopper.setViewportSize({width:1440,height:1000});
-      await shopper.screenshot({path:`${process.env.COMMERCE_PROOF_ARTIFACTS}/variant-journey-desktop.png`,fullPage:true});
-      await shopper.setViewportSize({width:390,height:844});
-      await shopper.screenshot({path:`${process.env.COMMERCE_PROOF_ARTIFACTS}/variant-journey-phone.png`,fullPage:true});
-    }
     await capture('desktop');
     // Resizing alone can leave the Commerce panel collapsed in the phone sidebar.
     // Open the mounted controls and prove an actual save, not just a screenshot.
@@ -474,21 +220,8 @@ test('merchant edits choices and independent prices on desktop and phone', async
     await openCard(phonePanel, cards[2]);
     await expect(phoneForm.getByRole('textbox',{name:'Regular',exact:true})).toHaveValue('29.00');
     await phoneForm.getByRole('textbox',{name:'Regular',exact:true}).scrollIntoViewIfNeeded();
-    if (shopper) {
-      await shopper.getByRole('button',{name:'Refresh payment status'}).click();
-      await expect(shopper.locator('[data-checkout-result]')).toContainText('"state": "paid"');
-      const refreshed = JSON.parse(await shopper.locator('[data-checkout-result]').textContent());
-      expect((refreshed.data ?? refreshed).checkout.order.total.minor).toBe('2800');
-      const persisted = all('checkoutCarts').find(r => r.id === guestCartIds.at(-1)).attempts.at(-1);
-      expect(persisted.order.total.minor).toBe('2800');
-      expect(persisted.payment.total.minor).toBe('2800');
-    }
     await capture('phone');
   } finally {
-    if (shopperContext) await shopperContext.close();
-    for (const id of guestCartIds) db.prepare('DELETE FROM _plugin_storage WHERE plugin_id=? AND collection=? AND id=?').run('dinkus-commerce','checkoutCarts',id);
-    for (const id of guestIds) db.prepare('DELETE FROM _plugin_storage WHERE plugin_id=? AND collection=? AND id=?').run('dinkus-commerce','checkoutGuestCapabilities',id);
-    for (const attemptId of guestAttemptIds) for (const row of all('checkoutPaymentAssociations').filter(r => r.attemptId === attemptId)) db.prepare('DELETE FROM _plugin_storage WHERE plugin_id=? AND collection=? AND id=?').run('dinkus-commerce','checkoutPaymentAssociations',row.id);
     for (const id of owned) for (const c of [catalog,prices,availability]) db.prepare('DELETE FROM _plugin_storage WHERE plugin_id=? AND collection=? AND id=?').run('dinkus-commerce',c,id);
     db.close();
   }

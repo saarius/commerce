@@ -7,7 +7,6 @@ import { join } from "node:path";
 
 import {
   bindGuestCheckoutRuntime,
-  createPlugin,
   createCheckoutPaymentAssociationPort,
   createTrustedTestPaymentsCheckoutHost,
   createTrustedTestPaymentPort,
@@ -22,11 +21,14 @@ import {
   TRUSTED_SITE,
   initializeGuestCheckoutDatabase,
   invokeGuest,
+  mountGuestRoutes,
   openGuestCollections,
   prepareGuest,
   seedGuestCatalog,
   syntheticCheckoutHost,
 } from "./guest-dispatch.mjs";
+import registryPlugin from "../../../dist/sandbox/plugin.mjs";
+import registryDescriptor from "../../../dist/sandbox/index.mjs";
 import { fixture, cart, openStore } from "./fixture.mjs";
 
 const CONFIG = {
@@ -516,12 +518,11 @@ test("trusted host returns the canonical Commerce site and hardens transport", a
   assert.equal(calls[0].init.cache, "no-store");
 });
 
-test("native plugin retains existing public routes and additive association storage", () => {
-  const plugin = createPlugin();
-  assert.ok(plugin.storage.checkoutPaymentAssociations);
-  assert.ok(plugin.routes["checkout/guest/prepare"]);
-  assert.ok(plugin.routes["checkout/guest/start"]);
-  assert.ok(plugin.routes["checkout/guest/status"]);
+test("the Registry build keeps the public guest routes and additive association storage", () => {
+  assert.ok(registryDescriptor.storage.checkout_payment_associations);
+  assert.ok(registryPlugin.routes["checkout/guest/prepare"]);
+  assert.ok(registryPlugin.routes["checkout/guest/start"]);
+  assert.ok(registryPlugin.routes["checkout/guest/status"]);
 });
 
 test("trusted host snapshots normalized identity before lazy resolution", async () => {
@@ -813,7 +814,7 @@ test("bounded overflow stays unknown in canonical reconciliation without order, 
   assert.equal(acknowledged, 0);
 });
 
-test("native public handlers reopen durable storage and reconcile one order per event-safe wake", async (t) => {
+test("library public handlers reopen durable storage and reconcile one order per event-safe wake", async (t) => {
   const dir = mkdtempSync(join(tmpdir(), "commerce-test-payments-native-"));
   const path = join(dir, "commerce.sqlite");
   initializeGuestCheckoutDatabase(path);
@@ -859,7 +860,7 @@ test("native public handlers reopen durable storage and reconcile one order per 
     now: synthetic.host.now,
     createAttemptId: synthetic.host.createAttemptId,
   };
-  const plugin = createPlugin({ siteUrl: TRUSTED_SITE, checkout: checkoutHost });
+  const plugin = mountGuestRoutes({ siteUrl: TRUSTED_SITE, checkout: checkoutHost });
   const prepared = await prepareGuest(plugin.routes[GUEST_CHECKOUT_PREPARE_ROUTE], opened.storage);
   const token = prepared.capability.capability;
   const started = await invokeGuest(

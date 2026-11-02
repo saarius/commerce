@@ -165,8 +165,6 @@ jobs:
           path: |
             .tmp/commerce-consumers-runs/*/evidence/registry-settings.png
             .tmp/commerce-consumers-runs/*/evidence/registry-failure.png
-            .tmp/commerce-consumers-runs/*/evidence/native-settings.png
-            .tmp/commerce-consumers-runs/*/evidence/native-failure.png
             .tmp/commerce-consumers-runs/*/evidence/outcomes.json
             .tmp/commerce-consumers-runs/*/evidence/digests.json
           retention-days: 14

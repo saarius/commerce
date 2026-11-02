@@ -11,13 +11,13 @@ const INVENTORY_ONLY = ['readSkuStock', 'stock.pack_all', 'reserveTicketIds', 'a
 // coupon record validator.
 const COUPON_ONLY = ['Coupon owner unavailable', 'Coupon allocation is not conserved', 'payment pricing coupon', 'CouponRecordValidationError'];
 
-test('the native entry keeps every Manage stock and coupon path', async () => {
+test('the library build keeps every Manage stock and coupon path', async () => {
   assert.equal(REGISTRY_BUILD, false);
-  const native = await Promise.all([
+  const library = await Promise.all([
     'dist/features/storefront-availability/resolve.js', 'dist/features/orders/pack.js', 'dist/features/checkout/orchestrate.js',
     'dist/features/checkout/pricing.js', 'dist/features/checkout/test-payments.js', 'dist/features/coupons/validation.js',
   ].map(file => readFile(new URL('../' + file, import.meta.url), 'utf8')));
-  for (const marker of [...INVENTORY_ONLY, ...COUPON_ONLY]) assert.ok(native.some(code => code.includes(marker)), marker);
+  for (const marker of [...INVENTORY_ONLY, ...COUPON_ONLY]) assert.ok(library.some(code => code.includes(marker)), marker);
 });
 
 test('the Registry build drops the Manage stock, stock reservation, Pack and coupon paths it cannot reach', async () => {

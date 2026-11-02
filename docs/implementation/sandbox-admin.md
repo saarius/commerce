@@ -13,8 +13,9 @@ transport, or public release is included.
   @dinkuskit/commerce/sandbox. Both are local artifacts until publication.
 - emdash-plugin.jsonc declares publisher smokyco.bsky.social's DID, this
   Commerce repository, no extra capabilities, no hosts, and isolated storage.
-- The legacy native entry remains API-only for existing kernel consumers. It
-  is not the public install path. No native React admin export remains.
+- The package root (`@dinkuskit/commerce`) is a library for host apps, not a
+  plugin entry: the legacy native entry is removed
+  (`commerce-remove-native-entry-20261101`). No React admin export remains.
 
 ## Clerk operations
 

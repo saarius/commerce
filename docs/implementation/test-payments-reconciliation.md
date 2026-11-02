@@ -1,5 +1,10 @@
 # Trusted TEST Payments and wake reconciliation
 
+> **Note (1 Nov 2026):** the native entry (`createPlugin`, `dinkusCommerce`) this
+> record mentions is removed; the package root is a library and EmDash sites
+> install the Registry build (`commerce-remove-native-entry-20261101`). This is a
+> historical record of the slice as built.
+
 Commerce exposes a public, host-assembled TEST Payments adapter from
 `@dinkuskit/commerce/features/checkout`:
 

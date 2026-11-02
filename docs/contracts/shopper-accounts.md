@@ -48,7 +48,7 @@ boundary, not an implemented route or storage change in this decision slice.
      verified email (compared case-insensitively via ASCII lowercase) link
      automatically to the shopper's account view without mutating `paidOrder`
      snapshots. Stored `orders` records persist a normalized top-level
-     `emailKey` (indexed in `emdash-plugin.jsonc` and `createPlugin()`) so
+     `emailKey` (indexed in `emdash-plugin.jsonc`) so
      `listOrdersForEmail` queries `{ emailKey }` plus a `{ emailKey: null }`
      fallback for pre-upgrade legacy records rather than scanning all store
      orders.

@@ -1,24 +1,16 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createPlugin } from '../../../dist/index.js';
 import { buildGoogleMerchantFeed, buildMetaCatalogFeed } from '../../../dist/features/feeds/index.js';
 import sandbox from '../../../dist/sandbox/plugin.mjs';
 
-const names = {
-  catalog_items: 'catalogItems',
-  catalog_prices: 'catalogPrices',
-  catalog_manual_availability: 'catalogManualAvailability',
-  catalog_backorder_policies: 'catalogBackorderPolicies',
-  store_inventory_configurations: 'storeInventoryConfigurations',
-  storefront_availability_settings: 'storefrontAvailabilitySettings',
-  storefront_out_of_stock_listing: 'storefrontOutOfStockListing',
-  catalog_media: 'catalogMedia',
-  storefront_placeholder_image: 'storefrontPlaceholderImage',
-  product_feed_eligibility: 'productFeedEligibility',
-  product_pages: 'product_pages',
-};
+// The Registry build's storage collections, by their snake_case names.
+const collections = [
+  'catalog_items', 'catalog_prices', 'catalog_manual_availability', 'catalog_backorder_policies',
+  'store_inventory_configurations', 'storefront_availability_settings', 'storefront_out_of_stock_listing',
+  'catalog_media', 'storefront_placeholder_image', 'product_feed_eligibility', 'product_pages',
+];
 
-function fixture({ nativeNames = false, declared = true } = {}) {
+function fixture({ declared = true } = {}) {
   const products = new Map(['eligible', 'opted-out', 'unset'].map((id) => [id, {
     recordKind: 'catalog-item', itemId: id, name: id, sku: id.toUpperCase(),
     stockManagement: { mode: 'unmanaged' },
@@ -34,7 +26,7 @@ function fixture({ nativeNames = false, declared = true } = {}) {
     async query() { return { items: [...rows].map(([id, data]) => ({ id, data: structuredClone(data) })), hasMore: false }; },
     async put() { assert.fail('public catalog must not write storage'); },
   });
-  const storage = Object.fromEntries(Object.keys(names).map((name) => [name, collection(new Map())]));
+  const storage = Object.fromEntries(collections.map((name) => [name, collection(new Map())]));
   storage.catalog_items = collection(products);
   storage.catalog_prices = collection(new Map([...products.keys()].map((id) => [id, {
     recordKind: 'catalog-price', recordId: id, catalogItemId: id,
@@ -47,7 +39,7 @@ function fixture({ nativeNames = false, declared = true } = {}) {
     records, products,
     context(path) {
       return {
-        storage: nativeNames ? Object.fromEntries(Object.entries(storage).map(([key, value]) => [names[key], value])) : storage,
+        storage,
         site: { url: 'https://shop.example.test' },
         request: new Request(`https://shop.example.test/${path}`),
       };
@@ -55,37 +47,11 @@ function fixture({ nativeNames = false, declared = true } = {}) {
   };
 }
 
-test('native schema and public routes use literal productFeedEligibility before snake_case fallback', async () => {
-  const native = createPlugin();
-  assert.ok(Object.hasOwn(native.storage, 'productFeedEligibility'));
-  assert.equal(Object.hasOwn(native.storage, 'product_feed_eligibility'), false);
-  const f = fixture({ nativeNames: true });
-  for (const path of ['catalog/public', 'catalog/public/item?itemId=eligible']) {
-    const context = f.context(path);
-    assert.ok(Object.hasOwn(context.storage, 'productFeedEligibility'));
-    assert.equal(Object.hasOwn(context.storage, 'product_feed_eligibility'), false);
-    // A conflicting fallback makes native precedence observable without using
-    // the implementation's collection constant to construct the fixture.
-    context.storage.product_feed_eligibility = {
-      async get() { return null; },
-      async getMany() { return new Map(); },
-    };
-    const result = await native.routes[path.split('?')[0]].handler(context);
-    const product = result.products ? result.products[0] : result;
-    assert.deepEqual(product.feedChannels, ['google-merchant', 'meta-catalog']);
-  }
-});
-
-for (const [surface, plugin, nativeNames] of [
-  ['native camelCase storage', createPlugin(), true],
-  ['native snake_case storage fallback', createPlugin(), false],
-  ['Registry snake_case storage', sandbox, false],
-]) {
-  const list = plugin.routes['catalog/public'];
-  const item = plugin.routes['catalog/public/item'];
-  const invoke = (route, context) => plugin === sandbox
-    ? route.handler({ request: context.request }, context)
-    : route.handler(context);
+{
+  const surface = 'Registry build';
+  const list = sandbox.routes['catalog/public'];
+  const item = sandbox.routes['catalog/public/item'];
+  const invoke = (route, context) => route.handler({ request: context.request }, context);
 
   test(`${surface}: anonymous list and item expose only approved feed channels`, async () => {
     for (const route of [list, item]) {
@@ -94,7 +60,7 @@ for (const [surface, plugin, nativeNames] of [
       assert.deepEqual(route.methods, ['GET']);
       assert.equal(route.cacheControl, 'no-store');
     }
-    const f = fixture({ nativeNames });
+    const f = fixture();
     const response = await invoke(list, f.context('catalog/public'));
     assert.deepEqual(response.products.map((product) => [product.id, product.feedChannels]), [
       ['eligible', ['google-merchant', 'meta-catalog']],
@@ -119,7 +85,7 @@ for (const [surface, plugin, nativeNames] of [
   });
 
   test(`${surface}: the item route finds a product by the page that sells it`, async () => {
-    const f = fixture({ nativeNames });
+    const f = fixture();
     f.products.get('eligible').pageId = 'page-eligible';
     const listed = (await invoke(list, f.context('catalog/public'))).products;
     assert.deepEqual(listed.map((product) => product.page), ['page-eligible', undefined, undefined]);
@@ -132,14 +98,14 @@ for (const [surface, plugin, nativeNames] of [
   });
 
   test(`${surface}: older adapters without eligibility storage never opt in`, async () => {
-    const f = fixture({ nativeNames, declared: false });
+    const f = fixture({ declared: false });
     const response = await invoke(list, f.context('catalog/public'));
     assert.ok(response.products.every((product) => !('feedChannels' in product)));
     assert.equal('feedChannels' in await invoke(item, f.context('catalog/public/item?itemId=eligible')), false);
   });
 
   test(`${surface}: unsupported stored channel cannot escape on list or item`, async () => {
-    const f = fixture({ nativeNames });
+    const f = fixture();
     f.records.get('eligible').channels = ['unapproved-channel'];
     await assert.rejects(() => invoke(list, f.context('catalog/public')), /unsupported product feed channel/);
     await assert.rejects(() => invoke(item, f.context('catalog/public/item?itemId=eligible')), /unsupported product feed channel/);

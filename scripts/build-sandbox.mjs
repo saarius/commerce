@@ -23,7 +23,7 @@ const pureVendorModules = {
 };
 // The Registry build cannot reach Manage stock, stock reservation or Pack (see
 // src/shared/registry-build.ts), so the flag is true here and Rolldown drops
-// those paths. Everything else is built exactly as the native entry is.
+// those paths. Everything else is built exactly as the library build (dist/) is.
 const registryBuild = {
   name: 'commerce-registry-build',
   load(id) {

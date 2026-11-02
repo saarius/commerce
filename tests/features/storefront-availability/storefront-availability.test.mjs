@@ -6,7 +6,6 @@ import {
   CatalogError,
   StorefrontAvailabilityError,
   STOREFRONT_AVAILABILITY_RESULT_SCHEMA,
-  createPlugin,
   loadOutOfStockListing,
   resolveManagedStorefrontAvailability,
   resolveStorefrontAvailability,
@@ -15,6 +14,7 @@ import {
   setOutOfStockListing,
   setStorefrontAvailabilityPolicy,
 } from "../../../dist/index.js";
+import registryPlugin from "../../../dist/sandbox/plugin.mjs";
 
 class MemoryCollection {
   constructor(records = []) {
@@ -894,7 +894,6 @@ test("the store listing defaults to show out-of-stock and persists hide", async 
   assert.equal(hidden.changed, true);
   assert.equal(hidden.listing.hideOutOfStock, true);
   assert.equal((await loadOutOfStockListing(listing)).hideOutOfStock, true);
-  // The Commerce settings page saves this on both builds; the native settings/out-of-stock-listing route is
-  // gone (commerce-one-build-registry-20261031).
-  assert.equal(createPlugin().routes["settings/out-of-stock-listing"], undefined);
+  // The Commerce settings page saves this; there is no settings/out-of-stock-listing route.
+  assert.equal(registryPlugin.routes["settings/out-of-stock-listing"], undefined);
 });

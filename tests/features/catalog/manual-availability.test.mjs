@@ -6,7 +6,6 @@ import {
   CATALOG_MANUAL_AVAILABILITY_COLLECTION,
   DEFAULT_CATALOG_MANUAL_AVAILABILITY,
   CatalogError,
-  createPlugin,
   loadCatalogItemManualAvailability,
   setCatalogItemManualAvailability,
 } from "../../../dist/index.js";

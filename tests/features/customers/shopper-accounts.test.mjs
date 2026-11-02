@@ -14,9 +14,10 @@ import {
   SHOPPER_SIGN_OUT_ROUTE,
   createInstalledShopperAccountHandlers,
   createPaidOrderReceiver,
-  createPlugin,
   listOrdersForEmail,
 } from "../../../dist/index.js";
+import registryPlugin from "../../../dist/sandbox/plugin.mjs";
+import registryDescriptor from "../../../dist/sandbox/index.mjs";
 
 function memoryCollection() {
   const map = new Map();
@@ -439,10 +440,9 @@ test("6-digit OTP sign-in mints an origin-bound session, auto-links case-folded 
   assert.equal(afterSignOut.error.code, "SESSION_DENIED");
 });
 
-test("native createPlugin mounts the shopper account routes and storage collections", async () => {
-  const plugin = createPlugin({ siteUrl: "https://store.example.com" });
-  assert.ok(plugin.capabilities.includes("email:send"));
-  assert.deepEqual(plugin.storage.orders.indexes, ["emailKey"]);
+test("the Registry build mounts the shopper account routes and storage collections", async () => {
+  assert.ok(registryDescriptor.capabilities.includes("email:send"));
+  assert.deepEqual(registryDescriptor.storage.orders.indexes, ["emailKey"]);
   for (const route of [
     SHOPPER_SIGN_IN_START_ROUTE,
     SHOPPER_SIGN_IN_VERIFY_ROUTE,
@@ -450,7 +450,7 @@ test("native createPlugin mounts the shopper account routes and storage collecti
     SHOPPER_ACCOUNT_ORDERS_ROUTE,
     SHOPPER_ACCOUNT_PROFILE_ROUTE,
   ]) {
-    assert.equal(plugin.routes[route]?.public, true, `${route} should be mounted as public`);
+    assert.equal(registryPlugin.routes[route]?.public, true, `${route} should be mounted as public`);
   }
 });
 

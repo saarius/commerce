@@ -1,5 +1,10 @@
 # EmDash 1.4 compatibility migration
 
+> **Note (1 Nov 2026):** the native entry (`createPlugin`, `dinkusCommerce`) this
+> record mentions is removed; the package root is a library and EmDash sites
+> install the Registry build (`commerce-remove-native-entry-20261101`). This is a
+> historical record of the slice as built.
+
 This migration repins Commerce from EmDash 1.2.0 to the published EmDash
 1.4.0 composition (GrillTrack decision `emdash-1-4-compatibility-20261030`).
 Checkout, catalog authority, managed-stock, guest-route and capability policy

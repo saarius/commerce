@@ -28,10 +28,10 @@ separate US region check. These settings do not infer a country from locale,
 IP, or shipping origin, collect a billing address, or determine taxes or currency.
 
 
-Native Store and Registry Settings render the same BlockKit form. The native
-section uses the supported private `admin` route with `/store` in each request,
-so the host supplies declared-page UI context. Both transports require the existing
-`content:edit_any` permission and host authentication/CSRF/scope checks. A conflict
+Registry Settings renders the BlockKit form through the private `admin` route
+(the removed native entry rendered the same form through the same route with
+`/store` in each request; `commerce-remove-native-entry-20261101`). The route
+requires the existing `content:edit_any` permission and host authentication/CSRF/scope checks. A conflict
 retains the draft and its original revision; Reload saved settings is explicit.
 The existing catalog/placeholder settings are preserved.
 

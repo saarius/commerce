@@ -2,18 +2,17 @@ import { expect, test } from "@playwright/test";
 import Database from "better-sqlite3";
 
 function dbPath() {
-  const native = test.info().project.name === "native";
-  const url = native ? process.env.COMMERCE_NATIVE_DB : process.env.COMMERCE_PROOF_DB;
+  const url = process.env.COMMERCE_PROOF_DB;
   if (!url) throw new Error("missing commerce proof database");
-  return { native, filename: url.replace(/^file:/, "") };
+  return url.replace(/^file:/, "");
 }
 
-function seedProduct(filename, native) {
+function seedProduct(filename) {
   const database = new Database(filename);
   const now = "2026-09-30T00:00:00.000Z";
-  const catalog = native ? "catalogItems" : "catalog_items";
-  const prices = native ? "catalogPrices" : "catalog_prices";
-  const availability = native ? "catalogManualAvailability" : "catalog_manual_availability";
+  const catalog = "catalog_items";
+  const prices = "catalog_prices";
+  const availability = "catalog_manual_availability";
   const insert = database.prepare(
     "INSERT OR REPLACE INTO _plugin_storage (plugin_id, collection, id, data, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
   );
@@ -66,15 +65,15 @@ function seedProduct(filename, native) {
   return { database, catalog, prices, availability };
 }
 
-function capabilityCount(database, native) {
-  const collection = native ? "checkoutGuestCapabilities" : "checkout_guest_capabilities";
+function capabilityCount(database) {
+  const collection = "checkout_guest_capabilities";
   return database
     .prepare("SELECT COUNT(*) AS n FROM _plugin_storage WHERE plugin_id = ? AND collection = ?")
     .get("dinkus-commerce", collection).n;
 }
 
-function cartCount(database, native) {
-  const collection = native ? "checkoutCarts" : "checkout_carts";
+function cartCount(database) {
+  const collection = "checkout_carts";
   return database
     .prepare("SELECT COUNT(*) AS n FROM _plugin_storage WHERE plugin_id = ? AND collection = ?")
     .get("dinkus-commerce", collection).n;
@@ -94,14 +93,13 @@ test("public guest checkout routes admit same-origin JSON and fail closed withou
 }) => {
   const setup = await request.get("/_emdash/api/setup/dev-bypass");
   expect(setup.status()).toBe(200);
-  const { native, filename } = dbPath();
-  const { database, catalog, prices, availability } = seedProduct(filename, native);
+  const { database, catalog, prices, availability } = seedProduct(dbPath());
   const origin = new URL(baseURL).origin;
   const prepare = "/_emdash/api/plugins/dinkus-commerce/checkout/guest/prepare";
   const start = "/_emdash/api/plugins/dinkus-commerce/checkout/guest/start";
   const status = "/_emdash/api/plugins/dinkus-commerce/checkout/guest/status";
   const capture = process.env.COMMERCE_PROOF_ARTIFACTS
-    ? `${process.env.COMMERCE_PROOF_ARTIFACTS}/guest-checkout-${native ? "native" : "sandbox"}-unavailability.png`
+    ? `${process.env.COMMERCE_PROOF_ARTIFACTS}/guest-checkout-sandbox-unavailability.png`
     : undefined;
   try {
     const cross = await request.post(prepare, {
@@ -116,8 +114,8 @@ test("public guest checkout routes admit same-origin JSON and fail closed withou
     } else {
       expect(crossText).toMatch(/cross-orig/i);
     }
-    expect(capabilityCount(database, native)).toBe(0);
-    expect(cartCount(database, native)).toBe(0);
+    expect(capabilityCount(database)).toBe(0);
+    expect(cartCount(database)).toBe(0);
 
     const prepared = await request.post(prepare, {
       data: {},
@@ -125,14 +123,14 @@ test("public guest checkout routes admit same-origin JSON and fail closed withou
     });
     const preparedBody = await prepared.json();
     const payload = preparedBody.data ?? preparedBody;
-    // EmDash 1.4 supplies the configured site URL to both host formats.
+    // EmDash 1.4 supplies the configured site URL to the Registry build.
     // Prepare only mints a capability; no configured Payments means start fails.
     expect(payload.ok, JSON.stringify(preparedBody)).toBeTruthy();
     expect(payload.capability?.capability, JSON.stringify(preparedBody)).toMatch(
       /^[0-9a-f-]+\.[0-9a-f]+$/i,
     );
-    expect(capabilityCount(database, native)).toBe(1);
-    expect(cartCount(database, native)).toBe(0);
+    expect(capabilityCount(database)).toBe(1);
+    expect(cartCount(database)).toBe(0);
     const missing = await request.post(start, {
       data: { contact: { email: 'guest@example.test', billing: { name: 'Bill Payer', line1: '9 Billing Way', city: 'Billtown', postalCode: '00009', country: 'US' } }, lines: [{ catalogItemId: "guest-hat", quantity: 1 }] },
       headers: {
@@ -142,35 +140,26 @@ test("public guest checkout routes admit same-origin JSON and fail closed withou
     });
     const missingBody = await missing.json();
     const missingPayload = missingBody.data ?? missingBody;
-    if (native) expect(missing.status()).toBe(503);
     expect(missingPayload.error?.code, JSON.stringify(missingBody)).toBe("PAYMENTS_UNAVAILABLE");
     expect(missing.headers()["set-cookie"]).toBeUndefined();
     expect(missing.headers()["cache-control"]).toMatch(/no-store/);
-    expect(cartCount(database, native)).toBe(0);
+    expect(cartCount(database)).toBe(0);
 
     const tampered = await request.post(start, {
       data: { lines: [{ catalogItemId: "guest-hat", quantity: 1, price: "1" }], total: "1", paid: true },
       headers: writeHeaders(origin),
     });
-    if (native) {
-      expect(tampered.status()).toBe(400);
-    } else {
-      const body = await tampered.json();
-      expect(body.data?.error?.code || body.error?.code).toBe("INVALID_CART");
-    }
+    const tamperedBody = await tampered.json();
+    expect(tamperedBody.data?.error?.code || tamperedBody.error?.code).toBe("INVALID_CART");
 
     const guessed = await request.post(status, {
       data: {},
       headers: { ...writeHeaders(origin), "x-commerce-guest-capability": "guessed.token" },
     });
-    if (native) {
-      expect(guessed.status()).toBe(403);
-    } else {
-      const body = await guessed.json();
-      expect(body.data?.error?.code || body.error?.code).toBe("CAPABILITY_DENIED");
-    }
+    const guessedBody = await guessed.json();
+    expect(guessedBody.data?.error?.code || guessedBody.error?.code).toBe("CAPABILITY_DENIED");
 
-    const configurations = native ? "storeInventoryConfigurations" : "store_inventory_configurations";
+    const configurations = "store_inventory_configurations";
     const inventoryRows = database
       .prepare("SELECT data FROM _plugin_storage WHERE plugin_id = ? AND collection = ?")
       .all("dinkus-commerce", configurations);

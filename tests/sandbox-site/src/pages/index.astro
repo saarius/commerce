@@ -4,13 +4,11 @@
 // endpoint with Commerce's preset constants. No live shop or payment connection.
 import { handleMediaGet } from "emdash";
 import { getDb } from "emdash/runtime";
-import { PluginStorageRepository } from "emdash";
 import {
   COMMERCE_IMAGE_PRESETS,
   COMMERCE_IMAGE_SIZES,
   commerceImageSrcset,
   commerceImageTransformUrl,
-  readPublicCatalog,
 } from "../../../../dist/features/catalog/index.js";
 
 const origin = Astro.url.origin;
@@ -18,30 +16,9 @@ const emdash = Astro.locals.emdash;
 const errors = [];
 let products = [];
 try {
-  if (import.meta.env.COMMERCE_NATIVE_PUBLIC_CATALOG === "1") {
-    const db = await getDb();
-    const repository = (collection, indexes = []) =>
-      new PluginStorageRepository(db, "dinkus-commerce", collection, indexes);
-    const body = await readPublicCatalog({
-      storage: {
-        catalog_items: repository("catalogItems", ["commandId", "skuKey"]),
-        catalog_prices: repository("catalogPrices"),
-        catalog_manual_availability: repository("catalogManualAvailability"),
-        catalog_backorder_policies: repository("catalogBackorderPolicies"),
-        store_inventory_configurations: repository("storeInventoryConfigurations"),
-        storefront_availability_settings: repository("storefrontAvailabilitySettings"),
-        storefront_out_of_stock_listing: repository("storefrontOutOfStockListing"),
-        catalog_media: repository("catalogMedia"),
-        storefront_placeholder_image: repository("storefrontPlaceholderImage"),
-      },
-      site: { url: origin },
-    });
-    products = body.products;
-  } else {
-    const response = await fetch(origin + "/_emdash/api/plugins/dinkus-commerce/catalog/public");
-    const body = await response.json();
-    products = body.data?.products ?? body.products ?? [];
-  }
+  const response = await fetch(origin + "/_emdash/api/plugins/dinkus-commerce/catalog/public");
+  const body = await response.json();
+  products = body.data?.products ?? body.products ?? [];
 } catch (error) {
   errors.push("catalog: " + (error instanceof Error ? error.message : String(error)));
 }

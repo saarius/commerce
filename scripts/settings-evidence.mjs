@@ -3,7 +3,8 @@ import { copyFileSync, existsSync, lstatSync, mkdirSync, readdirSync, readFileSy
 import { resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-export const screenshots = ['native', 'registry'].flatMap(host =>
+// One host: the Registry build (the native entry is gone, commerce-remove-native-entry-20261101).
+export const screenshots = ['registry'].flatMap(host =>
   ['unconfigured', 'saved', 'invalid-input', 'failure'].map(state => `${host}-${state}.png`));
 const statuses = new Set(['passed', 'failed', 'timedOut', 'timedout', 'skipped', 'interrupted']);
 export function collectSettingsEvidence(source, destination, root = resolve('.')) {
@@ -32,7 +33,7 @@ export function collectSettingsEvidence(source, destination, root = resolve('.')
     const raw = JSON.parse(readFileSync(outcomesPath));
     if (!statuses.has(raw.status) || !Array.isArray(raw.outcomes)) throw new Error('Invalid outcomes');
     outcomes = { status: raw.status, outcomes: raw.outcomes.map(row => {
-      if (!['native', 'registry'].includes(row.project) || !statuses.has(row.status) ||
+      if (row.project !== 'registry' || !statuses.has(row.status) ||
         !statuses.has(row.expectedStatus) || !Number.isFinite(row.durationMs) || row.durationMs < 0 ||
         !Number.isInteger(row.retry) || row.retry < 0) throw new Error('Invalid outcome');
       return { project: row.project, status: row.status, expectedStatus: row.expectedStatus,

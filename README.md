@@ -27,42 +27,38 @@ do not include those developer preview controls.
 DinkusKit plugins ship as EmDash Registry plugins: sandboxed and installed
 from the plugin Registry, which is how most EmDash sites add plugins. The
 Registry build is the supported product, and features are designed, tested and
-documented for it first. A native entry (code a site registers in its own
-configuration or Astro routes) is a developer and test setup only. It may not
-offer features the Registry build lacks, except temporary gaps listed here with
-the work that closes them. The project owner set this rule on 2026-10-08.
+documented for it. The project owner set this rule on 2026-10-08.
 
-Commerce's Registry build comes from `emdash-plugin.jsonc` and `src/plugin.ts`
-(see Sandbox distribution below). The package root is the
-native entry. Both builds serve the same Block Kit admin (no React admin
-screens; `commerce-admin-block-kit-only-20261024`) and the same routes: the
-product panels, the private `catalog` route, the store's publish check, the
-public catalog reads, checkout and shopper accounts; only the Registry build
-registers `store-proof`, `orders` and `checkout/guest/readiness`. Commerce
-runs one build everywhere
-(`commerce-one-build-registry-20261031`, Ronald, 31 Oct 2026): the Template
-Store's local dev, demo and browser tests mount the Registry build, and the
-native entry's 24 extra routes (`catalog-items/*` writes and lists,
-`settings/*`, `configure-inventory`) and its local Manage stock test aid are
-gone. Only the Template Store's playground still registers the native entry,
-until its own switch to the Registry build; then the native entry goes too.
-Native camelCase storage gets no migration to the Registry build's snake_case.
-Native-only gaps:
+Commerce runs one build everywhere, the Registry (sandboxed) build
+(`commerce-one-build-registry-20261031`, Ronald, 31 Oct 2026). It comes from
+`emdash-plugin.jsonc` and `src/plugin.ts` (see Sandbox distribution below), and
+an EmDash site installs it from the Registry or from `@dinkuskit/commerce/sandbox`
+with `@dinkuskit/commerce/descriptor`. It serves Block Kit admin only (no React
+admin screens; `commerce-admin-block-kit-only-20261024`): the product panels,
+the Orders and Commerce settings pages, the private `catalog` and `orders`
+routes, the store's publish check, the public catalog reads, checkout, shopper
+accounts and `store-proof`. The Template Store's local dev, demo, playground and
+browser tests all install it.
 
-- Coupons: native installs keep coupon storage and coupon codes at checkout,
-  with no coupon admin screen (coupons are built in dinkuskit/coupons). The Registry build leaves coupon storage and admin out to
-  stay under the Registry's per-file size limit
-  ([registry-coupons-deferred](docs/implementation/registry-coupons-deferred.md)).
-  Registry checkout refuses coupon codes in v1: its port to the hosted
-  DinkusKit coupon service is unhooked to leave room under that limit, and comes
-  back when there is room
-  ([registry-hosted-coupons](docs/implementation/registry-hosted-coupons.md)).
-  This closes when coupons can also be created for a Registry store, through the
-  Coupons admin plugin or CLI in `dinkuskit/coupons`; the native coupon path is
-  then removed.
-- Host-wired checkout: the playground wires checkout through the native entry's
-  host options. Registry installs use the installed checkout services instead,
-  and the playground moves to them with its switch to the Registry build.
+The package root (`@dinkuskit/commerce`) is a library, not an EmDash plugin
+entry: it exports Commerce's feature libraries (catalog, checkout, customers,
+orders, feeds, structured data, store settings, storefront availability,
+inventory provider and setup, fixed bundles) for host apps such as storefronts
+and feed builders, and the `./features/*` subpaths export the same libraries one
+feature at a time. The native entry it used to carry (`createPlugin`, its
+default export and the `dinkusCommerce` descriptor) is gone
+(`commerce-remove-native-entry-20261101`, Ronald, 1 Nov 2026); a site that
+mounted it installs the Registry build instead. Native camelCase storage gets no
+migration to the Registry build's snake_case.
+
+Coupons: the coupon library stays in the package, but no Commerce build binds it
+yet. The Registry build leaves coupon storage and admin out to stay under the
+Registry's per-file size limit
+([registry-coupons-deferred](docs/implementation/registry-coupons-deferred.md)),
+and its checkout refuses coupon codes in v1: its port to the hosted DinkusKit
+coupon service is unhooked to leave room under that limit, and comes back when
+there is room
+([registry-hosted-coupons](docs/implementation/registry-hosted-coupons.md)).
 
 ## Status
 
@@ -74,12 +70,12 @@ and Ship in
 [run 18](https://github.com/saariuslystoned/SaariusSkills/actions/runs/39533111037)
 on 21 Oct 2026.
 
-On `main`, not released yet: store-local shopper accounts with emailed sign-in
-codes ([#152](https://github.com/dinkuskit/commerce/pull/152)), preview product
-metadata and feed eligibility ([#151](https://github.com/dinkuskit/commerce/pull/151)),
-and a background check that recovers when registering it fails
-([#157](https://github.com/dinkuskit/commerce/pull/157)). They reach stores
-through the next beta and then a final release, each on the owner's go; see
+The package's latest release is `0.8.0` ([changes](CHANGELOG.md)). On `main`,
+not released yet: the package root is a library only, with no native EmDash
+plugin entry (`createPlugin` and `dinkusCommerce` are removed; breaking for a
+site that mounted them, which installs the Registry build instead), and the
+pending changes in [`.changeset/`](.changeset/). They reach stores through the
+next beta and then a final release, each on the owner's go; see
 [RELEASING.md](RELEASING.md). Older release records are in
 [docs/implementation/releases.md](docs/implementation/releases.md).
 
@@ -158,23 +154,10 @@ product or physical variant, which Ship will read for labels) and Identifiers. M
 shown as Coming soon and cannot be changed. Those three stock statuses stay hidden on managed products. New products stay
 unmanaged and do not need Inventory. Existing managed products stay managed:
 clerks can edit prices, but omitted tracking fields preserve claims, bindings,
-and fail-closed sellability. A host enables synthetic local testing only with
-`dinkusCommerce({ enableLocalStockManagement: true, siteUrl })` or
-`createPlugin({ enableLocalStockManagement: true, siteUrl })` together with an
-actual loopback site URL (`emdash({ siteUrl })`, `EMDASH_SITE_URL`, or
-`SITE_URL`) and a loopback request. Pass that same configured origin into
-Commerce. When runtime `ctx.site.url` is also present, both trusted site URLs
-must be loopback; a local constructor cannot mask a public runtime site.
-Missing or blank runtime may use the constructor URL. Missing, blank, or
-malformed present site URL fails closed.
-That is not a merchant setting, URL query, or browser override. The
-kernel still accepts future Manage stock transitions. Mounted create/save
-refuse tracking changes unless that local-dev triple is true; creation still
-defaults off. The public `createCatalogItemRoute`, `listCatalogProductsRoute`,
-and `saveCatalogProductPricesRoute` exports stay default-disabled route
-objects. Additive `*WithLocalStock` factories configure a trusted host. Registry/sandbox Block Kit 1.4.0 cannot render a true disabled
-slider, so the Coming-soon notice there is a temporary fallback pending host
-support. Commerce still stores Money.
+and fail-closed sellability. The kernel still accepts future Manage stock
+transitions; the panels and the `catalog` route refuse them in v1. Registry/sandbox
+Block Kit 1.4.0 cannot render a true disabled slider, so the Coming-soon notice
+is a temporary fallback pending host support. Commerce still stores Money.
 Commerce → Settings → Catalog lets the shop owner show out-of-stock products on the
 live site or hide them. The default is to show them. Hide is opt-in and
 applies to clerk Out of stock and Inventory-at-zero. On backorder stays
@@ -193,13 +176,13 @@ helpers. See
 
 Mounted-site work remains a private pilot; this package does not publish
 Commerce or claim a trusted Registry installation. This migration targets the
-official public `emdash@1.4.0` package and verifies native and local
-workerd/sandbox hosts with synthetic SQLite fixtures. A real Registry
+official public `emdash@1.4.0` package and verifies the local
+workerd/sandbox host with synthetic SQLite fixtures. A real Registry
 publication/install remains separately authorized. Commerce still fails
 managed-stock writes closed when its configured provider is unavailable.
 
-Public guest checkout prepare/start/status routes are now mounted on both the
-native plugin and the Registry/sandbox descriptor. Commerce mints a
+Public guest checkout prepare/start/status routes are mounted on the
+Registry/sandbox build. Commerce mints a
 server-owned capability on `checkout/guest/prepare` with no payment or hold,
 returns it in JSON, and requires the declared
 `x-commerce-guest-capability` header on start/status. Public writes also
@@ -230,14 +213,15 @@ command are dropped from `backend.js` to stay under the Registry's per-file
 size limit. The same switch leaves out checkout's coupon quoting, reservation
 and reconciliation: the Registry build binds no coupon port, so a coupon code
 is refused as `COUPON_UNAVAILABLE` (`try-later`) before anything is frozen,
-exactly as before. The native entry keeps them all.
+exactly as before. The library build (`dist/`, which host apps import) keeps
+them all.
 
 The released CLI requires lowercase storage collection names. Fresh sandbox
 installs use snake_case names, preserving the kernel record shapes and actual
-unique-index checks. The legacy native API entry keeps its camelCase storage
-and serves the same Block Kit admin over it. **This is not a native-to-sandbox
-upgrade path:** do not replace a populated native installation with this
-artifact. Data migration and live Inventory service wiring are separate work.
+unique-index checks. Earlier releases' native entry kept camelCase storage;
+**there is no native-to-sandbox upgrade path:** a populated native installation's
+data is not migrated. Data migration and live Inventory service wiring are
+separate work.
 The Cloudflare development limitation above remains; proof uses a disposable
 SQLite site with a real workerd runner, not an in-process fallback.
 
@@ -247,9 +231,8 @@ the build, local installation and proof steps.
 ## Command-line client
 
 `bin/dinkus-commerce.mjs` is an unpublished scaffold of the `dinkus-commerce`
-CLI. It reads the public catalog (`catalog list`, `catalog show`), on a
-native install with `EMDASH_TOKEN` the admin product list (`products list`),
-and on a Registry install with an Editor's or Administrator's `EMDASH_TOKEN` the orders
+CLI. It reads the public catalog (`catalog list`, `catalog show`), with an
+Editor's or Administrator's `EMDASH_TOKEN` the admin product list (`products list`) and the orders
 (`orders list`, `orders show`), which it can also mark Completed or move back
 to Processing, or correct where they go, at a confirmed order version
 (`orders complete`, `orders reopen`, `orders address`), over the same EmDash plugin routes. Price, SKU and settings
@@ -303,26 +286,19 @@ for prerequisites, checks, and proof limits.
 
 ### Single-host browser diagnostics
 
-The main Playwright config normally starts **three** Astro hosts, even when
-`--project` selects one project's tests. For a constrained local machine, opt in
-to one matching project **and** host with `COMMERCE_BROWSER_PROOF_PROFILE`:
+The main Playwright config starts one Astro host, the Registry build's
+`sandbox` lane (the native lanes went with the native entry).
+`COMMERCE_BROWSER_PROOF_PROFILE=sandbox` selects that lane explicitly; any
+other value fails before creating artifact directories:
 
 ```sh
 npm run build
 mkdir -p .tmp/astro-config
 ASTRO_TELEMETRY_DISABLED=1 XDG_CONFIG_HOME="$PWD/.tmp/astro-config" \
-  COMMERCE_BROWSER_PROOF_PROFILE=native \
-  COMMERCE_PROOF_RUN="native-diagnostic-$(date +%s)" \
-  npx playwright test tests/sandbox/guest-checkout.spec.mjs --project=native
+  COMMERCE_BROWSER_PROOF_PROFILE=sandbox \
+  COMMERCE_PROOF_RUN="sandbox-diagnostic-$(date +%s)" \
+  npx playwright test tests/sandbox/guest-checkout.spec.mjs --project=sandbox
 ```
-
-Accepted names are `sandbox`, `native`, and `native-variant`; unset or empty
-retains all three. Invalid names fail before creating artifact directories.
-The selected lane retains its tests, ports, isolated database, host flags,
-viewport, timeouts, single worker, and refusal to reuse a running server.
-A conflicting `--project` is rejected by Playwright rather than starting an
-unselected host. Use a fresh run id and run profiles/builds sequentially.
-The local `sandbox` fixture is not an external Registry installation.
 
 This is **diagnostic proof only**, not full verification. The canonical
 `storefront`, `core`, and `full` verifier modes refuse a nonempty override with

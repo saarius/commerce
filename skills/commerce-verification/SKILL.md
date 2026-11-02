@@ -18,8 +18,9 @@ so an absolute invocation also works from another directory.
 
 `quick` runs typechecking, the build (including sandbox validation/bundle), unit and workflow tests, and repository/feature audits.
 `checks` adds SQLite/D1 integration to quick. `storefront` builds and runs the
-main three-project Playwright config; `packaged` builds and runs the orders
-browser config and native consumer check. `core` runs checks, storefront and
+main Playwright config (one Registry `sandbox` project); `packaged` builds and
+runs the orders browser config and the npm package consumer check (the packed
+tarball's exports, CLI and library-only root). `core` runs checks, storefront and
 packaged sequentially. `full` runs core, then the merchant-settings checks.
 Success exits 0 and prints `verify-commerce: <mode> passed`; unsupported modes
 exit 64. A failed child command stops the gate with a non-zero exit.
@@ -34,11 +35,10 @@ deployment, live payment traffic, or production mutations, and do not establish
 an installed release's compatibility beyond the profiles actually exercised.
 
 For a resource-constrained diagnostic, see the README's single-host browser
-instructions. `COMMERCE_BROWSER_PROOF_PROFILE=sandbox|native|native-variant`
-selects one project and its one host in the main config; unset/empty retains
-all three. Run direct Playwright with a fresh run id, never parallel to a build
-or another profile on the same artifacts. This does not qualify the other
-lanes or a full gate. Canonical storefront/core/full modes reject a nonempty
+instructions. `COMMERCE_BROWSER_PROOF_PROFILE=sandbox` selects the main config's
+one project and host explicitly; any other value fails. Run direct Playwright
+with a fresh run id, never parallel to a build on the same artifacts. This does
+not qualify a full gate. Canonical storefront/core/full modes reject a nonempty
 override before any child gate; unset it for normal delivery verification.
 The separate settings and orders configs are unchanged.
 
