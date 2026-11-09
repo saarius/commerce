@@ -327,6 +327,8 @@ export interface GuestCheckoutPricingSummary {
 }
 
 export interface GuestCheckoutOrderSummary {
+  /** Canonical order mode; absent legacy mode is test, never live. */
+  test?: boolean;
   variantSelections?: readonly CheckoutVariantSelectionSnapshot[];
   orderId: string;
   receiptId: string;

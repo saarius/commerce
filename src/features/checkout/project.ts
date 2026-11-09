@@ -97,6 +97,7 @@ export function projectGuestCheckout(
         ...(attempt.order.variantSelections ? { variantSelections: structuredClone(attempt.order.variantSelections) } : {}),
         orderId: attempt.order.orderId,
         receiptId: attempt.order.receiptId,
+        test: attempt.order.mode !== "live",
         lines,
         total: attempt.order.total,
         ...(attempt.order.pricing ? { pricing: publicPricing(attempt.order.pricing) } : {}),
