@@ -29,6 +29,8 @@ import type { PaidOrderReceiver } from "../../handoffs/paid-order.js";
 import { admitRegistryCheckoutConfig } from "./registry-provider-admission.js";
 import { REGISTRY_CHECKOUT_SETTINGS_KEY } from "./registry-services.js";
 import { storeKey } from "./registry-connect.js";
+import { withGuestOrderFulfillment } from "../orders/guest-receipt.js";
+import { ORDERS_COLLECTION, type OrdersCollection } from "../orders/store.js";
 
 export const COMMERCE_CHECKOUT_WAKES_TASK = "commerce-checkout-wakes";
 export { INSTALLED_COMMERCE_PLUGIN_ID, COMMERCE_REGISTRY_RUNTIME_ID } from "../../shared/plugin-identity.js";
@@ -256,7 +258,10 @@ export function createInstalledCheckoutHandlers(
   return {
     prepare: (route, ctx) => guest(route, ctx, runtime => prepareGuestCheckout(runtime, route.input)),
     start: (route, ctx) => guest(route, ctx, runtime => startGuestCheckout(runtime, route.input, route.request.headers)),
-    status: (route, ctx) => guest(route, ctx, runtime => statusGuestCheckout(runtime, route.input, route.request.headers)),
+    status: async (route, ctx) => withGuestOrderFulfillment(
+      await guest(route, ctx, runtime => statusGuestCheckout(runtime, route.input, route.request.headers)),
+      ctx.storage?.[ORDERS_COLLECTION] as OrdersCollection | undefined,
+    ),
     readiness,
     reconcileWakes,
     cron: async (event, ctx) => {

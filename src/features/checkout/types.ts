@@ -327,6 +327,8 @@ export interface GuestCheckoutPricingSummary {
 }
 
 export interface GuestCheckoutOrderSummary {
+  /** Current Orders state, when available; completion means shipped, never delivered. */
+  fulfillment?: { status: "processing" } | { status: "completed"; completedAt: string; carrier?: string; tracking?: string };
   /** Canonical order mode; absent legacy mode is test, never live. */
   test?: boolean;
   variantSelections?: readonly CheckoutVariantSelectionSnapshot[];

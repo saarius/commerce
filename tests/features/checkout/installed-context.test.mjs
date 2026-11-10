@@ -217,6 +217,41 @@ test("the exported wake hook hands a paid wake's order to Orders", async () => {
   assert.equal(received[0].attemptId, started.checkout.attemptId);
 });
 
+test('guest status reads current fulfillment only after capability authorization and survives reopening', async () => {
+  const synth = syntheticCheckoutHost({ managed: false });
+  const ctx = context();
+  const orders = collection();
+  let reads = 0;
+  ctx.storage.orders = { async get(id) { reads++; return orders.get(id); } };
+  const handlers = createInstalledCheckoutHandlers(async () => ({ host: synth.host }), () => ({
+    async receive(paidOrder) {
+      if (await orders.get(paidOrder.orderId)) return 'duplicate';
+      await orders.put(paidOrder.orderId, { paidOrder }); return 'stored';
+    },
+  }));
+  const prepared = await handlers.prepare({ input: {}, request: request({}) }, ctx);
+  const capability = prepared.capability.capability;
+  await handlers.start({ input: { contact: { email: 'fixture@example.test', billing: { name: 'Fixture', line1: '1 Example Way', city: 'Testville', postalCode: '00000', country: 'US' } },
+    lines: [{ catalogItemId: 'hat', quantity: 1 }] }, request: request({}, capability) }, ctx);
+  synth.setPayment('paid');
+  const paid = await handlers.status({ input: {}, request: request({}, capability) }, ctx);
+  assert.deepEqual(paid.checkout.order.fulfillment, { status: 'processing' });
+  const id = paid.checkout.order.orderId;
+  const record = await orders.get(id);
+  await orders.put(id, { ...record, completed: { at: '2026-11-10T01:00:00.000Z', tracking: 'TEST-NOT-A-SHIPMENT' } });
+  const completed = await handlers.status({ input: {}, request: request({}, capability) }, ctx);
+  assert.deepEqual(completed.checkout.order.fulfillment, { status: 'completed', completedAt: '2026-11-10T01:00:00.000Z', tracking: 'TEST-NOT-A-SHIPMENT' });
+  const before = reads;
+  for (const token of [undefined, 'guessed']) {
+    const denied = await handlers.status({ input: {}, request: request({}, token) }, ctx);
+    assert.equal(denied.ok, false);
+  }
+  assert.equal(reads, before);
+  await orders.put(id, record);
+  const reopened = await handlers.status({ input: {}, request: request({}, capability) }, ctx);
+  assert.deepEqual(reopened.checkout.order.fulfillment, { status: 'processing' });
+});
+
 // These contexts and HTTP outcomes are synthetic behavior proof, not Registry installation.
 test("exact Registry owner ID is derived from manifest and other Registry owners are rejected", async () => {
   const manifest = JSON.parse(await readFile(new URL("../../../emdash-plugin.jsonc", import.meta.url), "utf8"));
