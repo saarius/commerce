@@ -1,6 +1,6 @@
 import { canonical, isRecord } from "../../shared/record.js";
 import type { GuestCheckoutResult } from "../checkout/types.js";
-import type { OrdersCollection } from "./store.js";
+import { FIRST_ORDER_NUMBER, type OrdersCollection } from "./store.js";
 
 /** Called only after guest capability authorization. The paid projection selects the one readable order. */
 export async function withGuestOrderFulfillment(
@@ -22,6 +22,7 @@ export async function withGuestOrderFulfillment(
     if (done !== undefined && (!isRecord(done) || typeof done.at !== "string" ||
         !Number.isFinite(Date.parse(done.at)) || !note(done.carrier) || !note(done.tracking))) return result;
     return { ...result, checkout: { ...result.checkout, order: { ...order,
+      ...(Number.isSafeInteger(record.number) && record.number! >= FIRST_ORDER_NUMBER ? { number: record.number } : {}),
       fulfillment: done ? { status: "completed", completedAt: done.at,
         ...(done.carrier ? { carrier: done.carrier } : {}), ...(done.tracking ? { tracking: done.tracking } : {}) }
         : { status: "processing" },

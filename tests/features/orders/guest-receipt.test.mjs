@@ -5,7 +5,7 @@ const money = { currency: 'USD', minor: '2200' };
 const order = { orderId: 'order:fixture', receiptId: 'receipt:fixture', test: true,
   lines: [{ catalogItemId: 'mug', name: 'Mug', quantity: 1, unitPrice: money }], total: money };
 const result = () => ({ ok: true, capabilityId: 'cap', checkout: { state: 'paid', order: structuredClone(order) } });
-const record = () => ({ paidOrder: { ...structuredClone(order), mode: 'test' },
+const record = () => ({ number: 1004, paidOrder: { ...structuredClone(order), mode: 'test' },
   completed: { at: '2026-11-10T01:00:00.000Z', carrier: 'Demo carrier', tracking: 'TEST-NOT-A-SHIPMENT' },
   emailKey: 'private@example.test', shipPin: 'private', revision: 2 });
 
@@ -15,8 +15,17 @@ test('projects only the authorized paid order and allowlisted completion fields'
   assert.deepEqual(answer.checkout.order.fulfillment, { status: 'completed', completedAt: record().completed.at,
     carrier: 'Demo carrier', tracking: 'TEST-NOT-A-SHIPMENT' });
   assert.equal(JSON.stringify(answer).includes('private'), false);
+  assert.equal(answer.checkout.order.number, 1004);
+  assert.equal(input.checkout.order.number, undefined);
   assert.equal(input.checkout.order.fulfillment, undefined);
   assert.deepEqual(answer.checkout.order.total, money);
+});
+test('missing or malformed short numbers are omitted without losing a paid receipt', async () => {
+  for (const number of [undefined, null, '1004', 0, -1, 1000, 1004.5, Number.MAX_SAFE_INTEGER + 1]) {
+    const answer = await withGuestOrderFulfillment(result(), { get: async () => ({ ...record(), number }) });
+    assert.equal(answer.checkout.order.number, undefined);
+    assert.equal(answer.checkout.state, 'paid');
+  }
 });
 test('reopening removes stale tracking on the next read', async () => {
   const reopened = record(); delete reopened.completed;

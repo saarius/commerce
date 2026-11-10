@@ -327,6 +327,8 @@ export interface GuestCheckoutPricingSummary {
 }
 
 export interface GuestCheckoutOrderSummary {
+  /** Merchant receipt: canonical short number from the authorized Orders record, never an identifier-derived label. */
+  number?: number;
   /** Current Orders state, when available; completion means shipped, never delivered. */
   fulfillment?: { status: "processing" } | { status: "completed"; completedAt: string; carrier?: string; tracking?: string };
   /** Canonical order mode; absent legacy mode is test, never live. */

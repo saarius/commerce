@@ -226,7 +226,7 @@ test('guest status reads current fulfillment only after capability authorization
   const handlers = createInstalledCheckoutHandlers(async () => ({ host: synth.host }), () => ({
     async receive(paidOrder) {
       if (await orders.get(paidOrder.orderId)) return 'duplicate';
-      await orders.put(paidOrder.orderId, { paidOrder }); return 'stored';
+      await orders.put(paidOrder.orderId, { paidOrder, number: 1004 }); return 'stored';
     },
   }));
   const prepared = await handlers.prepare({ input: {}, request: request({}) }, ctx);
@@ -236,6 +236,7 @@ test('guest status reads current fulfillment only after capability authorization
   synth.setPayment('paid');
   const paid = await handlers.status({ input: {}, request: request({}, capability) }, ctx);
   assert.deepEqual(paid.checkout.order.fulfillment, { status: 'processing' });
+  assert.equal(paid.checkout.order.number, 1004);
   const id = paid.checkout.order.orderId;
   const record = await orders.get(id);
   await orders.put(id, { ...record, completed: { at: '2026-11-10T01:00:00.000Z', tracking: 'TEST-NOT-A-SHIPMENT' } });
@@ -250,6 +251,7 @@ test('guest status reads current fulfillment only after capability authorization
   await orders.put(id, record);
   const reopened = await handlers.status({ input: {}, request: request({}, capability) }, ctx);
   assert.deepEqual(reopened.checkout.order.fulfillment, { status: 'processing' });
+  assert.equal(reopened.checkout.order.number, 1004);
 });
 
 // These contexts and HTTP outcomes are synthetic behavior proof, not Registry installation.

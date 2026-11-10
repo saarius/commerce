@@ -6,4 +6,6 @@ This is a merchant-only TEST sandbox build, based on Commerce v0.8.0. It is not 
 
 The operator provisions `connection` through EmDash's authenticated encrypted-settings API. Commerce Settings can then fetch scoped TEST configuration from the merchant service. No store key or signing key is bundled, browser supplied, logged or placed in ordinary KV; Commerce still owns checkout, totals, orders and receipts, while Payments owns provider verification. The storefront has a separate default-closed rollout gate.
 
+The merchant receipt projection includes a TEST marker, current fulfillment and the canonical Orders short number after capability authorization and immutable receipt matching. These are local adaptations, not upstream proposals: the verified upstream `commerce-payment-mode-001` decision explicitly keeps mode out of the shopper view. Missing or malformed short numbers are omitted; the UUID remains the canonical identity and no lookup authority is added.
+
 After building, run `node --test ops/backroadbum/check.test.mjs`. These are merchant-profile checks, not proof of a paid order, upstream release qualification or generic self-hosting support. Changes to the base pin, issuer, host, service scope or live mode require a deliberate new profile and new proof.
