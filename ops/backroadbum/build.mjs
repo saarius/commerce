@@ -31,6 +31,29 @@ writeFileSync(credentialFile, original.replace(expected, '"https://backroadbum.c
 for (const [source, destination] of [['registry-connect.ts', 'src/features/checkout/registry-connect.ts'], ['admin-connect.ts', 'src/admin/connect.ts']]) {
   cpSync(resolve(root, 'ops/backroadbum', source), resolve(stage, destination));
 }
+cpSync(resolve(root, 'ops/backroadbum/merchant-ship.ts'), resolve(stage, 'src/admin/merchant-ship.ts'));
+const adminPath = resolve(stage, 'src/admin/index.ts');
+let admin = readFileSync(adminPath, 'utf8');
+const syncStart = admin.indexOf('/** Brings Orders and Ship');
+const syncEnd = admin.indexOf('/**\n * Private Block Kit transport', syncStart);
+if (syncStart < 0 || syncEnd < 0) throw Error('merchant_ship_sync_source_changed');
+admin = admin.slice(0, syncStart) + 'export async function syncOrdersWithShip(ctx: PluginContext): Promise<void> { await syncMerchantShip(ctx); }\n\n' + admin.slice(syncEnd);
+const labelStart = admin.indexOf('    labelPage: async id => {');
+const labelEnd = admin.indexOf('\n    },', labelStart);
+if (labelStart < 0 || labelEnd < 0) throw Error('merchant_ship_link_source_changed');
+admin = admin.slice(0, labelStart) + '    labelPage: id => merchantShipLabelPage(ctx, id),' + admin.slice(labelEnd + '\n    },'.length);
+for (const [from, to] of [
+  ['import { resolveCatalogVariantMember, type CatalogStorageRecord } from "../features/catalog/kernel/index.js";\n', ''],
+  ['listPaidOrders, resolveRegistryShip,', 'listPaidOrders,'],
+  ['ordersBlocks, ordersInteraction, shipLabelPage, syncShip, type OrdersCollection', 'ordersBlocks, ordersInteraction'],
+]) {
+  if (admin.split(from).length !== 2) throw Error('merchant_ship_admin_source_changed');
+  admin = admin.replace(from, to);
+}
+writeFileSync(adminPath, 'import { syncMerchantShip, merchantShipLabelPage } from "./merchant-ship.js";\n' + admin);
+const viewPath = resolve(stage, 'src/features/orders/admin/view.ts'), view = readFileSync(viewPath, 'utf8');
+if (view.split("label: 'Create shipping label'").length !== 2) throw Error('merchant_ship_view_source_changed');
+writeFileSync(viewPath, view.replace("label: 'Create shipping label'", "label: 'Open practice shipping'"));
 const manifestPath = resolve(stage, 'emdash-plugin.jsonc');
 const manifest = readFileSync(manifestPath, 'utf8');
 const hostList = /"allowedHosts":\s*\[[^\]]*\]/g;
@@ -43,7 +66,7 @@ const output = resolve(root, 'dist/backroadbum');
 rmSync(output, { recursive: true, force: true });
 cpSync(resolve(stage, 'dist/sandbox'), resolve(output, 'dist/sandbox'), { recursive: true });
 const backend = readFileSync(resolve(output, 'dist/sandbox/plugin.mjs'));
-const profile = { profile: 'backroadbum/merchant-test-v1', base: pin, source: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
+const profile = { profile: 'backroadbum/merchant-test-v2', base: pin, source: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
   origin: 'https://backroadbum.com', allowedHosts: ['backroadbum.com'], mode: 'test', bytes: backend.length,
   sha256: createHash('sha256').update(backend).digest('hex'), genericConnect: false, published: false };
 writeFileSync(resolve(output, 'profile.json'), JSON.stringify(profile, null, 2));
